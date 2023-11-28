@@ -11,12 +11,14 @@ import {toast} from "react-toastify";
 import AuthService from "../../services/auth.service";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import {useNavigate} from "react-router-dom";
 
 export default function ActiveCodeDialog({dialogOpen, setDialogOpen, email}) {
   const [activeCode, setActiveCode] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+  const navigate = useNavigate();
 
   const handleSnackbarClose = (reason) => {
     if (reason === 'clickaway') {
@@ -42,6 +44,10 @@ export default function ActiveCodeDialog({dialogOpen, setDialogOpen, email}) {
           setSnackbarSeverity('error');
           setSnackbarOpen(true);
         }
+      ).finally(
+        setTimeout(() => {
+          navigate('/login');
+        }, 800)
       ),{
       pending: "Activating..."
       });
