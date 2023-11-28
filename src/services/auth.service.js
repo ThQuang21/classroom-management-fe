@@ -8,9 +8,22 @@ const register = async ({ name, email, password }) => {
   });
 };
 
+const activeUser = async ({ email, code }) => {
+  const URL = API_URL + "auth/activate/" + email + "/" + code;
+  return await http.get(URL);
+}
+
+const resentCode = async ({ email }) => {
+  return await http.post(API_URL + "auth/activate/resent-code", {
+    email
+  });
+};
+
 
 const AuthService = {
-  register
+  register,
+  activeUser,
+  resentCode
 }
 
 export default AuthService;

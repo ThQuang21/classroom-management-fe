@@ -15,9 +15,10 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../components/Register.css';
-import { useNavigate } from 'react-router-dom';
 import AuthService from "../services/auth.service";
 import {ref} from "yup";
+import { toast } from 'react-toastify'
+import ActiveCodeDialog from "./dialog/ActiveCodeDialog";
 
 const defaultTheme = createTheme();
 
@@ -54,31 +55,36 @@ const Register = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('error');
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleSnackbarClose = (event, reason) => {
+  const handleSnackbarClose = (reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setSnackbarOpen(false);
   };
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log(values)
 
-    await AuthService.register({name: values.name, email: values.email, password: values.password})
-      .then(() => {
-        setSnackbarMessage('Sign-up successfully');
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
-        navigate('/signin')
-      },
-      (error) => {
-        console.log(error)
-        setSnackbarMessage(error.response.data.error.message || 'Error during sign-up. Please try again.');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-      }
-    ).finally(() => setSubmitting(false))
+    await toast.promise(AuthService.register({name: values.name, email: values.email, password: values.password})
+        .then(() => {
+            setSnackbarMessage('Sign-up successfully');
+            setSnackbarSeverity('success');
+            setSnackbarOpen(true);
+            setDialogOpen(true);
+            setEmail(values.email)
+          },
+          (error) => {
+            console.log(error)
+            setSnackbarMessage(error.response.data.error.message || 'Error during sign-up. Please try again.');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+          }
+        ).finally(() => setSubmitting(false))
+      , {
+      pending: 'Registering...',
+    })
+
   };
 
   return (
@@ -169,11 +175,14 @@ const Register = () => {
       </Container>
       <Copyright sx={{ mt: 8, mb: 4 }} />
 
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         <Alert elevation={6} variant="filled" severity={snackbarSeverity} onClose={handleSnackbarClose}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      <ActiveCodeDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} email={email}/>
+
     </ThemeProvider>
   );
 };
