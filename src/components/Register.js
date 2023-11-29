@@ -37,20 +37,6 @@ const validationSchema = Yup.object({
   confirmPassword: Yup.string().required("Confirm password is required!")
     .oneOf([ref("password")], "Passwords do not match"),
 });
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="/">
-        HAQ Classroom
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 const Register = () => {
   const [email, setEmail] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -178,7 +164,6 @@ const Register = () => {
           </Link>
         </Box>
       </Container>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
 
       <Snackbar
         open={alertProps.open}

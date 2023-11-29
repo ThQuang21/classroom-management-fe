@@ -16,20 +16,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthService from "../services/auth.service";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import {ref} from "yup";
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="/">
-        HAQ Classroom
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const initialValues = {
   email: '',
@@ -135,8 +121,6 @@ export default function ForgotPwd() {
 
         </Box>
       </Container>
-
-      <Copyright sx={{ mt: 8, mb: 4 }} />
 
       <Snackbar
         open={alertProps.open}
