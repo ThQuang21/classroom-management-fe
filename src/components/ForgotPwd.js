@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
+import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Snackbar from '@mui/material/Snackbar';
@@ -33,15 +33,13 @@ function Copyright(props) {
 
 const initialValues = {
   email: '',
-  password: ''
 };
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Invalid email address').required('Email is required'),
-  password: Yup.string().required('Password is required')
 });
 
-export default function LogIn() {
+export default function ForgotPwd() {
   const navigate = useNavigate();
   const defaultTheme = createTheme();
 
@@ -68,27 +66,20 @@ export default function LogIn() {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log(values)
     const email = values.email;
-    const password = values.password;
 
-    await AuthService.login({email: email, password: password})
+    await AuthService.forgotPwd({email: email})
       .then(
       () => {
-        showAlert('Sign-in successful', 'success');
+        showAlert('Send email successful', 'success');
         setTimeout(() => {
-          navigate('/');
+          navigate('/reset-password',{state:{ email : email }});
         }, 800);
 
       },
       (error) => {
         console.log(error)
-
-        if (error.response && error.response.status === 401) {
-          showAlert(error.response.data.error.message || 'Invalid email or password. Please try again.', 'error');
-        } else {
-          showAlert('An unexpected error occurred. Please try again later.', 'error');
-        }
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again.', 'error');
       }
     ).finally(() => setSubmitting(false));
 
@@ -107,10 +98,13 @@ export default function LogIn() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-            <LockOpenOutlinedIcon />
+            <LockResetOutlinedIcon />
           </Avatar>
-          <Typography style={{ marginBottom: 1 + 'em' }} component="h1" variant="h5">
-            Sign in
+          <Typography component="h1" variant="h5">
+            Forgot your Password
+          </Typography>
+          <Typography style={{ marginBottom: 2 + 'em' }} component="body" variant="body">
+            We’ll send you an email with verification code.
           </Typography>
 
           <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
@@ -129,38 +123,15 @@ export default function LogIn() {
                     helperText={<ErrorMessage name="email" component="div" className="error-message" />}
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <Field
-                    as={TextField}
-                    variant="outlined"
-                    fullWidth
-                    id="password"
-                    label="Password"
-                    name="password"
-                    type="password"
-                    required
-                    error={Boolean(validationSchema.fields.password && validationSchema.fields.password.errors)}
-                    helperText={<ErrorMessage name="password" component="div" className="error-message" />}
-                  />
-                </Grid>
               </Grid>
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Sign In
+                Request code
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="/forgot-password" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="/register" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
             </Form>
           </Formik>
+          <Link href="/login" variant="body2">
+            Back to sign in
+          </Link>
 
         </Box>
       </Container>
