@@ -11,7 +11,6 @@ export default function Home() {
     <>
       <CssBaseline />
       <main>
-        {/* Hero unit */}
         <Box
           sx={{
             bgcolor: 'background.paper',
@@ -27,21 +26,19 @@ export default function Home() {
               color="text.primary"
               gutterBottom
             >
-              Web Application Development
+              HAQ Classroom
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              The course is designed to provide students knowledge in web application
-              development. Student will learn how to build a single page application that utilize RESTful
-              web service.
+              HAQ Classroom helps educators create engaging learning experiences they can
+              personalize, manage, and measure.
             </Typography>
             <Stack
               sx={{ pt: 4 }}
               direction="row"
-              spacing={2}
+              spacing={1}
               justifyContent="center"
             >
-              <Button variant="contained">Learn now </Button>
-              <Button variant="outlined">See more information</Button>
+              <Button href="/login" variant="contained">Start now</Button>
             </Stack>
           </Container>
         </Box>

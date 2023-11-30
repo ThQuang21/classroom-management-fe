@@ -60,8 +60,15 @@ export default function LogIn() {
 
     await AuthService.login({email: email, password: password})
       .then(
-      () => {
+      (data) => {
         showAlert('Sign-in successful', 'success');
+
+        const user = data.data.data;
+        console.log(user)
+
+        localStorage.setItem('email', user.email);
+        localStorage.setItem('token', user.accessToken);
+
         setTimeout(() => {
           navigate('/');
         }, 800);

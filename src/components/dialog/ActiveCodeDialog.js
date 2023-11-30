@@ -37,6 +37,9 @@ export default function ActiveCodeDialog({dialogOpen, setDialogOpen, email}) {
           setSnackbarMessage('Activate account successfully');
           setSnackbarSeverity('success');
           setSnackbarOpen(true);
+          setTimeout(() => {
+            navigate('/login');
+          }, 800)
         },
         (error) => {
           console.log(error)
@@ -44,11 +47,7 @@ export default function ActiveCodeDialog({dialogOpen, setDialogOpen, email}) {
           setSnackbarSeverity('error');
           setSnackbarOpen(true);
         }
-      ).finally(
-        setTimeout(() => {
-          navigate('/login');
-        }, 800)
-      ),{
+      ), {
       pending: "Activating..."
       });
   }
