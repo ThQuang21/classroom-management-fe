@@ -16,6 +16,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthService from "../services/auth.service";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
+import GoogleButton from "react-google-button";
+import {Divider} from "@mui/material";
 
 const initialValues = {
   email: '',
@@ -154,8 +156,21 @@ export default function LogIn() {
               </Grid>
             </Form>
           </Formik>
-
         </Box>
+        <Divider sx={{ mt: 3, mb : 2}}> OR </Divider>
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <GoogleButton
+            onClick={() => { window.open("http://localhost:3000/auth/google", "_self"); }}
+          />
+        </Box>
+
       </Container>
 
       <Snackbar

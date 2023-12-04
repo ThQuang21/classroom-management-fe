@@ -8,6 +8,7 @@ import ResponsiveAppBar from "./components/ResponsiveAppBar/ResponsiveAppBar";
 import Home from "./components/Home";
 import Footer from "./components/Footer/Footer";
 import React from "react";
+import SocialLogin from "./components/SocialLogin";
 
 function App() {
   const location = useLocation();
@@ -26,6 +27,8 @@ function App() {
         <Route exact path="/" element={<Home/>} />
         <Route exact path="/register" element={<Register/>} />
         <Route exact path="/login" element={<LogIn/>} />
+        <Route exact path="/login1" element={<SocialLogin/>} />
+
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />
       </Routes>
