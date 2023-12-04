@@ -89,7 +89,11 @@ export default function LogIn() {
 
   };
 
-  return (
+  const handleGoogleSignIn = async () => {
+    await AuthService.googleLogin();
+  }
+
+    return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -167,7 +171,7 @@ export default function LogIn() {
           }}
         >
           <GoogleButton
-            onClick={() => { window.open("http://localhost:3000/auth/google", "_self"); }}
+            onClick={handleGoogleSignIn}
           />
         </Box>
 

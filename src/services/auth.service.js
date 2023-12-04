@@ -37,13 +37,22 @@ const resetPwd = async ({ email , userToken, password }) => {
   });
 };
 
+const googleLogin = async () => {
+  try {
+    window.open("http://localhost:3000/auth/google", "_self");
+  } catch (error) {
+    console.error('Error during Google authentication:', error);
+  }
+}
+
 const AuthService = {
   register,
   activeUser,
   resentCode,
   login,
   forgotPwd,
-  resetPwd
+  resetPwd,
+  googleLogin
 }
 
 export default AuthService;
