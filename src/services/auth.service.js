@@ -39,7 +39,7 @@ const resetPwd = async ({ email , userToken, password }) => {
 
 const googleLogin = async () => {
   try {
-    window.open("auth/google", "_self");
+    window.open(API_URL + "auth/google", "_self");
   } catch (error) {
     console.error('Error during Google authentication:', error);
   }
