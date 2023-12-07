@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -16,8 +15,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthService from "../services/auth.service";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import GoogleButton from "react-google-button";
 import {Divider} from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import GoogleIcon from '@mui/icons-material/Google';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { InputAdornment, IconButton } from '@mui/material';
+import Stack from "@mui/material/Stack";
 
 const initialValues = {
   email: '',
@@ -29,9 +35,34 @@ const validationSchema = Yup.object({
   password: Yup.string().required('Password is required')
 });
 
+const googleStyle = {
+  background: '#db3236',
+  width: '165px',
+  height: '35px',
+  color: 'white',
+  border: '0px transparent',
+  '&:hover': {
+    background: '#3b5998',
+    opacity: 1,
+  },
+};
+
+const facebookStyle = {
+  background: '#3b5998',
+  width: '165px',
+  height: '35px',
+  color: 'white',
+  border: '0px transparent',
+  '&:hover': {
+    opacity: 1,
+  },
+};
+
 export default function LogIn() {
   const navigate = useNavigate();
   const defaultTheme = createTheme();
+  const [loading, setLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [alertProps, setAlertProps] = useState({
     open: false,
@@ -52,10 +83,11 @@ export default function LogIn() {
     // Hide the Alert after 4 seconds (4000 milliseconds)
     setTimeout(() => {
       handleAlertClose();
-    }, 4000);
+    }, 6000);
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    setLoading(true);
     console.log(values)
     const email = values.email;
     const password = values.password;
@@ -85,7 +117,10 @@ export default function LogIn() {
           showAlert('An unexpected error occurred. Please try again later.', 'error');
         }
       }
-    ).finally(() => setSubmitting(false));
+    ).finally(() => {
+        setSubmitting(false);
+        setLoading(false)
+      });
 
   };
 
@@ -111,7 +146,27 @@ export default function LogIn() {
           <Typography style={{ marginBottom: 1 + 'em' }} component="h1" variant="h5">
             Sign in
           </Typography>
+          <Stack direction="row" spacing={2} >
+            <Button variant="contained" style={googleStyle} onClick={handleGoogleSignIn}>
+              <GoogleIcon />
+            </Button>
 
+            <Button variant="contained" style={facebookStyle}>
+              <FacebookIcon />
+            </Button>
+
+          </Stack>
+        </Box>
+
+        <Divider sx={{ my : 3}}> OR </Divider>
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
             <Form>
               <Grid container spacing={2.5}>
@@ -136,16 +191,29 @@ export default function LogIn() {
                     id="password"
                     label="Password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     error={Boolean(validationSchema.fields.password && validationSchema.fields.password.errors)}
                     helperText={<ErrorMessage name="password" component="div" className="error-message" />}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
               </Grid>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Sign In
-              </Button>
+              <LoadingButton
+                type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}
+                loading={loading}
+              >
+                <span>Sign In</span>
+              </LoadingButton>
+
               <Grid container>
                 <Grid item xs>
                   <Link href="/forgot-password" variant="body2">
@@ -160,19 +228,6 @@ export default function LogIn() {
               </Grid>
             </Form>
           </Formik>
-        </Box>
-        <Divider sx={{ mt: 3, mb : 2}}> OR </Divider>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <GoogleButton
-            onClick={handleGoogleSignIn}
-          />
         </Box>
 
       </Container>

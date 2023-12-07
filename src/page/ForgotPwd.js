@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -16,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthService from "../services/auth.service";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const initialValues = {
   email: '',
@@ -28,6 +28,7 @@ const validationSchema = Yup.object({
 export default function ForgotPwd() {
   const navigate = useNavigate();
   const defaultTheme = createTheme();
+  const [loading, setLoading] = React.useState(false);
 
   const [alertProps, setAlertProps] = useState({
     open: false,
@@ -53,6 +54,7 @@ export default function ForgotPwd() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     const email = values.email;
+    setLoading(true);
 
     await AuthService.forgotPwd({email: email})
       .then(
@@ -67,7 +69,10 @@ export default function ForgotPwd() {
         console.log(error)
         showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again.', 'error');
       }
-    ).finally(() => setSubmitting(false));
+    ).finally(() => {
+        setSubmitting(false);
+        setLoading(false)
+      });
 
   };
 
@@ -100,7 +105,7 @@ export default function ForgotPwd() {
                   <Field
                     as={TextField}
                     variant="outlined"
-                    fullWidth
+                    style={{ width: '400px' }}
                     id="email"
                     label="Email Address"
                     name="email"
@@ -110,12 +115,15 @@ export default function ForgotPwd() {
                   />
                 </Grid>
               </Grid>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Request code
-              </Button>
+              <LoadingButton
+                type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}
+                loading={loading}
+              >
+                <span>Request code</span>
+              </LoadingButton>
             </Form>
           </Formik>
-          <Link href="/login" variant="body2">
+          <Link href="login" variant="body2">
             Back to sign in
           </Link>
 

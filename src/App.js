@@ -1,15 +1,15 @@
 import './App.css';
 import {Routes, Route, useLocation} from "react-router-dom";
-import Register from './components/Register'
-import LogIn from "./components/LogIn";
-import ForgotPwd from "./components/ForgotPwd";
-import ResetPwd from "./components/ResetPwd";
+import Register from './page/Register'
+import LogIn from "./page/LogIn";
+import ForgotPwd from "./page/ForgotPwd";
+import ResetPwd from "./page/ResetPwd";
 import ResponsiveAppBar from "./components/ResponsiveAppBar/ResponsiveAppBar";
-import Home from "./components/Home";
+import Home from "./page/Home";
 import Footer from "./components/Footer/Footer";
 import React from "react";
 import AuthHome from "./components/AuthHome";
-import {UserStoreProvider} from "./UserStoreProvider";
+import {UserStoreProvider} from "./context/UserStoreProvider";
 
 function App() {
   const location = useLocation();
@@ -28,6 +28,7 @@ function App() {
         <Route exact path="/" element={<Home/>} />
         <Route exact path="/register" element={<Register/>} />
         <Route exact path="/login" element={<LogIn/>} />
+
         <Route exact path="/handleUserData" element={<AuthHome/>} />
 
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />

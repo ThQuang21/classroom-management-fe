@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import {useUserStore} from "../UserStoreProvider";
+import {useUserStore} from "../context/UserStoreProvider";
 import {useNavigate} from "react-router-dom";
 
 const AuthHome = () => {
   const [userData, setUserData] = useState(null);
-  const { user, loginUser, logoutUser } = useUserStore();
+  const { user, loginUser } = useUserStore();
   const navigate = useNavigate();
 
   useEffect(() => {

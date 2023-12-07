@@ -1,45 +1,48 @@
 import React, { useState } from 'react';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
+import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import PasswordOutlinedIcon from '@mui/icons-material/PasswordOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import '../components/Register.css';
 import AuthService from "../services/auth.service";
+import {ErrorMessage, Field, Form, Formik} from "formik";
+import * as Yup from "yup";
 import {ref} from "yup";
-import { toast } from 'react-toastify'
-import ActiveCodeDialog from "./dialog/ActiveCodeDialog";
-
-const defaultTheme = createTheme();
+import LoadingButton from "@mui/lab/LoadingButton";
+import {IconButton, InputAdornment} from "@mui/material";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const initialValues = {
   name: '',
-  email: ''
 };
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Name is required').max(25, 'Name must be at most 25 characters'),
-  email: Yup.string().email('Invalid email address').required('Email is required'),
+  name: Yup.string().required('Code is required').max(6, 'Code must be at most 6 characters'),
   password: Yup.string().required('Password is required')
     .matches(passwordRegex, 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character. It must be at least 6 characters long'),
   confirmPassword: Yup.string().required("Confirm password is required!")
     .oneOf([ref("password")], "Passwords do not match"),
 });
-const Register = () => {
-  const [email, setEmail] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
+
+export default function ResetPwd() {
+  const [loading, setLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const defaultTheme = createTheme();
+  const location = useLocation();
+  const email = location.state.email;
+
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -48,6 +51,7 @@ const Register = () => {
   const handleAlertClose = () => {
     setAlertProps((prev) => ({ ...prev, open: false }));
   };
+
   const showAlert = (message, severity = 'success') => {
     setAlertProps({
       open: true,
@@ -61,21 +65,42 @@ const Register = () => {
     }, 4000);
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    await toast.promise(AuthService.register({name: values.name, email: values.email, password: values.password})
-        .then(() => {
-            showAlert('Sign-up successful', 'success');
-            setDialogOpen(true);
-            setEmail(values.email)
-          },
-          (error) => {
-            showAlert(error.response.data.error.message || 'Error during sign-up. Please try again.', 'error');
-          }
-        ).finally(() => setSubmitting(false))
-      , {
-      pending: 'Registering...',
-    })
+  const handleResendCode = async () => {
 
+    await AuthService.forgotPwd({email: email})
+      .then(
+        () => {
+          showAlert('Send email successful', 'success');
+          console.log(email)
+
+        },
+        (error) => {
+          console.log(error)
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again.', 'error');
+        }
+      );
+  };
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setLoading(true);
+
+    await AuthService.resetPwd({email: email, userToken : values.name, password: values.password})
+      .then(
+      () => {
+        showAlert('Change password successful', 'success');
+        setTimeout(() => {
+          navigate('/login');
+        }, 800);
+
+      },
+      (error) => {
+        console.log(error)
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again.', 'error');
+      }
+    ).finally(() => {
+        setSubmitting(false);
+        setLoading(false)
+      });
   };
 
   return (
@@ -91,11 +116,12 @@ const Register = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-            <LockOutlinedIcon />
+            <PasswordOutlinedIcon />
           </Avatar>
           <Typography style={{ marginBottom: 1 + 'em' }} component="h1" variant="h5">
-            Sign up
+            Reset Your Password
           </Typography>
+
           <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
             <Form>
               <Grid container spacing={2.5}>
@@ -105,7 +131,7 @@ const Register = () => {
                     variant="outlined"
                     fullWidth
                     id="name"
-                    label="Name"
+                    label="Verification Code"
                     name="name"
                     required
                     error={Boolean(validationSchema.fields.name && validationSchema.fields.name.errors)}
@@ -117,26 +143,22 @@ const Register = () => {
                     as={TextField}
                     variant="outlined"
                     fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    required
-                    error={Boolean(validationSchema.fields.email && validationSchema.fields.email.errors)}
-                    helperText={<ErrorMessage name="email" component="div" className="error-message" />}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Field
-                    as={TextField}
-                    variant="outlined"
-                    fullWidth
                     id="password"
                     label="Password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     error={Boolean(validationSchema.fields.password && validationSchema.fields.password.errors)}
                     helperText={<ErrorMessage name="password" component="div" className="error-message" />}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -147,21 +169,34 @@ const Register = () => {
                     id="confirmPassword"
                     label="Confirm Password"
                     name="confirmPassword"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     error={Boolean(validationSchema.fields.password && validationSchema.fields.password.errors)}
                     helperText={<ErrorMessage name="confirmPassword" component="div" className="error-message" />}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
               </Grid>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                Sign Up
-              </Button>
+              <LoadingButton
+                type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}
+                loading={loading}
+              >
+                <span>Reset Password</span>
+              </LoadingButton>
             </Form>
           </Formik>
-          <Link href="/login" variant="body2">
-            Already have an account? Sign in
+          <Link onClick={handleResendCode}  style={{ cursor: 'pointer' }} variant="body2">
+            Resend code
           </Link>
+
         </Box>
       </Container>
 
@@ -176,10 +211,6 @@ const Register = () => {
         </Alert>
       </Snackbar>
 
-      <ActiveCodeDialog dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} email={email}/>
-
     </ThemeProvider>
   );
-};
-
-export default Register;
+}
