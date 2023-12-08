@@ -18,6 +18,7 @@ import {Divider} from "@mui/material";
 import Stack from '@mui/material/Stack';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddIcon from '@mui/icons-material/Add';
+import CreateClass from "../dialog/CreateClass";
 
 const pages = ['All classes', 'Teaching', 'Enrolled'];
 
@@ -35,6 +36,9 @@ function ResponsiveAppBar() {
   const { user, isAuthenticated, logoutUser } = useUserStore();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElClass, setAnchorElClass] = React.useState(null);
+  const [openCreateClass, setOpenCreateClass] = React.useState(false);
+
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -45,12 +49,21 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleOpenClassMenu = (event) => {
+    setAnchorElClass(event.currentTarget);
+  };
+
+  const handleOpenCreateClass = (event) => {
+    setOpenCreateClass(event.currentTarget);
+  };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+  const handleCloseClassMenu = () => {
+    setAnchorElClass(null);
   };
 
   const navigateProfilePage = () => {
@@ -169,7 +182,7 @@ function ResponsiveAppBar() {
                   edge="end"
                   aria-label="account of current user"
                   aria-haspopup="true"
-                  onClick={handleOpenUserMenu}
+                  onClick={handleOpenClassMenu}
                   color="inherit"
                   sx={{ p: 0 }}
                 >
@@ -208,8 +221,28 @@ function ResponsiveAppBar() {
                 </IconButton>
               </Stack>
 
+              {/*Menu class*/}
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-class"
+                anchorEl={anchorElClass}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElClass)}
+                onClose={handleCloseClassMenu}
+              >
+                <MenuItem onClick={handleOpenCreateClass}>Create Class</MenuItem>
+                <MenuItem onClick={navigateProfilePage}>Join Class</MenuItem>
+              </Menu>
 
-
+              {/*Menu user*/}
               <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -258,6 +291,7 @@ function ResponsiveAppBar() {
 
         </Toolbar>
       </Container>
+      <CreateClass open={openCreateClass} setOpen={setOpenCreateClass}/>
     </AppBar>
   );
 }
