@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {useUserStore} from "../context/UserStoreProvider";
 import {useNavigate} from "react-router-dom";
 
-const AuthHome = () => {
+const LoginCallback = () => {
   const [userData, setUserData] = useState(null);
-  const { user, loginUser } = useUserStore();
+  const { loginUser } = useUserStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,13 +18,16 @@ const AuthHome = () => {
           const parsedUserData = JSON.parse(decodeURIComponent(userDataParam));
           setUserData(parsedUserData);
           console.log(parsedUserData)
-          loginUser(parsedUserData.email, parsedUserData.token);
 
-          localStorage.setItem('email', user.email);
-          localStorage.setItem('token', user.token);
-
-          navigate('/');
-
+          loginUser({
+            email: parsedUserData.email,
+            id: parsedUserData.id,
+            name: parsedUserData.name,
+            token: parsedUserData.accessToken,
+          });
+          setTimeout(() => {
+            navigate('/');
+          }, 800);
 
         } catch (error) {
           console.error('Error parsing user data:', error);
@@ -35,7 +38,7 @@ const AuthHome = () => {
     // Call the function to get user data
     getUserDataFromURL();
 
-  }, []);
+  }, [loginUser, navigate]);
 
   return (
     <div>
@@ -52,4 +55,4 @@ const AuthHome = () => {
   );
 };
 
-export default AuthHome;
+export default LoginCallback;

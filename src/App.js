@@ -8,7 +8,7 @@ import ResponsiveAppBar from "./components/ResponsiveAppBar/ResponsiveAppBar";
 import Home from "./page/Home";
 import Footer from "./components/Footer/Footer";
 import React from "react";
-import AuthHome from "./components/AuthHome";
+import LoginCallback from "./components/LoginCallback";
 import {UserStoreProvider} from "./context/UserStoreProvider";
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
         <Route exact path="/register" element={<Register/>} />
         <Route exact path="/login" element={<LogIn/>} />
 
-        <Route exact path="/handleUserData" element={<AuthHome/>} />
+        <Route exact path="/handleUserData" element={<LoginCallback/>} />
 
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />

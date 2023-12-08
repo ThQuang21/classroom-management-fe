@@ -24,6 +24,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { InputAdornment, IconButton } from '@mui/material';
 import Stack from "@mui/material/Stack";
+import {useUserStore} from "../context/UserStoreProvider";
 
 const initialValues = {
   email: '',
@@ -59,11 +60,11 @@ const facebookStyle = {
 };
 
 export default function LogIn() {
+  const { loginUser } = useUserStore();
   const navigate = useNavigate();
   const defaultTheme = createTheme();
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -88,7 +89,6 @@ export default function LogIn() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setLoading(true);
-    console.log(values)
     const email = values.email;
     const password = values.password;
 
@@ -96,12 +96,15 @@ export default function LogIn() {
       .then(
       (data) => {
         showAlert('Sign-in successful', 'success');
-
         const user = data.data.data;
-        console.log(user)
+        // console.log(user)
 
-        localStorage.setItem('email', user.email);
-        localStorage.setItem('token', user.accessToken);
+        loginUser({
+          email: user.email,
+          id: user.id,
+          name: user.name,
+          token: user.accessToken,
+        });
 
         setTimeout(() => {
           navigate('/');

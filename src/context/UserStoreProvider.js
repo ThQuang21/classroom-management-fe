@@ -1,27 +1,33 @@
-// userStore.js
-import React, { createContext, useContext, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
 const UserStoreContext = createContext();
 
 export const UserStoreProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    email: '',
-    token: '',
-  });
+  const [user, setUser] = useState(null);
 
-  const loginUser = (email, token) => {
-    setUser({ email, token });
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const loginUser = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logoutUser = () => {
-    setUser({
-      email: '',
-      token: '',
-    });
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  const isAuthenticated = () => {
+    return !!user;
   };
 
   return (
-    <UserStoreContext.Provider value={{ user, loginUser, logoutUser }}>
+    <UserStoreContext.Provider value={{ user, loginUser, logoutUser, isAuthenticated }}>
       {children}
     </UserStoreContext.Provider>
   );

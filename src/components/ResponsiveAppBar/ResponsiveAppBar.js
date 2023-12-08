@@ -8,17 +8,20 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import {makeStyles} from "@mui/styles";
-import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import {useUserStore} from "../../context/UserStoreProvider";
+import {Divider} from "@mui/material";
+import Stack from '@mui/material/Stack';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AddIcon from '@mui/icons-material/Add';
 
-const pages = ['All classes', 'Teaching', 'Enrolled', 'Create'];
+const pages = ['All classes', 'Teaching', 'Enrolled'];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   transition: {
     transition: "all 0.3s ease-out", // Adjust the duration and timing function as needed
     "&:hover": {
@@ -29,17 +32,11 @@ const useStyles = makeStyles((theme) => ({
 
 
 function ResponsiveAppBar() {
-  const [auth, setAuth] = React.useState(false);
+  const { user, isAuthenticated, logoutUser } = useUserStore();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const classes = useStyles();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (localStorage.getItem('email') != null) {
-      setAuth(true);
-    }
-  }, [])
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -62,9 +59,7 @@ function ResponsiveAppBar() {
   };
 
   const handleLogOut = () => {
-    localStorage.removeItem("email");
-    localStorage.removeItem("token");
-    setAuth(false);
+    logoutUser();
     navigate('/')
   };
 
@@ -92,7 +87,7 @@ function ResponsiveAppBar() {
             HAQ CLASSROOM
           </Typography>
 
-          {auth && (
+          {isAuthenticated()  && (
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton
                 size="large"
@@ -151,7 +146,7 @@ function ResponsiveAppBar() {
             HAQ CLASSROOM
           </Typography>
 
-          {auth && (
+          {isAuthenticated()  && (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               {pages.map((page) => (
                 <Button
@@ -166,9 +161,9 @@ function ResponsiveAppBar() {
             </Box>
           )}
 
-          {auth && (
+          {isAuthenticated() ? (
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
+              <Stack direction="row" alignItems="center" spacing={2}>
                 <IconButton
                   size="large"
                   edge="end"
@@ -178,9 +173,43 @@ function ResponsiveAppBar() {
                   color="inherit"
                   sx={{ p: 0 }}
                 >
-                  <AccountCircle />
+                  <AddIcon sx={{
+                    width: 36,
+                    height: 36
+                  }} />
                 </IconButton>
-              </Tooltip>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-haspopup="true"
+                  onClick={handleOpenUserMenu}
+                  color="inherit"
+                  sx={{ p: 0 }}
+                >
+                  <NotificationsIcon sx={{
+                    width: 36,
+                    height: 36
+                  }} />
+                </IconButton>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-haspopup="true"
+                  onClick={handleOpenUserMenu}
+                  color="inherit"
+                  sx={{ p: 0 }}
+                >
+                  <AccountCircle sx={{
+                    width: 36,
+                    height: 36
+                  }} />
+                </IconButton>
+              </Stack>
+
+
+
               <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -197,18 +226,35 @@ function ResponsiveAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
+                <Box sx={{ my: 1.5, px: 2 }}>
+                  <Typography variant="subtitle2" noWrap>
+                    <strong>{user.name}</strong>
+                  </Typography>
+                  <Typography variant="body2" noWrap>
+                    {user.email}
+                  </Typography>
+                </Box>
+
+                <Divider sx={{ borderStyle: 'dashed' }} />
+
                 <MenuItem onClick={navigateProfilePage}>Profile</MenuItem>
-                <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+                <MenuItem
+                  disableRipple
+                  disableTouchRipple
+                  onClick={handleLogOut}
+                  sx={{ color: 'error.main' }}
+                >
+                  Logout
+                </MenuItem>
               </Menu>
             </Box>
-          )}
-
-          {!auth && (
-            <Box sx={{ flexGrow: 0 }}>
-              <Button href="/login" variant="filled">SIGN IN</Button>
-              <Button href="/register" variant="contained" color="primary">SIGN UP</Button>
-            </Box>
-          )}
+          ) : (
+              <Box sx={{ flexGrow: 0 }}>
+                <Button href="/login" variant="filled">SIGN IN</Button>
+                <Button href="/register" variant="contained" color="primary">SIGN UP</Button>
+              </Box>
+            )
+          }
 
         </Toolbar>
       </Container>
