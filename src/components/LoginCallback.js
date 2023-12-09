@@ -12,11 +12,10 @@ const LoginCallback = () => {
     const getUserDataFromURL = () => {
       const urlParams = new URLSearchParams(window.location.search);
       const userDataParam = urlParams.get('userData');
-      console.log(userDataParam);
 
       if (userDataParam) {
         try {
-          const parsedUserData = userDataParam;
+          const parsedUserData = JSON.parse(decodeURIComponent(userDataParam));
           setUserData(parsedUserData);
           console.log(parsedUserData)
 
