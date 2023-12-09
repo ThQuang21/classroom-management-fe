@@ -97,7 +97,7 @@ export default function LogIn() {
       (data) => {
         showAlert('Sign-in successful', 'success');
         const user = data.data.data;
-        // console.log(user)
+        console.log(user)
 
         loginUser({
           email: user.email,
