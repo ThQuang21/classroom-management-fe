@@ -25,10 +25,7 @@ const LoginCallback = () => {
             name: parsedUserData.name,
             token: parsedUserData.accessToken,
           });
-          setTimeout(() => {
-            navigate('/');
-          }, 800);
-
+          navigate('/');
         } catch (error) {
           console.error('Error parsing user data:', error);
         }
