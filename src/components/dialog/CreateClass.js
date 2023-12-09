@@ -5,10 +5,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {ErrorMessage, Field, Form, Formik} from "formik";
+import {Field, Form, Formik} from "formik";
 import Grid from "@mui/material/Grid";
 import LoadingButton from "@mui/lab/LoadingButton";
 import * as Yup from "yup";
+import ClassService from "../../services/class.service";
+import {useUserStore} from "../../context/UserStoreProvider";
+import {useState} from "react";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const initialValues = {
   name: '',
@@ -19,8 +24,14 @@ const validationSchema = Yup.object({
 });
 
 export default function CreateClass({open, setOpen}) {
+  const { user } = useUserStore();
   const [loading, setLoading] = React.useState(false);
   const [nameError, setNameError] = React.useState('');
+  const [alertProps, setAlertProps] = useState({
+    open: false,
+    message: '',
+    severity: 'success', // Default to success
+  });
   const [formData, setFormData] = React.useState({
     name: '',
     section: '',
@@ -40,19 +51,56 @@ export default function CreateClass({open, setOpen}) {
     }));
 
     if (name === 'name') {
-      setNameError(value.trim() ? '' : 'Name is required');
+      setNameError(value.trim() ? '' : 'Class name is required');
     }
   };
 
+  const handleAlertClose = () => {
+    setAlertProps((prev) => ({ ...prev, open: false }));
+  };
+
+  const showAlert = (message, severity = 'success') => {
+    setAlertProps({
+      open: true,
+      message,
+      severity,
+    });
+
+    // Hide the Alert after 4 seconds (4000 milliseconds)
+    setTimeout(() => {
+      handleAlertClose();
+    }, 6000);
+  };
+
   const handleSubmit = async (e) => {
-    // setLoading(true);
+    setLoading(true);
     e.preventDefault();
 
     if (formData.name.trim()) {
       console.log('Form data:', formData);
     } else {
-      setNameError('Name is required');
+      setNameError('Class name is required');
     }
+
+    await ClassService.createClass({
+      className: formData.name,
+      section: formData.section,
+      subject: formData.subject,
+      room: formData.room,
+      teacherId: user.id})
+      .then(
+        (data) => {
+          showAlert('Create class successful', 'success');
+          console.log(data.data)
+        },
+        (error) => {
+          console.log(error)
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+        }
+      ).finally(() => {
+        setLoading(false)
+      });
+
   };
 
   return (
@@ -123,6 +171,18 @@ export default function CreateClass({open, setOpen}) {
           </LoadingButton>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={alertProps.open}
+        autoHideDuration={4000}
+        onClose={handleAlertClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleAlertClose} severity={alertProps.severity} sx={{ width: '100%' }}>
+          {alertProps.message}
+        </Alert>
+      </Snackbar>
+
     </React.Fragment>
   );
 }

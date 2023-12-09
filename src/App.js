@@ -10,7 +10,6 @@ import Footer from "./components/Footer/Footer";
 import React from "react";
 import LoginCallback from "./components/LoginCallback";
 import {UserStoreProvider} from "./context/UserStoreProvider";
-import Profile from './page/Profile';
 
 function App() {
   const location = useLocation();
@@ -29,7 +28,6 @@ function App() {
         <Route exact path="/" element={<Home/>} />
         <Route exact path="/register" element={<Register/>} />
         <Route exact path="/login" element={<LogIn/>} />
-        <Route exact path="/profile" element={<Profile/>} />
 
         <Route exact path="/handleUserData" element={<LoginCallback/>} />
 
