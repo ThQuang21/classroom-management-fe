@@ -2,12 +2,13 @@ import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import ClassCard from "../components/Card/ClassCard";
+import ClassCard from "../../components/Card/ClassCard";
 import {useEffect, useState} from "react";
-import ClassService from "../services/class.service";
-import {useUserStore} from "../context/UserStoreProvider";
+import ClassService from "../../services/class.service";
+import {useUserStore} from "../../context/UserStoreProvider";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import {LinearProgress} from "@mui/material";
 
 export default function ListClasses() {
   const { user } = useUserStore();
@@ -37,14 +38,15 @@ export default function ListClasses() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        if (user) {
-          const req = await ClassService.listClassesByTeacherId({ teacherId: user.id });
-          setClassData(req.data.data);
-          setLoading(false);
-        }
-      } catch (error) {
-        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+      if (user) {
+        await ClassService.listClassesByTeacherId({ teacherId: user.id })
+          .then((data) => {
+            setClassData(data.data.data);
+            setLoading(false);
+          }, (error) => {
+            console.log(error)
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          })
       }
     };
 
@@ -53,7 +55,11 @@ export default function ListClasses() {
   }, [user]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Container sx={{ py: 8 }} maxWidth="md">
+        <LinearProgress  />
+      </Container>
+    )
   }
 
   return (
@@ -64,7 +70,9 @@ export default function ListClasses() {
           <Grid container spacing={4}>
             {classData.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>
-                  <ClassCard name = {card.className} teacherName={card.teachers[0].name}/>
+                  <ClassCard name = {card.className} teacherName={card.teachers[0].name}
+                             classCode={card.classCode}
+                  />
               </Grid>
             ))}
           </Grid>

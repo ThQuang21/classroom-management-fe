@@ -10,13 +10,18 @@ const createClass = async ({ className, section, subject, room, teacherId }) => 
 };
 
 const listClassesByTeacherId = async ({ teacherId }) => {
-  return await http.get(API_URL + "classes/" + teacherId);
+  return await http.get(API_URL + "classes/teacher/" + teacherId);
+};
+
+const getClassByClassCode = async ({ classCode }) => {
+  return await http.get(API_URL + "classes/" + classCode);
 };
 
 
 const ClassService = {
   createClass,
-  listClassesByTeacherId
+  listClassesByTeacherId,
+  getClassByClassCode
 }
 
 export default ClassService;

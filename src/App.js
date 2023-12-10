@@ -1,5 +1,5 @@
 import './App.css';
-import {Routes, Route, useLocation} from "react-router-dom";
+import {Routes, Route, useLocation, Navigate} from "react-router-dom";
 import Register from './page/Register'
 import LogIn from "./page/LogIn";
 import ForgotPwd from "./page/ForgotPwd";
@@ -10,7 +10,8 @@ import Footer from "./components/Footer/Footer";
 import React from "react";
 import LoginCallback from "./components/LoginCallback";
 import {UserStoreProvider} from "./context/UserStoreProvider";
-import ListClasses from "./page/ListClasses";
+import ListClasses from "./page/Classes/ListClasses";
+import ClassDetail from "./page/Classes/ClassDetail";
 
 function App() {
   const location = useLocation();
@@ -36,6 +37,8 @@ function App() {
         <Route exact path="/reset-password" element={<ResetPwd/>} />
 
         <Route exact path="/teaching-classes" element={<ListClasses/>} />
+        <Route path="/class" element={<Navigate to="/" replace />} />
+        <Route exact path="/class/*" element={<ClassDetail/>} />
 
       </Routes>
 
