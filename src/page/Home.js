@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {useUserStore} from "../context/UserStoreProvider";
+import ClassCard from "../components/Card/ClassCard";
 
 export default function Home() {
   const { isAuthenticated } = useUserStore();
@@ -14,7 +15,7 @@ export default function Home() {
     <>
       <CssBaseline />
 
-      {!isAuthenticated()  && (
+      {!isAuthenticated()  ? (
         <main>
           <Box
             sx={{
@@ -48,7 +49,9 @@ export default function Home() {
             </Container>
           </Box>
         </main>
-      )}
+      ) :
+        <ClassCard/>
+      }
 
     </>
   );

@@ -20,8 +20,6 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddIcon from '@mui/icons-material/Add';
 import CreateClass from "../dialog/CreateClass";
 
-const pages = ['All classes', 'Teaching', 'Enrolled'];
-
 const useStyles = makeStyles(() => ({
   transition: {
     transition: "all 0.3s ease-out", // Adjust the duration and timing function as needed
@@ -30,7 +28,6 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-
 
 function ResponsiveAppBar() {
   const { user, isAuthenticated, logoutUser } = useUserStore();
@@ -68,6 +65,11 @@ function ResponsiveAppBar() {
 
   const navigateProfilePage = () => {
     navigate("/profile");
+    window.location.reload();
+  };
+
+  const navigateTeachingClassesPage = () => {
+    navigate("/teaching-classes");
     window.location.reload();
   };
 
@@ -130,11 +132,17 @@ function ResponsiveAppBar() {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu} className={classes.transition}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem key={"All Classes"} onClick={handleCloseNavMenu} className={classes.transition}>
+                  <Typography textAlign="center">{"All Classes"}</Typography>
+                </MenuItem>
+
+                <MenuItem key={"Teaching"} onClick={navigateTeachingClassesPage} className={classes.transition}>
+                  <Typography textAlign="center">{"Teaching"}</Typography>
+                </MenuItem>
+
+                <MenuItem key={"Joined"} onClick={handleCloseNavMenu} className={classes.transition}>
+                  <Typography textAlign="center">{"Joined"}</Typography>
+                </MenuItem>
               </Menu>
             </Box>
           )}
@@ -161,16 +169,30 @@ function ResponsiveAppBar() {
 
           {isAuthenticated()  && (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                  className={classes.transition}
-                >
-                  {page}
-                </Button>
-              ))}
+              <Button
+                key={"All classes"}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                className={classes.transition}
+              >
+                All classes
+              </Button>
+              <Button
+                key={"Teaching"}
+                onClick={navigateTeachingClassesPage}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                className={classes.transition}
+              >
+                Teaching
+              </Button>
+              <Button
+                key={"Joined"}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                className={classes.transition}
+              >
+                Joined
+              </Button>
             </Box>
           )}
 
@@ -284,7 +306,14 @@ function ResponsiveAppBar() {
           ) : (
               <Box sx={{ flexGrow: 0 }}>
                 <Button href="/login" variant="filled">SIGN IN</Button>
-                <Button href="/register" variant="contained" color="primary">SIGN UP</Button>
+                <Button href="/register" variant="outlined"
+                  sx={{
+                    ml: 2, borderColor: 'white', color: 'white', '&:hover': {
+                    backgroundColor: 'transparent',
+                    borderColor: 'white',
+                  },
+                  }}
+                >SIGN UP</Button>
               </Box>
             )
           }

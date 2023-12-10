@@ -10,6 +10,7 @@ import Footer from "./components/Footer/Footer";
 import React from "react";
 import LoginCallback from "./components/LoginCallback";
 import {UserStoreProvider} from "./context/UserStoreProvider";
+import ListClasses from "./page/ListClasses";
 
 function App() {
   const location = useLocation();
@@ -33,6 +34,9 @@ function App() {
 
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />
+
+        <Route exact path="/teaching-classes" element={<ListClasses/>} />
+
       </Routes>
 
       <Footer sx={{ mt: 8, mb: 4 }} />
