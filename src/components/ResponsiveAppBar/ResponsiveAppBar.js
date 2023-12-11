@@ -14,11 +14,12 @@ import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import {makeStyles} from "@mui/styles";
 import {useNavigate} from "react-router-dom";
 import {useUserStore} from "../../context/UserStoreProvider";
-import {Divider} from "@mui/material";
+import {Divider, ListItemIcon} from "@mui/material";
 import Stack from '@mui/material/Stack';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddIcon from '@mui/icons-material/Add';
 import CreateClass from "../dialog/CreateClass";
+import {AssignmentInd, Logout} from "@mui/icons-material";
 
 const useStyles = makeStyles(() => ({
   transition: {
@@ -292,13 +293,23 @@ function ResponsiveAppBar() {
 
                 <Divider sx={{ borderStyle: 'dashed' }} />
 
-                <MenuItem onClick={navigateProfilePage}>Profile</MenuItem>
+                <MenuItem onClick={navigateProfilePage}>
+                  <ListItemIcon>
+                    <AssignmentInd fontSize="small"/>
+                  </ListItemIcon>
+                  Profile
+                </MenuItem>
                 <MenuItem
                   disableRipple
                   disableTouchRipple
                   onClick={handleLogOut}
                   sx={{ color: 'error.main' }}
                 >
+                  <ListItemIcon>
+                    <Logout fontSize="small"
+                            sx={{ color: 'error.main' }}
+                    />
+                  </ListItemIcon>
                   Logout
                 </MenuItem>
               </Menu>

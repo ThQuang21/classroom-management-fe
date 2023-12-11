@@ -12,6 +12,7 @@ import {useEffect, useState} from "react";
 import ClassService from "../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import PeopleList from "./PeopleList";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -185,7 +186,7 @@ export default function ClassDetail() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            Peopleeeee
+            <PeopleList/>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             Grades
