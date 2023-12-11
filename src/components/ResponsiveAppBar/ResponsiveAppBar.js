@@ -53,9 +53,11 @@ function ResponsiveAppBar() {
     setAnchorElClass(event.currentTarget);
   };
   const handleOpenCreateClass = (event) => {
+    setAnchorElClass(null);
     setOpenCreateClass(event.currentTarget);
   };
   const handleOpenJoinClass = (event) => {
+    setAnchorElClass(null);
     setOpenJoinClass(event.currentTarget);
   };
   const handleCloseNavMenu = () => {
@@ -75,6 +77,10 @@ function ResponsiveAppBar() {
 
   const navigateTeachingClassesPage = () => {
     navigate("/teaching-classes");
+    window.location.reload();
+  };
+  const navigateJoinedClassesPage = () => {
+    navigate("/joined-classes");
     window.location.reload();
   };
 
@@ -137,15 +143,11 @@ function ResponsiveAppBar() {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                <MenuItem key={"All Classes"} onClick={handleCloseNavMenu} className={classes.transition}>
-                  <Typography textAlign="center">{"All Classes"}</Typography>
-                </MenuItem>
-
                 <MenuItem key={"Teaching"} onClick={navigateTeachingClassesPage} className={classes.transition}>
                   <Typography textAlign="center">{"Teaching"}</Typography>
                 </MenuItem>
 
-                <MenuItem key={"Joined"} onClick={handleCloseNavMenu} className={classes.transition}>
+                <MenuItem key={"Joined"} onClick={navigateJoinedClassesPage} className={classes.transition}>
                   <Typography textAlign="center">{"Joined"}</Typography>
                 </MenuItem>
               </Menu>
@@ -175,14 +177,6 @@ function ResponsiveAppBar() {
           {isAuthenticated()  && (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               <Button
-                key={"All classes"}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-                className={classes.transition}
-              >
-                All classes
-              </Button>
-              <Button
                 key={"Teaching"}
                 onClick={navigateTeachingClassesPage}
                 sx={{ my: 2, color: 'white', display: 'block' }}
@@ -192,7 +186,7 @@ function ResponsiveAppBar() {
               </Button>
               <Button
                 key={"Joined"}
-                onClick={handleCloseNavMenu}
+                onClick={navigateJoinedClassesPage}
                 sx={{ my: 2, color: 'white', display: 'block' }}
                 className={classes.transition}
               >

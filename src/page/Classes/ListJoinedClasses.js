@@ -9,11 +9,13 @@ import {useUserStore} from "../../context/UserStoreProvider";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import {LinearProgress} from "@mui/material";
+import Typography from "@mui/material/Typography";
 
-export default function ListClasses() {
+export default function ListJoinedClasses() {
   const { user } = useUserStore();
   const [loading, setLoading] = React.useState(true);
   const [classData, setClassData] = React.useState([]);
+  const [notFound, setNotFound] = React.useState('');
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -39,13 +41,16 @@ export default function ListClasses() {
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        await ClassService.listClassesByTeacherId({ teacherId: user.id })
+        await ClassService.listClassesByStudentId({ studentId: user.id })
           .then((data) => {
             setClassData(data.data.data);
             setLoading(false);
           }, (error) => {
-            console.log(error)
-            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+            if (error.response.data.error.message === 'You are not joined any class.') {
+              setNotFound('You are not joined any class.')
+            } else {
+              showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+            }
           })
       }
     };
@@ -57,7 +62,13 @@ export default function ListClasses() {
   if (loading) {
     return (
       <Container sx={{ py: 8 }} maxWidth="md">
-        <LinearProgress  />
+        {notFound ? (
+          <Typography variant="h4" color="error" sx={{ textAlign: 'center', px: 2 }}>
+            {notFound}
+          </Typography>
+        ) : (
+          <LinearProgress />
+        )}
       </Container>
     )
   }

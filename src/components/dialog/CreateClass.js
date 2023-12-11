@@ -14,6 +14,7 @@ import {useUserStore} from "../../context/UserStoreProvider";
 import {useState} from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import {useNavigate} from "react-router-dom";
 
 const initialValues = {
   name: '',
@@ -25,6 +26,7 @@ const validationSchema = Yup.object({
 
 export default function CreateClass({open, setOpen}) {
   const { user } = useUserStore();
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const [nameError, setNameError] = React.useState('');
   const [alertProps, setAlertProps] = useState({
@@ -89,9 +91,12 @@ export default function CreateClass({open, setOpen}) {
       room: formData.room,
       teacherId: user.id})
       .then(
-        (data) => {
+        () => {
           showAlert('Create class successful', 'success');
-          console.log(data.data)
+          setTimeout(() => {
+            navigate('/teaching-classes');
+          }, 800);
+          window.location.reload();
         },
         (error) => {
           console.log(error)

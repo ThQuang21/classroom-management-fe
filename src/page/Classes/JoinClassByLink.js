@@ -83,7 +83,8 @@ export default function JoinClassByLink() {
             setLoading(false);
           }, (error) => {
             console.log(error)
-            if (error.response.data.error.message === "You already exist in the class.") {
+            if (error.response.data.error.message === "You already exist in the class."
+              || error.response.data.error.message === "You already exist in the class as a teacher.") {
               localStorage.setItem('msgDialog', error.response.data.error.message);
               setTimeout(() => {
                 navigate('/class/' + classCode);

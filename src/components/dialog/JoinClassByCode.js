@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,12 +14,14 @@ import ClassService from "../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import {useNavigate} from "react-router-dom";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function JoinClassByCode({open, setOpen}) {
+  const [loading, setLoading] = React.useState(false);
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ export default function JoinClassByCode({open, setOpen}) {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (validateClassCode(code)) {
       await ClassService.joinClassByCode({invitationCode: code})
         .then((data) => {
@@ -77,7 +79,7 @@ export default function JoinClassByCode({open, setOpen}) {
         }, (error) => {
           showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
           setOpen(false);
-        })
+        }).finally(setLoading(false))
     }
   };
 
@@ -102,19 +104,21 @@ export default function JoinClassByCode({open, setOpen}) {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Join the class
             </Typography>
-            <Button onClick={handleSubmit}
-                    variant="outlined"
-                    disabled={Boolean(error)}
-                    sx={{
-                        borderColor: 'white', color: 'white',
-                      '&:hover': {
-                        backgroundColor: 'transparent',
-                        borderColor: 'white',
-                      },
-                    }}
+            <LoadingButton
+              onClick={handleSubmit}
+              variant="outlined"
+              disabled={Boolean(error)}
+              sx={{
+                borderColor: 'white', color: 'white',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  borderColor: 'white',
+                },
+              }}
+              loading={loading}
             >
-              Join
-            </Button>
+              <span>Join</span>
+            </LoadingButton>
           </Toolbar>
         </AppBar>
 

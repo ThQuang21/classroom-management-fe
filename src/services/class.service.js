@@ -10,7 +10,11 @@ const createClass = async ({ className, section, subject, room, teacherId }) => 
 };
 
 const listClassesByTeacherId = async ({ teacherId }) => {
-  return await http.get(API_URL + "classes/teacher/" + teacherId);
+  return await http.get(API_URL + "classes/list-classes-by-teacher/" + teacherId);
+};
+
+const listClassesByStudentId = async ({ studentId }) => {
+  return await http.get(API_URL + "classes/list-classes-by-student/" + studentId);
 };
 
 const getClassByClassCode = async ({ classCode }) => {
@@ -32,6 +36,7 @@ const joinClassByCode = async ({ invitationCode, userId }) => {
 const ClassService = {
   createClass,
   listClassesByTeacherId,
+  listClassesByStudentId,
   getClassByClassCode,
   joinClassByLink,
   joinClassByCode

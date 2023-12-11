@@ -10,9 +10,10 @@ import Footer from "./components/Footer/Footer";
 import React from "react";
 import LoginCallback from "./components/LoginCallback";
 import {UserStoreProvider} from "./context/UserStoreProvider";
-import ListClasses from "./page/Classes/ListClasses";
+import ListTeachingClasses from "./page/Classes/ListTeachingClasses";
 import ClassDetail from "./page/Classes/ClassDetail";
 import JoinClassByLink from "./page/Classes/JoinClassByLink";
+import ListJoinedClasses from "./page/Classes/ListJoinedClasses";
 
 function App() {
   const location = useLocation();
@@ -37,7 +38,8 @@ function App() {
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />
 
-        <Route exact path="/teaching-classes" element={<ListClasses/>} />
+        <Route exact path="/teaching-classes" element={<ListTeachingClasses/>} />
+        <Route exact path="/joined-classes" element={<ListJoinedClasses/>} />
         <Route path="/class" element={<Navigate to="/" replace />} />
         <Route exact path="/class/*" element={<ClassDetail/>} />
         <Route exact path="/join-class/:classCode" element={<JoinClassByLink/>} />

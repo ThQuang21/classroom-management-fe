@@ -111,7 +111,7 @@ export default function ClassDetail() {
 
   const handleCopy = () => {
     setIsCopied(true);
-    const URL = `http://localhost:3001/join-class/${classData.classCode}?inviteC=${classData.invitationCode}`;
+    const URL = `https://classroom-management-fe.vercel.app/join-class/${classData.classCode}?inviteC=${classData.invitationCode}`;
     navigator.clipboard.writeText(URL).then(() => {
       showAlert('Invite link is copied', 'success')
 
