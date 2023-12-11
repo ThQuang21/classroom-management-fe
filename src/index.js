@@ -4,12 +4,15 @@ import "./index.css";
 import App from "./App";
 
 import { BrowserRouter } from "react-router-dom";
+import {UserStoreProvider} from "./context/UserStoreProvider";
 
 const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
   <BrowserRouter>
-    <App />
+    <UserStoreProvider>
+      <App />
+    </UserStoreProvider>
   </BrowserRouter>
 );

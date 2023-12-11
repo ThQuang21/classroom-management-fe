@@ -1,5 +1,5 @@
 import './App.css';
-import {Routes, Route, useLocation, Navigate} from "react-router-dom";
+import {Routes, Route, useLocation, Navigate, useNavigate} from "react-router-dom";
 import Register from './page/Register'
 import LogIn from "./page/LogIn";
 import ForgotPwd from "./page/ForgotPwd";
@@ -9,7 +9,7 @@ import Home from "./page/Home";
 import Footer from "./components/Footer/Footer";
 import React from "react";
 import LoginCallback from "./components/LoginCallback";
-import {UserStoreProvider} from "./context/UserStoreProvider";
+import {UserStoreProvider, useUserStore} from "./context/UserStoreProvider";
 import ListTeachingClasses from "./page/Classes/ListTeachingClasses";
 import ClassDetail from "./page/Classes/ClassDetail";
 import JoinClassByLink from "./page/Classes/JoinClassByLink";
@@ -18,12 +18,19 @@ import Profile from './page/Profile';
 
 function App() {
   const location = useLocation();
+  const { user } = useUserStore();
+  const navigate = useNavigate();
 
   const isListPage = () => {
     const listPages = ["/register", "/login", "/forgot-password", "/reset-password"];
     const currentPath = location.pathname;
     return listPages.includes(currentPath);
   };
+
+  if (!user) {
+    navigate('/login');
+    return null; // Render nothing, as we are redirecting
+  }
 
   return (
     <UserStoreProvider>
