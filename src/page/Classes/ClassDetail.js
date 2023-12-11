@@ -5,7 +5,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from "@mui/material/Container";
-import {IconButton, LinearProgress, Paper} from "@mui/material";
+import {IconButton, LinearProgress, Paper, Tooltip} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import ShareIcon from "@mui/icons-material/Share";
 import {useEffect, useState} from "react";
@@ -13,6 +13,7 @@ import ClassService from "../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import PeopleList from "./PeopleList";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,6 +50,7 @@ function a11yProps(index) {
 
 export default function ClassDetail() {
   const [loading, setLoading] = React.useState(true);
+  const [isCopied, setIsCopied] = useState(false);
   const [value, setValue] = React.useState(0);
   const [classData, setClassData] = React.useState(null);
   const [alertProps, setAlertProps] = useState({
@@ -95,9 +97,28 @@ export default function ClassDetail() {
       }
     };
 
+    const msgDialog = localStorage.getItem('msgDialog');
+    console.log(msgDialog)
+    if (msgDialog) {
+      showAlert(msgDialog, 'error');
+      localStorage.removeItem('msgDialog')
+    }
     fetchData();
     // eslint-disable-next-line
   }, []);
+
+  const handleCopy = () => {
+    setIsCopied(true);
+    const URL = `http://localhost:3001/join-class/${classData.classCode}?inviteC=${classData.invitationCode}`;
+    navigator.clipboard.writeText(URL).then(() => {
+      showAlert('Invite link is copied', 'success')
+
+      // Reset the 'isCopied' state after a brief delay
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    })
+  };
 
   if (loading) {
     return (
@@ -176,6 +197,19 @@ export default function ClassDetail() {
           >
             <ShareIcon />
           </IconButton>
+
+          <Tooltip title={isCopied ? 'Link is copied!' : 'Copy invite link'} arrow onClick={handleCopy}>
+            <IconButton
+              sx={{
+                position: 'absolute',
+                bottom: 5,
+                right: 5,
+              }}
+              color="inherit"
+            >
+              {isCopied ? <ContentPasteIcon /> : <ShareIcon />}
+            </IconButton>
+          </Tooltip>
         </Paper>
 
         <Box sx={{ width: '100%' }}>

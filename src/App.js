@@ -12,6 +12,7 @@ import LoginCallback from "./components/LoginCallback";
 import {UserStoreProvider} from "./context/UserStoreProvider";
 import ListClasses from "./page/Classes/ListClasses";
 import ClassDetail from "./page/Classes/ClassDetail";
+import JoinClassByLink from "./page/Classes/JoinClassByLink";
 
 function App() {
   const location = useLocation();
@@ -39,6 +40,7 @@ function App() {
         <Route exact path="/teaching-classes" element={<ListClasses/>} />
         <Route path="/class" element={<Navigate to="/" replace />} />
         <Route exact path="/class/*" element={<ClassDetail/>} />
+        <Route exact path="/join-class/:classCode" element={<JoinClassByLink/>} />
 
       </Routes>
 

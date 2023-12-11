@@ -71,7 +71,8 @@ export default function ListClasses() {
             {classData.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>
                   <ClassCard name = {card.className} teacherName={card.teachers[0].name}
-                             classCode={card.classCode}
+                             classCode={card.classCode} invitationCode={card.invitationCode}
+                             showAlert={showAlert}
                   />
               </Grid>
             ))}

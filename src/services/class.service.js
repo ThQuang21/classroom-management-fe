@@ -17,11 +17,17 @@ const getClassByClassCode = async ({ classCode }) => {
   return await http.get(API_URL + "classes/" + classCode);
 };
 
+const joinClassByLink = async ({ classCode, invitationCode, userId }) => {
+  return await http.post(API_URL + "classes/join-class", {
+    classCode, invitationCode, userId
+  });
+};
 
 const ClassService = {
   createClass,
   listClassesByTeacherId,
-  getClassByClassCode
+  getClassByClassCode,
+  joinClassByLink
 }
 
 export default ClassService;

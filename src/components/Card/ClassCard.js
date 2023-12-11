@@ -3,9 +3,11 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import {CardActionArea, CardActions, IconButton} from '@mui/material';
+import {CardActionArea, CardActions, IconButton, Tooltip} from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import {useNavigate} from "react-router-dom";
+import {useState} from "react";
 
 const cardStyle = {
   maxWidth: 345,
@@ -14,11 +16,26 @@ const cardStyle = {
     transform: 'scale(1.05)',
   },
 };
-export default function ClassCard({name, teacherName, classCode}) {
+export default function ClassCard({name, teacherName, classCode, invitationCode, showAlert}) {
   const navigate = useNavigate();
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleCardClick = () => {
     navigate('/class/' + classCode);
+  };
+
+  const handleCopy = () => {
+    setIsCopied(true);
+    const URL = `http://localhost:3001/join-class/${classCode}?inviteC=${invitationCode}`;
+    navigator.clipboard.writeText(URL).then(() => {
+      showAlert('Invite link is copied', 'success')
+
+      // Reset the 'isCopied' state after a brief delay
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    })
+
   };
 
   return (
@@ -40,9 +57,11 @@ export default function ClassCard({name, teacherName, classCode}) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
+        <Tooltip title={isCopied ? 'Link is copied!' : 'Copy invite link'} arrow onClick={handleCopy}>
+          <IconButton aria-label="share">
+            {isCopied ? <ContentPasteIcon /> : <ShareIcon />}
+          </IconButton>
+        </Tooltip>
       </CardActions>
     </Card>
   );
