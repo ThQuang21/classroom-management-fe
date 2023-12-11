@@ -14,6 +14,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import PeopleList from "./PeopleList";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,6 +52,7 @@ function a11yProps(index) {
 export default function ClassDetail() {
   const [loading, setLoading] = React.useState(true);
   const [isCopied, setIsCopied] = useState(false);
+  const [isCopiedJoinCode, setIsCopiedJoinCode] = useState(false);
   const [value, setValue] = React.useState(0);
   const [classData, setClassData] = React.useState(null);
   const [alertProps, setAlertProps] = useState({
@@ -113,9 +115,20 @@ export default function ClassDetail() {
     navigator.clipboard.writeText(URL).then(() => {
       showAlert('Invite link is copied', 'success')
 
-      // Reset the 'isCopied' state after a brief delay
       setTimeout(() => {
         setIsCopied(false);
+      }, 2000);
+    })
+  };
+
+  const handleCopyJoinCode = () => {
+    setIsCopiedJoinCode(true);
+    const codeToCopy = classData.invitationCode;
+
+    navigator.clipboard.writeText(codeToCopy).then(() => {
+      showAlert('Invite code is copied', 'success')
+      setTimeout(() => {
+        setIsCopiedJoinCode(false);
       }, 2000);
     })
   };
@@ -184,19 +197,17 @@ export default function ClassDetail() {
                 <Typography variant="h5" color="inherit" paragraph>
                   Teacher: {classData.teachers[0].name}
                 </Typography>
+                <Typography variant="h5" color="inherit">
+                  Code to join class: {classData.invitationCode}
+                    <Tooltip title={isCopiedJoinCode ? 'Link is copied!' : 'Copy join code'} arrow onClick={handleCopyJoinCode}>
+                    <IconButton aria-label="copy" color="inherit" sx={{mb : 1}}>
+                      {isCopiedJoinCode ? <ContentPasteIcon /> : <FileCopyIcon />}
+                    </IconButton>
+                  </Tooltip>
+                </Typography>
               </Box>
             </Grid>
           </Grid>
-          <IconButton
-            sx={{
-              position: 'absolute',
-              bottom: 5,
-              right: 5,
-            }}
-            color="inherit"
-          >
-            <ShareIcon />
-          </IconButton>
 
           <Tooltip title={isCopied ? 'Link is copied!' : 'Copy invite link'} arrow onClick={handleCopy}>
             <IconButton

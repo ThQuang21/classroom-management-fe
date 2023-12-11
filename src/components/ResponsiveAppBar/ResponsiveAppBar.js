@@ -20,6 +20,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddIcon from '@mui/icons-material/Add';
 import CreateClass from "../dialog/CreateClass";
 import {AssignmentInd, Logout} from "@mui/icons-material";
+import JoinClassByCode from "../dialog/JoinClassByCode";
 
 const useStyles = makeStyles(() => ({
   transition: {
@@ -36,6 +37,7 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [anchorElClass, setAnchorElClass] = React.useState(null);
   const [openCreateClass, setOpenCreateClass] = React.useState(false);
+  const [openJoinClass, setOpenJoinClass] = React.useState(false);
 
   const classes = useStyles();
   const navigate = useNavigate();
@@ -50,9 +52,11 @@ function ResponsiveAppBar() {
   const handleOpenClassMenu = (event) => {
     setAnchorElClass(event.currentTarget);
   };
-
   const handleOpenCreateClass = (event) => {
     setOpenCreateClass(event.currentTarget);
+  };
+  const handleOpenJoinClass = (event) => {
+    setOpenJoinClass(event.currentTarget);
   };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -262,7 +266,7 @@ function ResponsiveAppBar() {
                 onClose={handleCloseClassMenu}
               >
                 <MenuItem onClick={handleOpenCreateClass}>Create Class</MenuItem>
-                <MenuItem onClick={navigateProfilePage}>Join Class</MenuItem>
+                <MenuItem onClick={handleOpenJoinClass}>Join Class</MenuItem>
               </Menu>
 
               {/*Menu user*/}
@@ -332,6 +336,7 @@ function ResponsiveAppBar() {
         </Toolbar>
       </Container>
       <CreateClass open={openCreateClass} setOpen={setOpenCreateClass}/>
+      <JoinClassByCode open={openJoinClass} setOpen={setOpenJoinClass}/>
     </AppBar>
   );
 }

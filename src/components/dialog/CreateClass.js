@@ -100,7 +100,6 @@ export default function CreateClass({open, setOpen}) {
       ).finally(() => {
         setLoading(false)
       });
-
   };
 
   return (

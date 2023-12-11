@@ -23,11 +23,18 @@ const joinClassByLink = async ({ classCode, invitationCode, userId }) => {
   });
 };
 
+const joinClassByCode = async ({ invitationCode, userId }) => {
+  return await http.post(API_URL + "classes/join-class-by-code", {
+    invitationCode, userId
+  });
+};
+
 const ClassService = {
   createClass,
   listClassesByTeacherId,
   getClassByClassCode,
-  joinClassByLink
+  joinClassByLink,
+  joinClassByCode
 }
 
 export default ClassService;
