@@ -37,6 +37,12 @@ const listPeopleByClassCode = async ({ classCode }) => {
   return await http.get(API_URL + "classes/get-people/" + classCode);
 };
 
+const inviteByEmail = async ({ name, email, classCode, teacherName, isTeacher }) => {
+  return await http.post(API_URL + "classes/invite-by-email", {
+    email, classCode, isTeacher
+  });
+};
+
 const ClassService = {
   createClass,
   listClassesByTeacherId,
@@ -44,7 +50,8 @@ const ClassService = {
   getClassByClassCode,
   joinClassByLink,
   joinClassByCode,
-  listPeopleByClassCode
+  listPeopleByClassCode,
+  inviteByEmail
 }
 
 export default ClassService;

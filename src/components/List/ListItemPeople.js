@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
-import {ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@mui/material";
+import {IconButton, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -11,24 +11,27 @@ export default function ListItemPeople(props) {
 
   return (
     <Stack spacing={2} direction="row">
-      <ListItemAvatar>
-        <Avatar>
-          <PersonIcon />
-        </Avatar>
-      </ListItemAvatar>
+      <ListItem
+        secondaryAction={
+          <IconButton aria-label="comment">
+            <SettingsIcon />
+          </IconButton>
+      }>
+        <ListItemAvatar>
+          <Avatar>
+            <PersonIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={
+            <Typography sx={{ fontWeight: 'bold' }}>
+              {name} {studentId ? `- ${studentId}` : ''}
+            </Typography>
+          }
+          secondary={email}
+        />
+      </ListItem>
 
-      <ListItemText
-        primary={
-          <Typography sx={{ fontWeight: 'bold' }}>
-            {name} {studentId ? `- ${studentId}` : ''}
-          </Typography>
-        }
-        secondary={email}
-      />
-
-      <ListItemSecondaryAction>
-        <SettingsIcon />
-      </ListItemSecondaryAction>
     </Stack>
   );
 }
