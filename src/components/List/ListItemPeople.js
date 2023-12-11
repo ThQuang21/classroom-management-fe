@@ -6,7 +6,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Typography from "@mui/material/Typography";
 
-export default function ListItemPeople() {
+export default function ListItemPeople(props) {
+  const {name, email, studentId} = props;
+
   return (
     <Stack spacing={2} direction="row">
       <ListItemAvatar>
@@ -15,8 +17,13 @@ export default function ListItemPeople() {
         </Avatar>
       </ListItemAvatar>
 
-      <ListItemText primary={<Typography sx={{fontWeight: 'bold'}}>Name</Typography>}
-                    secondary="Email"
+      <ListItemText
+        primary={
+          <Typography sx={{ fontWeight: 'bold' }}>
+            {name} {studentId ? `- ${studentId}` : ''}
+          </Typography>
+        }
+        secondary={email}
       />
 
       <ListItemSecondaryAction>

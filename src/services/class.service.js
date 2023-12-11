@@ -33,13 +33,18 @@ const joinClassByCode = async ({ invitationCode, userId }) => {
   });
 };
 
+const listPeopleByClassCode = async ({ classCode }) => {
+  return await http.get(API_URL + "classes/get-people/" + classCode);
+};
+
 const ClassService = {
   createClass,
   listClassesByTeacherId,
   listClassesByStudentId,
   getClassByClassCode,
   joinClassByLink,
-  joinClassByCode
+  joinClassByCode,
+  listPeopleByClassCode
 }
 
 export default ClassService;
