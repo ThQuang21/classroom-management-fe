@@ -14,6 +14,7 @@ import ListTeachingClasses from "./page/Classes/ListTeachingClasses";
 import ClassDetail from "./page/Classes/ClassDetail";
 import JoinClassByLink from "./page/Classes/JoinClassByLink";
 import ListJoinedClasses from "./page/Classes/ListJoinedClasses";
+import Profile from './page/Profile';
 
 function App() {
   const location = useLocation();
@@ -34,6 +35,7 @@ function App() {
         <Route exact path="/login" element={<LogIn/>} />
 
         <Route exact path="/handleUserData" element={<LoginCallback/>} />
+        <Route exact path="/profile" element={<Profile/>} />
 
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />
