@@ -1,6 +1,6 @@
 import http from "./http-config";
 
-const API_URL = process.env.FE_API_URL;
+const API_URL = "https://classroom-management-be.vercel.app/";
 
 const register = async ({ name, email, password }) => {
   return await http.post(API_URL + "auth/register", {

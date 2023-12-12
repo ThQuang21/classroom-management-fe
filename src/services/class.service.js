@@ -1,7 +1,6 @@
 import http from "./http-config";
-require('dotenv').config()
 
-const API_URL = process.env.FE_API_URL;
+const API_URL = "https://classroom-management-be.vercel.app/";
 
 const createClass = async ({ className, section, subject, room, teacherId }) => {
   return await http.post(API_URL + "classes", {
