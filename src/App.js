@@ -38,7 +38,6 @@ function App() {
 
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />
-
         <Route exact path="/teaching-classes"
                element={
                  <AuthRoute>

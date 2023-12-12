@@ -10,12 +10,9 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
     <BrowserRouter>
       <UserStoreProvider>
         <App />
       </UserStoreProvider>
     </BrowserRouter>
-  </React.StrictMode>
-
 );

@@ -15,6 +15,7 @@ import Alert from "@mui/material/Alert";
 import PeopleList from "./PeopleList";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import GradePanel from "../Grades/GradePanel";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -234,7 +235,7 @@ export default function ClassDetail() {
             <PeopleList />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            Grades
+            <GradePanel />
           </CustomTabPanel>
 
         </Box>
