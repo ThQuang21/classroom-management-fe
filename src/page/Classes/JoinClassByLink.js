@@ -98,6 +98,10 @@ export default function JoinClassByLink() {
 
     };
 
+    if (!user) {
+      localStorage.setItem('msgDialog', 'You have to sign in.');
+      navigate('/login');
+    }
     fetchData();
     // eslint-disable-next-line
   }, [user]);

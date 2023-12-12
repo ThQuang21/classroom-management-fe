@@ -1,5 +1,5 @@
 import './App.css';
-import {Routes, Route, useLocation, Navigate, useNavigate} from "react-router-dom";
+import {Routes, Route, useLocation, Navigate} from "react-router-dom";
 import Register from './page/Register'
 import LogIn from "./page/LogIn";
 import ForgotPwd from "./page/ForgotPwd";
@@ -9,17 +9,14 @@ import Home from "./page/Home";
 import Footer from "./components/Footer/Footer";
 import React from "react";
 import LoginCallback from "./components/LoginCallback";
-import {UserStoreProvider, useUserStore} from "./context/UserStoreProvider";
 import ListTeachingClasses from "./page/Classes/ListTeachingClasses";
 import ClassDetail from "./page/Classes/ClassDetail";
 import JoinClassByLink from "./page/Classes/JoinClassByLink";
 import ListJoinedClasses from "./page/Classes/ListJoinedClasses";
 import Profile from './page/Profile';
-
+import {AuthRoute} from "./AuthRoute";
 function App() {
   const location = useLocation();
-  const { user } = useUserStore();
-  const navigate = useNavigate();
 
   const isListPage = () => {
     const listPages = ["/register", "/login", "/forgot-password", "/reset-password"];
@@ -27,13 +24,8 @@ function App() {
     return listPages.includes(currentPath);
   };
 
-  if (!user) {
-    navigate('/login');
-    return null; // Render nothing, as we are redirecting
-  }
-
   return (
-    <UserStoreProvider>
+    <>
       {isListPage() ? null : <ResponsiveAppBar /> }
 
       <Routes>
@@ -47,17 +39,29 @@ function App() {
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />
 
-        <Route exact path="/teaching-classes" element={<ListTeachingClasses/>} />
+        <Route exact path="/teaching-classes"
+               element={
+                 <AuthRoute>
+                   <ListTeachingClasses />
+                 </AuthRoute>
+               }
+        />
         <Route exact path="/joined-classes" element={<ListJoinedClasses/>} />
         <Route path="/class" element={<Navigate to="/" replace />} />
-        <Route exact path="/class/*" element={<ClassDetail/>} />
+        <Route exact path="/class/:classId"
+               element={
+                 <AuthRoute>
+                   <ClassDetail />
+                 </AuthRoute>
+               }
+        />
         <Route exact path="/join-class/:classCode" element={<JoinClassByLink/>} />
 
       </Routes>
 
       <Footer sx={{ mt: 8, mb: 4 }} />
 
-    </UserStoreProvider>
+    </>
 
   );
 }

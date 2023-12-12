@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -86,6 +86,14 @@ export default function LogIn() {
       handleAlertClose();
     }, 6000);
   };
+
+  useEffect(() => {
+    const msgDialog = localStorage.getItem('msgDialog');
+    if (msgDialog) {
+      showAlert(msgDialog, 'error');
+      localStorage.removeItem('msgDialog')
+    }
+  })
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setLoading(true);
