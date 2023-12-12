@@ -70,17 +70,12 @@ export default function GradeStructure() {
         totalScale += parseFloat(grade.gradeScale);
       }
     }
-    console.log('updatedGrades', updatedGrades);
-    console.log('totalScale', totalScale);
-
 
     if (totalScale > 100) {
       showAlert('Total grade scale exceeds 100%', 'error');
     } else {
       setGradeComposition(updatedGrades);
     }
-    // You can perform additional actions here based on the updated data.
-    console.log('Data changed for gradeId', gradeId, ':', newDataName, newDataScale);
   };
 
   const handleAddData = (newDataName, newDataScale, gradeId) => {
@@ -98,15 +93,8 @@ export default function GradeStructure() {
   };
 
   const handleDeleteDataByGradeId = (gradeId) => {
-    // Filter out the grade with the specified gradeId
     const updatedGrades = gradeComposition.filter((grade) => grade.id !== gradeId);
-
-    // Set the updated grades to the state
     setGradeComposition(updatedGrades);
-
-    // You can perform additional actions here based on the deleted data.
-    console.log('Data deleted for gradeId', gradeId);
-    console.log('Data after deletion', updatedGrades);
   };
 
   useEffect(() => {
@@ -126,7 +114,6 @@ export default function GradeStructure() {
             setGradeComposition(newGrades)
             setLoadingGrade(false);
           }, (error) => {
-            console.log(error)
             showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
           })
         ;
@@ -138,8 +125,6 @@ export default function GradeStructure() {
   }, []);
 
   const handleSubmit = async () => {
-    console.log("gradeCompositionsss", gradeComposition);
-
     let totalScale = 0;
     for (const grade of gradeComposition) {
       if (!isNaN(grade.gradeScale))
@@ -150,23 +135,19 @@ export default function GradeStructure() {
       showAlert('Total grade scale must be equal 100%', 'error');
     } else {
       setLoading(true);
-      console.log("gradeComposition", gradeComposition);
-
       const newGrades = gradeComposition.map((grade, index) => ({
         name: grade.name,
         gradeScale: grade.gradeScale,
         position: index + 1,
       }));
 
-      console.log("newGrades", newGrades);
 
       await ClassService.updateGradeCompositionByClassCode({gradeCompositions : newGrades, classCode})
         .then((data) => {
-          console.log(data.data.data)
           showAlert('Save grade structure successful', 'success');
           setView(true);
         }, (error) => {
-          console.log(error)
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
         }).finally(setLoading(false))
     }
   }

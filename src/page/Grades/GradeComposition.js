@@ -30,7 +30,6 @@ export default function GradeComposition({dataName, dataScale, dataId, viewData,
   };
 
   const handleDeleteData = () => {
-    console.log("Delete data")
     onDeleteData(dataId)
   }
 
