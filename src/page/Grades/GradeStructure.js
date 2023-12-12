@@ -14,8 +14,11 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
+import {useUserStore} from "../../context/UserStoreProvider";
+import GradeStructureStudentView from "./GradeStructureStudentView";
 
 export default function GradeStructure() {
+  const { isTeacher } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [loading, setLoading] = React.useState(false);
   const [view, setView] = React.useState(true);
@@ -186,45 +189,54 @@ export default function GradeStructure() {
         </Grid>
 
         <Grid style={{paddingTop: '15px'}}>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="tasks">
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {gradeComposition.map((grade, index) => (
-                    <Draggable
-                      key={grade.id}
-                      draggableId={grade.id.toString()}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                        >
-                          <Paper elevation={2} style={{width:'100%' , marginTop: '10px', borderLeft: '10px solid' +
-                              ' teal'}}>
-                            <Box style={{display: 'flex',flexDirection:'column', alignItems:'flex-start', marginLeft: '20px', marginRight: '20px', paddingTop: '20px', paddingBottom: '10px'}}>
-                              <GradeComposition dataName={grade.name} dataScale={grade.gradeScale}
-                                                dataId={grade.id}
-                                                viewData={view}
-                                                onDataChange={handleDataChange}
-                                                onDeleteData={handleDeleteDataByGradeId}
-                              />
-                            </Box>
-                          </Paper>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          {isTeacher ? (
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="tasks">
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {gradeComposition.map((grade, index) => (
+                      <Draggable
+                        key={grade.id}
+                        draggableId={grade.id.toString()}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                          >
+                            <Paper elevation={2} style={{width:'100%' , marginTop: '10px', borderLeft: '10px solid' +
+                                ' teal'}}>
+                              <Box style={{display: 'flex',flexDirection:'column', alignItems:'flex-start', marginLeft: '20px', marginRight: '20px', paddingTop: '20px', paddingBottom: '10px'}}>
+                                <GradeComposition dataName={grade.name} dataScale={grade.gradeScale}
+                                                  dataId={grade.id}
+                                                  viewData={view}
+                                                  onDataChange={handleDataChange}
+                                                  onDeleteData={handleDeleteDataByGradeId}
+                                />
+                              </Box>
+                            </Paper>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          ) : (
+            <>
+              {gradeComposition.map((grade, index) => (
+                <GradeStructureStudentView dataName={grade.name} dataScale={grade.gradeScale}/>
+              ))}
+            </>
+          )}
         </Grid>
 
-        {view ? (
+        {view
+          ? isTeacher && (
           <Stack spacing={2} direction="row"
                  style={{paddingTop: '15px'}}
                  justifyContent="center"
