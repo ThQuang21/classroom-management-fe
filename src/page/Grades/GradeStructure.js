@@ -12,11 +12,14 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ClassService from "../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import Container from "@mui/material/Container";
+import {LinearProgress} from "@mui/material";
 
 export default function GradeStructure() {
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [loading, setLoading] = React.useState(false);
-
+  const [view, setView] = React.useState(true);
+  const [loadingGrade, setLoadingGrade] = React.useState(false);
   const [gradeComposition, setGradeComposition] = useState([]);
   const [alertProps, setAlertProps] = useState({
     open: false,
@@ -40,15 +43,20 @@ export default function GradeStructure() {
     }, 6000);
   };
 
+  const handleEditForm = () => {
+    setView(!view);
+  };
+
   const onDragEnd = (result) => {
-    if (!result.destination) return;
+    if (!view) {
+      if (!result.destination) return;
 
-    const items = Array.from(gradeComposition);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+      const items = Array.from(gradeComposition);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
 
-    setGradeComposition(items);
-    console.log(items)
+      setGradeComposition(items);
+    }
   };
 
   const handleDataChange = (newDataName, newDataScale, gradeId) => {
@@ -102,6 +110,7 @@ export default function GradeStructure() {
   };
 
   useEffect(() => {
+    setLoadingGrade(true);
     const fetchData = async () => {
       if (classCode) {
         await ClassService.getGradeCompositionByClassCode({ classCode: classCode})
@@ -115,9 +124,7 @@ export default function GradeStructure() {
               id: grade.position
             }));
             setGradeComposition(newGrades)
-
-            console.log("newGrades", newGrades)
-
+            setLoadingGrade(false);
           }, (error) => {
             console.log(error)
             showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
@@ -139,8 +146,8 @@ export default function GradeStructure() {
         totalScale += parseFloat(grade.gradeScale);
     }
 
-    if (totalScale < 100) {
-      showAlert('Total grade scale must sum up to 100%', 'error');
+    if (totalScale !== 100) {
+      showAlert('Total grade scale must be equal 100%', 'error');
     } else {
       setLoading(true);
       console.log("gradeComposition", gradeComposition);
@@ -157,11 +164,31 @@ export default function GradeStructure() {
         .then((data) => {
           console.log(data.data.data)
           showAlert('Save grade structure successful', 'success');
-
+          setView(true);
         }, (error) => {
           console.log(error)
         }).finally(setLoading(false))
     }
+  }
+
+  if (loadingGrade) {
+    return (
+      <>
+        <Container sx={{ py: 8 }} maxWidth="md">
+          <LinearProgress  />
+        </Container>
+        <Snackbar
+          open={alertProps.open}
+          autoHideDuration={4000}
+          onClose={handleAlertClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={handleAlertClose} severity={alertProps.severity} sx={{ width: '100%' }}>
+            {alertProps.message}
+          </Alert>
+        </Snackbar>
+      </>
+    )
   }
 
   return (
@@ -199,6 +226,7 @@ export default function GradeStructure() {
                             <Box style={{display: 'flex',flexDirection:'column', alignItems:'flex-start', marginLeft: '20px', marginRight: '20px', paddingTop: '20px', paddingBottom: '10px'}}>
                               <GradeComposition dataName={grade.name} dataScale={grade.gradeScale}
                                                 dataId={grade.id}
+                                                viewData={view}
                                                 onDataChange={handleDataChange}
                                                 onDeleteData={handleDeleteDataByGradeId}
                               />
@@ -215,27 +243,39 @@ export default function GradeStructure() {
           </DragDropContext>
         </Grid>
 
-        <Stack spacing={2} direction="row"
-               style={{paddingTop: '15px'}}
-               justifyContent="center"
-               alignItems="center"
-        >
-          <Button variant="outlined" style={{ borderColor: 'teal', color: 'teal' }}
-                  onClick={() => handleAddData('', '')}
+        {view ? (
+          <Stack spacing={2} direction="row"
+                 style={{paddingTop: '15px'}}
+                 justifyContent="center"
+                 alignItems="center"
           >
-            ADD
-          </Button>
-          <LoadingButton
-            type="submit" variant="contained" style={{ backgroundColor: 'teal', color: 'white' }}
-            loading={loading}
-            onClick={handleSubmit}
+            <Button variant="contained" style={{ backgroundColor: 'teal', color: 'white' }}
+                    onClick={handleEditForm}
+            >
+              EDIT
+            </Button>
+          </Stack>
+        ) : (
+          <Stack spacing={2} direction="row"
+                 style={{paddingTop: '15px'}}
+                 justifyContent="center"
+                 alignItems="center"
           >
-            <span>SAVE</span>
-          </LoadingButton>
-        </Stack>
-
+            <Button variant="outlined" style={{ borderColor: 'teal', color: 'teal' }}
+                    onClick={() => handleAddData('', '')}
+            >
+              ADD
+            </Button>
+            <LoadingButton
+              type="submit" variant="contained" style={{ backgroundColor: 'teal', color: 'white' }}
+              loading={loading}
+              onClick={handleSubmit}
+            >
+              <span>SAVE</span>
+            </LoadingButton>
+          </Stack>
+        )}
       </Grid>
-
 
       <Snackbar
         open={alertProps.open}

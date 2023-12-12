@@ -8,12 +8,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {Tooltip} from "@mui/material";
 
 
-export default function GradeComposition({dataName, dataScale, dataId,
+export default function GradeComposition({dataName, dataScale, dataId, viewData,
                                            onDataChange, onDeleteData}) {
   const [textValue, setTextValue] = React.useState(dataName);
   const [numberValue, setNumberValue] = React.useState(dataScale);
 
-  const isTextValid = textValue.trim() !== '';
+  const isTextValid = textValue !== '';
   const isNumberValid = numberValue !== null && numberValue !== '' && numberValue !== undefined && !isNaN(Number(numberValue));
 
   const handleTextChange = (event) => {
@@ -42,6 +42,7 @@ export default function GradeComposition({dataName, dataScale, dataId,
             variant="outlined"
             fullWidth
             required
+            disabled={viewData}
             value={textValue}
             onChange={handleTextChange}
             error={!isTextValid}
@@ -57,6 +58,7 @@ export default function GradeComposition({dataName, dataScale, dataId,
             variant="outlined"
             fullWidth
             required
+            disabled={viewData}
             value={numberValue}
             onChange={handleNumberChange}
             endAdornment={<InputAdornment position="end">%</InputAdornment>}
@@ -64,14 +66,17 @@ export default function GradeComposition({dataName, dataScale, dataId,
             helperText={!isNumberValid ? 'Valid number is required' : ''}
           />
 
-          <AccordionActions style={{marginTop: '10px'}}>
-            <Divider orientation="vertical" flexItem/>
-            <Tooltip title={'Delete'} arrow onClick={handleDeleteData}>
-              <IconButton aria-label="Image">
-                <DeleteIcon style={{ color: 'teal' }} />
-              </IconButton>
-            </Tooltip>
-          </AccordionActions>
+          {!viewData && (
+            <AccordionActions style={{marginTop: '10px'}}>
+              <Divider orientation="vertical" flexItem/>
+              <Tooltip title={'Delete'} arrow onClick={handleDeleteData}>
+                <IconButton aria-label="Image">
+                  <DeleteIcon style={{ color: 'teal' }} />
+                </IconButton>
+              </Tooltip>
+            </AccordionActions>
+          )}
+
         </Grid>
 
       </Grid>
