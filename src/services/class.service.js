@@ -21,6 +21,10 @@ const getClassByClassCode = async ({ classCode }) => {
   return await http.get(API_URL + "classes/" + classCode);
 };
 
+const getClassByInvitationCode = async ({ invitationCode }) => {
+  return await http.get(API_URL + "classes/" + invitationCode);
+};
+
 const joinClassByLink = async ({ classCode, invitationCode, userId }) => {
   return await http.post(API_URL + "classes/join-class", {
     classCode, invitationCode, userId
@@ -57,6 +61,7 @@ const ClassService = {
   listClassesByTeacherId,
   listClassesByStudentId,
   getClassByClassCode,
+  getClassByInvitationCode,
   joinClassByLink,
   joinClassByCode,
   listPeopleByClassCode,

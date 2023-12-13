@@ -88,7 +88,7 @@ export default function JoinClassByLink() {
   useEffect(() => {
     const fetchData = async () => {
       if (classCode && invitationCode && user) {
-        await ClassService.getClassByClassCode({ classCode: classCode})
+        await ClassService.getClassByInvitationCode({ invitationCode: invitationCode})
           .then((data) => {
             console.log(data.data.data)
             setClassData(data.data.data)
@@ -101,7 +101,7 @@ export default function JoinClassByLink() {
     };
 
     fetchData();
-  }, );
+  });
 
   if (loading) {
     return (
