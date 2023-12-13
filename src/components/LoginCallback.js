@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {useUserStore} from "../context/UserStoreProvider";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const LoginCallback = () => {
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const [userData, setUserData] = useState(null);
   const { loginUser } = useUserStore();
   const navigate = useNavigate();
@@ -25,7 +27,11 @@ const LoginCallback = () => {
             name: parsedUserData.name,
             token: parsedUserData.accessToken,
           });
-          navigate('/');
+
+          setTimeout(() => {
+            navigate(from, { replace: true });
+          }, 800);
+
         } catch (error) {
           console.error('Error parsing user data:', error);
         }
@@ -35,7 +41,7 @@ const LoginCallback = () => {
     // Call the function to get user data
     getUserDataFromURL();
 
-  }, [loginUser, navigate]);
+  }, [loginUser, navigate, from]);
 
   return (
     <div>

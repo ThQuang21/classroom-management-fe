@@ -54,7 +54,13 @@ function App() {
                  </AuthRoute>
                }
         />
-        <Route exact path="/join-class/:classCode" element={<JoinClassByLink/>} />
+        <Route exact path="/join-class/:classCode"
+               element={
+                 <AuthRoute>
+                   <JoinClassByLink />
+                 </AuthRoute>
+               }
+        />
 
       </Routes>
 

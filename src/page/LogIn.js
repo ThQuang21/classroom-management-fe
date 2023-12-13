@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -60,6 +60,8 @@ const facebookStyle = {
 };
 
 export default function LogIn() {
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const { loginUser } = useUserStore();
   const navigate = useNavigate();
   const defaultTheme = createTheme();
@@ -115,7 +117,7 @@ export default function LogIn() {
         });
 
         setTimeout(() => {
-          navigate('/');
+          navigate(from, { replace: true });
         }, 800);
 
       },

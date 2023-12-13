@@ -101,10 +101,15 @@ export default function ClassDetail() {
     };
 
     const msgDialog = localStorage.getItem('msgDialog');
-    console.log(msgDialog)
+    const msgDialogSuccess = localStorage.getItem('msgDialogSuccess');
+
     if (msgDialog) {
       showAlert(msgDialog, 'error');
       localStorage.removeItem('msgDialog')
+    }
+    if (msgDialogSuccess) {
+      showAlert(msgDialog, 'success');
+      localStorage.removeItem('msgDialogSuccess')
     }
     fetchData();
     // eslint-disable-next-line

@@ -15,12 +15,14 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import {useNavigate} from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
+import {useUserStore} from "../../context/UserStoreProvider";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function JoinClassByCode({open, setOpen}) {
+  const { user } = useUserStore();
   const [loading, setLoading] = React.useState(false);
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
@@ -70,9 +72,9 @@ export default function JoinClassByCode({open, setOpen}) {
   const handleSubmit = async () => {
     setLoading(true);
     if (validateClassCode(code)) {
-      await ClassService.joinClassByCode({invitationCode: code})
+      await ClassService.joinClassByCode({invitationCode: code, userId: user.id})
         .then((data) => {
-          localStorage.setItem('msgDialog', 'Join class successful');
+          localStorage.setItem('msgDialogSuccess', 'Join class successful');
           setTimeout(() => {
             navigate('/class/' + data.data.data.classCode);
           }, 800);
