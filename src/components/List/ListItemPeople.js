@@ -7,7 +7,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Typography from "@mui/material/Typography";
 
 export default function ListItemPeople(props) {
-  const {name, email, studentId} = props;
+  const {name, email, note} = props;
 
   return (
     <Stack spacing={2} direction="row">
@@ -25,7 +25,7 @@ export default function ListItemPeople(props) {
         <ListItemText
           primary={
             <Typography sx={{ fontWeight: 'bold' }}>
-              {name} {studentId ? `- ${studentId}` : ''}
+              {name} {note ? `- ${note}` : ''}
             </Typography>
           }
           secondary={email}

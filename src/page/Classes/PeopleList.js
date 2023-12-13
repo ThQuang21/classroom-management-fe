@@ -67,8 +67,12 @@ export default function PeopleList() {
       </Box>
 
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        {peopleData.teachers.map((card) => (
-          <ListItemPeople name={card.name} email={card.email}/>
+        {<ListItemPeople name={peopleData.classOwner.name} email={peopleData.classOwner.email} note={"Class Owner"}/>}
+
+        {peopleData.teachers.map((teacher) => (
+          teacher.email !== peopleData.classOwner.email && (
+            <ListItemPeople key={teacher.email} name={teacher.name} email={teacher.email} />
+          )
         ))}
       </List>
 
@@ -87,7 +91,7 @@ export default function PeopleList() {
           <Typography variant="body1" >There is no student in this class.</Typography>
         ) : (
           peopleData.students.map((card) => (
-            <ListItemPeople name={card.name} email={card.email} studentId={card.studentId} />
+            <ListItemPeople name={card.name} email={card.email} note={card.studentId} />
           ))
         )}
       </List>

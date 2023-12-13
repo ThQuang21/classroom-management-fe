@@ -18,7 +18,6 @@ const listClassesByStudentId = async ({ studentId }) => {
 };
 
 const getClassByClassCode = async ({ classCode }) => {
-  await http.put(API_URL + "classes/" + classCode + "/updateClassOwner");
   return await http.get(API_URL + "classes/" + classCode);
 };
 
