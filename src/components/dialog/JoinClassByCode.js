@@ -71,6 +71,7 @@ export default function JoinClassByCode({open, setOpen}) {
 
   const handleSubmit = async () => {
     setLoading(true);
+    handleClose();
     if (validateClassCode(code)) {
       await ClassService.joinClassByCode({invitationCode: code, userId: user.id})
         .then((data) => {

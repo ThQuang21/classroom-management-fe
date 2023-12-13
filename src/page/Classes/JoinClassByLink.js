@@ -30,6 +30,8 @@ export default function JoinClassByLink() {
   const { classCode } = useParams();
   const { user } = useUserStore();
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const invitationCode = queryParams.get('inviteC');
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
   const [classData, setClassData] = React.useState(null);
@@ -60,52 +62,46 @@ export default function JoinClassByLink() {
     setOpen(false);
   };
 
-  const navigateClassDetail = () => {
-    showAlert('Join class successful', 'success');
-
-    setTimeout(() => {
-      navigate('/class/' + classData.classCode);
-    }, 900);
+  const handleJoinClassByLink = async () => {
+    if (user) {
+      await ClassService.joinClassByLink({classCode: classCode, invitationCode: invitationCode, userId: user.id})
+        .then(() => {
+          localStorage.setItem('msgDialogSuccess', 'Join class successful');
+          setTimeout(() => {
+            navigate('/class/' + classData.classCode);
+          }, 800);
+        }, (error) => {
+          console.log(error)
+          if (error.response.data.error.message === "You already exist in the class."
+            || error.response.data.error.message === "You already exist in the class as a teacher.") {
+            localStorage.setItem('msgDialog', error.response.data.error.message);
+            setTimeout(() => {
+              navigate('/class/' + classCode);
+            }, 800);
+          } else {
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          }
+        });
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const queryParams = new URLSearchParams(location.search);
-      const invitationCode = queryParams.get('inviteC');
-
-      console.log(classCode)
-      console.log(invitationCode)
-
       if (classCode && invitationCode && user) {
-        await ClassService.joinClassByLink({ classCode: classCode, invitationCode: invitationCode, userId: user.id})
+        await ClassService.getClassByClassCode({ classCode: classCode})
           .then((data) => {
             console.log(data.data.data)
             setClassData(data.data.data)
             setLoading(false);
           }, (error) => {
             console.log(error)
-            if (error.response.data.error.message === "You already exist in the class."
-              || error.response.data.error.message === "You already exist in the class as a teacher.") {
-              localStorage.setItem('msgDialog', error.response.data.error.message);
-              setTimeout(() => {
-                navigate('/class/' + classCode);
-              }, 800);
-            } else {
-              showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-            }
-          })
-        ;
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          });
       }
-
     };
 
-    // if (!user) {
-    //   localStorage.setItem('msgDialog', 'You have to sign in.');
-    //   navigate('/login');
-    // }
     fetchData();
-    // eslint-disable-next-line
-  }, [user]);
+  }, );
 
   if (loading) {
     return (
@@ -162,7 +158,7 @@ export default function JoinClassByLink() {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={navigateClassDetail}>
+          <Button autoFocus onClick={handleJoinClassByLink}>
             Join
           </Button>
         </DialogActions>

@@ -108,7 +108,7 @@ export default function ClassDetail() {
       localStorage.removeItem('msgDialog')
     }
     if (msgDialogSuccess) {
-      showAlert(msgDialog, 'success');
+      showAlert(msgDialogSuccess, 'success');
       localStorage.removeItem('msgDialogSuccess')
     }
     fetchData();
