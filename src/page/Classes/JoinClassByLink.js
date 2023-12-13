@@ -79,6 +79,7 @@ export default function JoinClassByLink() {
       if (classCode && invitationCode && user) {
         await ClassService.joinClassByLink({ classCode: classCode, invitationCode: invitationCode, userId: user.id})
           .then((data) => {
+            console.log(data.data.data)
             setClassData(data.data.data)
             setLoading(false);
           }, (error) => {
@@ -157,7 +158,7 @@ export default function JoinClassByLink() {
             <strong>Teacher: {classData.teachers[0].name}</strong>
           </Typography>
           <Typography gutterBottom>
-            You are participating in the class as a student.
+            You are participating in the class as {classData.isTeacher ? 'a teacher' : 'a student'}.
           </Typography>
         </DialogContent>
         <DialogActions>
