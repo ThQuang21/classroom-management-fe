@@ -196,7 +196,7 @@ export default function ClassDetail() {
                   {classData.className}
                 </Typography>
                 <Typography variant="h5" color="inherit" paragraph>
-                  Teacher: {classData.teachers[0].name}
+                  Teacher: {classData.classOwner.name}
                 </Typography>
                 <Typography variant="h5" color="inherit">
                   Code to join class: {classData.invitationCode}
