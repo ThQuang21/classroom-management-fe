@@ -22,7 +22,7 @@ const getClassByClassCode = async ({ classCode }) => {
 };
 
 const getClassByInvitationCode = async ({ invitationCode }) => {
-  return await http.get(API_URL + "classes/" + invitationCode);
+  return await http.get(API_URL + "classes/invite/" + invitationCode);
 };
 
 const joinClassByLink = async ({ classCode, invitationCode, userId }) => {
