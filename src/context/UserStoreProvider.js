@@ -13,12 +13,13 @@ export const UserStoreProvider = ({ children }) => {
 
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      setLoadingUser(false);
     }
 
     if (storedIsTeacher) {
       setIsTeacher(JSON.parse(storedIsTeacher));
     }
+    setLoadingUser(false);
+
   }, []);
 
   const loginUser = (userData) => {
