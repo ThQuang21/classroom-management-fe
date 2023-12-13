@@ -9,12 +9,12 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import GradeComposition from "./GradeComposition";
 import LoadingButton from "@mui/lab/LoadingButton";
-import ClassService from "../../services/class.service";
+import ClassService from "../../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
-import {useUserStore} from "../../context/UserStoreProvider";
+import {useUserStore} from "../../../context/UserStoreProvider";
 import GradeStructureStudentView from "./GradeStructureStudentView";
 
 export default function GradeStructure() {

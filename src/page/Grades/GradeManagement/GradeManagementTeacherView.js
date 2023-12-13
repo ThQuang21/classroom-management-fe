@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {
   Grid,
-  Table,
+  VirtualTable,
   TableHeaderRow,
   TableFixedColumns,
 } from '@devexpress/dx-react-grid-material-ui';
@@ -25,7 +25,7 @@ export default function GradeManagementTeacherView() {
     { name: 'units', title: 'Units' },
     { name: 'amount', title: 'Sale Amount' },
   ]);
-  const [rows] = useState(generateRows({ columnValues: globalSalesValues, length: 8 }));
+  const [rows] = useState(generateRows({ columnValues: globalSalesValues, length: 1000 }));
   const [tableColumnExtensions] = useState([
     { columnName: 'region', width: 150 },
     { columnName: 'sector', width: 180 },
@@ -36,7 +36,7 @@ export default function GradeManagementTeacherView() {
     { columnName: 'units', width: 80 },
     { columnName: 'amount', align: 'right', width: 140 },
   ]);
-  const [leftColumns] = useState(['region', 'channel']);
+  const [leftColumns] = useState(['region', 'sector']);
   const [rightColumns] = useState(['amount']);
 
   return (
@@ -54,7 +54,7 @@ export default function GradeManagementTeacherView() {
           rows={rows}
           columns={columns}
         >
-          <Table
+          <VirtualTable
             columnExtensions={tableColumnExtensions}
           />
           <TableHeaderRow />
