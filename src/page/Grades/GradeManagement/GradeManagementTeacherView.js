@@ -13,6 +13,7 @@ import {
   globalSalesValues,
 } from './generator';
 import {useState} from "react";
+import FileExcelComponent from "./FileExcelComponent";
 
 export default function GradeManagementTeacherView() {
   const [columns] = useState([
@@ -46,6 +47,7 @@ export default function GradeManagementTeacherView() {
           <Typography variant="h4" style={{fontFamily:'sans-serif Roboto', marginBottom:"15px"}}>
             Grade Management
           </Typography>
+          <FileExcelComponent/>
         </Box>
       </Paper>
 

@@ -15,6 +15,7 @@ import JoinClassByLink from "./page/Classes/JoinClassByLink";
 import ListJoinedClasses from "./page/Classes/ListJoinedClasses";
 import Profile from './page/Profile';
 import {AuthRoute} from "./AuthRoute";
+import HomeComponent from "./page/Grades/GradeManagement/Test";
 function App() {
   const location = useLocation();
 
@@ -29,6 +30,8 @@ function App() {
       {isListPage() ? null : <ResponsiveAppBar /> }
 
       <Routes>
+        <Route exact path="/test" element={<HomeComponent/>} />
+
         <Route exact path="/" element={<Home/>} />
         <Route exact path="/register" element={<Register/>} />
         <Route exact path="/login" element={<LogIn/>} />
