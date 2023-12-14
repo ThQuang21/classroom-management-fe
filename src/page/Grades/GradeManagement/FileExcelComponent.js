@@ -15,6 +15,7 @@ import Stack from "@mui/material/Stack";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import saveAs from 'file-saver';
 import {useState} from "react";
+import {utils, writeFile} from "xlsx";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -52,6 +53,18 @@ export default function CustomizedDialogs() {
     console.log(event.target.files)
     setSelectedFile(event.target.files[0]);
   };
+
+  const downloadTemplate = () => {
+    const headings = [[
+      'Student Id',
+      'Full Name'
+    ]];
+    const wb = utils.book_new();
+    const ws = utils.json_to_sheet([]);
+    utils.sheet_add_aoa(ws, headings);
+    utils.book_append_sheet(wb, ws, 'Report');
+    writeFile(wb, 'Student Template.xlsx');
+  }
 
   return (
     <React.Fragment>
@@ -113,6 +126,7 @@ export default function CustomizedDialogs() {
                 Want to import student list?
               </Typography>
               <Button size="small"
+                      onClick={downloadTemplate}
               >
                 Download the template
               </Button>
