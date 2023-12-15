@@ -91,6 +91,7 @@ export default function ClassDetail() {
           .then((data) => {
             console.log(data.data.data);
             setClassData(data.data.data)
+            localStorage.setItem('className', data.data.data.className)
             setLoading(false);
           }, (error) => {
             console.log(error)

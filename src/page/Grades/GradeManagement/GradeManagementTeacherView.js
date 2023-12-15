@@ -356,7 +356,7 @@ export default function GradeManagementTeacherView() {
           <Typography variant="h4" style={{fontFamily:'sans-serif Roboto', marginBottom:"15px"}}>
             Grade Management
           </Typography>
-          <HandleImportExportStudent onReloadTable={handleReloadTable}/>
+          <HandleImportExportStudent onReloadTable={handleReloadTable} heading={columns} data={rows}/>
         </Box>
       </Paper>
 
