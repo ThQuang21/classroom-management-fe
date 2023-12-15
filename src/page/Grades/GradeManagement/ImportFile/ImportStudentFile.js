@@ -21,7 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ImportStudentFile({open, setOpen}) {
+export default function ImportStudentFile({open, setOpen, onReloadTable}) {
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -100,9 +100,8 @@ export default function ImportStudentFile({open, setOpen}) {
       .then(
         () => {
           showAlert('Import data successful', 'success');
+          onReloadTable();
           handleClose();
-          window.location.reload();
-
         },
         (error) => {
           console.log(error)

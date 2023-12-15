@@ -22,6 +22,7 @@ export default function GradeManagementTeacherView() {
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [rowData, setRowData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -119,6 +120,19 @@ export default function GradeManagementTeacherView() {
   const [leftColumns] = useState(['fullName', 'studentId']);
   // const [rightColumns] = useState(['amount']);
 
+  const handleReloadTable = async () => {
+    setLoading(true);
+    await GradeService.getGradesByClassCode({ classCode: classCode})
+      .then((data) => {
+        console.log(data.data.data);
+        setRowData(data.data.data)
+        setLoading(false)
+      }, (error) => {
+        console.log(error)
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+      })
+    ;
+  };
 
   if (loading) {
     return (
@@ -148,7 +162,7 @@ export default function GradeManagementTeacherView() {
           <Typography variant="h4" style={{fontFamily:'sans-serif Roboto', marginBottom:"15px"}}>
             Grade Management
           </Typography>
-          <HandleImportExportStudent/>
+          <HandleImportExportStudent onReloadTable={handleReloadTable}/>
         </Box>
       </Paper>
 

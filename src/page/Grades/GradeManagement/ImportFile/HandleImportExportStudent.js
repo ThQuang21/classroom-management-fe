@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import ImportStudentFile from "./ImportStudentFile";
 
-export default function HandleImportExportStudent() {
+export default function HandleImportExportStudent({onReloadTable}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -38,7 +38,7 @@ export default function HandleImportExportStudent() {
         </Stack>
 
       </Box>
-      <ImportStudentFile open={open} setOpen={setOpen}/>
+      <ImportStudentFile open={open} setOpen={setOpen} onReloadTable={onReloadTable}/>
 
     </React.Fragment>
   );
