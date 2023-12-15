@@ -14,16 +14,8 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import MuiGrid from '@mui/material/Grid';
-// eslint-disable-next-line
-
-import {
-  generateRows,
-  employeeValues,
-} from './generator';
 import GradeService from "../../../services/grade.service";
 import ClassService from "../../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
@@ -34,7 +26,7 @@ import {IconButton, LinearProgress} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-/* eslint-disable no-shadow */
+
 const HomeComponent = ({
                          row,
                          onChange,
