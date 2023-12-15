@@ -8,37 +8,138 @@ import {
   TableHeaderRow,
   TableFixedColumns,
 } from '@devexpress/dx-react-grid-material-ui';
-import {
-  generateRows,
-  globalSalesValues,
-} from './generator';
-import {useState} from "react";
-import FileExcelComponent from "./FileExcelComponent";
+
+import {useEffect, useState} from "react";
+import HandleImportExportStudent from "./ImportFile/HandleImportExportStudent";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import GradeService from "../../../services/grade.service";
+import Container from "@mui/material/Container";
+import {LinearProgress} from "@mui/material";
+import ClassService from "../../../services/class.service";
 
 export default function GradeManagementTeacherView() {
-  const [columns] = useState([
-    { name: 'region', title: 'Region' },
-    { name: 'sector', title: 'Sector' },
-    { name: 'channel', title: 'Channel' },
-    { name: 'customer', title: 'Customer' },
-    { name: 'product', title: 'Product' },
-    { name: 'saleDate', title: 'Sale date' },
-    { name: 'units', title: 'Units' },
-    { name: 'amount', title: 'Sale Amount' },
-  ]);
-  const [rows] = useState(generateRows({ columnValues: globalSalesValues, length: 1000 }));
-  const [tableColumnExtensions] = useState([
-    { columnName: 'region', width: 150 },
-    { columnName: 'sector', width: 180 },
-    { columnName: 'channel', width: 120 },
-    { columnName: 'product', width: 230 },
-    { columnName: 'customer', width: 230 },
-    { columnName: 'saleDate', width: 130 },
-    { columnName: 'units', width: 80 },
-    { columnName: 'amount', align: 'right', width: 140 },
-  ]);
-  const [leftColumns] = useState(['region', 'sector']);
-  const [rightColumns] = useState(['amount']);
+  const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
+  const [rowData, setRowData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [alertProps, setAlertProps] = useState({
+    open: false,
+    message: '',
+    severity: 'success', // Default to success
+  });
+  const handleAlertClose = () => {
+    setAlertProps((prev) => ({ ...prev, open: false }));
+  };
+
+  const showAlert = (message, severity = 'success') => {
+    setAlertProps({
+      open: true,
+      message,
+      severity,
+    });
+
+    // Hide the Alert after 4 seconds (4000 milliseconds)
+    setTimeout(() => {
+      handleAlertClose();
+    }, 6000);
+  };
+
+  const [columns, setColumns] = useState([]);
+  const [tableColumnExtensions, setTableColumnExtensions] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+      if (classCode) {
+        await GradeService.getGradesByClassCode({ classCode: classCode})
+          .then((data) => {
+            console.log(data.data.data);
+            setRowData(data.data.data)
+
+          }, (error) => {
+            console.log(error)
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          })
+        ;
+
+        await ClassService.getGradeCompositionByClassCode({ classCode: classCode})
+          .then((data) => {
+            setLoading(false);
+
+            const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
+              name: grade.name
+            }));
+
+            var column = [
+              { name: 'fullName', title: 'Fulll Name' },
+              { name: 'studentId', title: 'Student ID' },
+            ];
+            var tableColumnExtension = [
+              { columnName: 'fullName', width: 180 }, //fullName
+              { columnName: 'studentId', width: 100 }, //studentId
+
+              // { columnName: 'amount', align: 'right', width: 140 }, //total
+            ];
+            newGrades.forEach((gradeComposition) => {
+              column.push({
+                name: gradeComposition.name,
+                title: gradeComposition.name
+              })
+              tableColumnExtension.push({
+                columnName: gradeComposition.name,
+                align: 'center'
+              })
+            })
+            setColumns(column)
+            setTableColumnExtensions(tableColumnExtension)
+
+            setLoading(false);
+          }, (error) => {
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          })
+        ;
+      }
+    };
+
+    const msgDialog = localStorage.getItem('msgDialog');
+    const msgDialogSuccess = localStorage.getItem('msgDialogSuccess');
+
+    if (msgDialog) {
+      showAlert(msgDialog, 'error');
+      localStorage.removeItem('msgDialog')
+    }
+    if (msgDialogSuccess) {
+      showAlert(msgDialogSuccess, 'success');
+      localStorage.removeItem('msgDialogSuccess')
+    }
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
+
+  const [leftColumns] = useState(['fullName', 'studentId']);
+  // const [rightColumns] = useState(['amount']);
+
+
+  if (loading) {
+    return (
+      <>
+        <Container sx={{ py: 8 }} maxWidth="md">
+          <LinearProgress  />
+        </Container>
+        <Snackbar
+          open={alertProps.open}
+          autoHideDuration={4000}
+          onClose={handleAlertClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={handleAlertClose} severity={alertProps.severity} sx={{ width: '100%' }}>
+            {alertProps.message}
+          </Alert>
+        </Snackbar>
+      </>
+
+    )
+  }
 
   return (
     <>
@@ -47,13 +148,13 @@ export default function GradeManagementTeacherView() {
           <Typography variant="h4" style={{fontFamily:'sans-serif Roboto', marginBottom:"15px"}}>
             Grade Management
           </Typography>
-          <FileExcelComponent/>
+          <HandleImportExportStudent/>
         </Box>
       </Paper>
 
       <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '15px'}}>
         <Grid
-          rows={rows}
+          rows={rowData}
           columns={columns}
         >
           <VirtualTable
@@ -62,9 +163,20 @@ export default function GradeManagementTeacherView() {
           <TableHeaderRow />
           <TableFixedColumns
             leftColumns={leftColumns}
-            rightColumns={rightColumns}
+            // rightColumns={rightColumns}
           />
         </Grid>
+
+        <Snackbar
+          open={alertProps.open}
+          autoHideDuration={4000}
+          onClose={handleAlertClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={handleAlertClose} severity={alertProps.severity} sx={{ width: '100%' }}>
+            {alertProps.message}
+          </Alert>
+        </Snackbar>
       </Paper>
 
     </>
