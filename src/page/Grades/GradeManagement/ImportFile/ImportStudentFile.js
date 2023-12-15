@@ -99,8 +99,10 @@ export default function ImportStudentFile({open, setOpen}) {
     })
       .then(
         () => {
-          showAlert('Create class successful', 'success');
+          showAlert('Import data successful', 'success');
           handleClose();
+          window.location.reload();
+
         },
         (error) => {
           console.log(error)

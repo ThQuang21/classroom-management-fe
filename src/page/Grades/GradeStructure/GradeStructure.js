@@ -76,9 +76,9 @@ export default function GradeStructure() {
 
     if (totalScale > 100) {
       showAlert('Total grade scale exceeds 100%', 'error');
-    } else {
-      setGradeComposition(updatedGrades);
     }
+
+    setGradeComposition(updatedGrades);
   };
 
   const handleAddData = (newDataName, newDataScale, gradeId) => {
@@ -90,14 +90,19 @@ export default function GradeStructure() {
       id: maxGradeId + 1,
       gradeName: newDataName,
       gradeScale: newDataScale,
+      code: null
     };
 
     setGradeComposition((prevGrades) => [...prevGrades, newGrade]);
   };
 
   const handleDeleteDataByGradeId = (gradeId) => {
-    const updatedGrades = gradeComposition.filter((grade) => grade.id !== gradeId);
-    setGradeComposition(updatedGrades);
+    if (gradeComposition.length === 1) {
+      showAlert('Grade composition can not be null', 'error');
+    } else {
+      const updatedGrades = gradeComposition.filter((grade) => grade.id !== gradeId);
+      setGradeComposition(updatedGrades);
+    }
   };
 
   useEffect(() => {
@@ -112,7 +117,8 @@ export default function GradeStructure() {
               name: grade.name,
               gradeScale: grade.gradeScale,
               position: grade.position,
-              id: grade.position
+              id: grade.position,
+              code: grade.id
             }));
             setGradeComposition(newGrades)
             setLoadingGrade(false);
@@ -142,6 +148,7 @@ export default function GradeStructure() {
         name: grade.name,
         gradeScale: grade.gradeScale,
         position: index + 1,
+        id: grade.code
       }));
 
 
