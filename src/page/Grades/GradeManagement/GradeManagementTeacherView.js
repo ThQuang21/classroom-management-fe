@@ -6,7 +6,7 @@ import {
   Grid,
   VirtualTable,
   TableHeaderRow,
-  TableFixedColumns, TableEditColumn,
+  TableEditColumn,
 } from '@devexpress/dx-react-grid-material-ui';
 import {
   Plugin, Template, TemplateConnector, TemplatePlaceholder,
@@ -24,9 +24,7 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import MuiGrid from '@mui/material/Grid';
 import Toolbar from "@mui/material/Toolbar";
 import AppBar from "@mui/material/AppBar";

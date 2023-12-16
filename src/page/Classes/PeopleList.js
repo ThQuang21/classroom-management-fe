@@ -67,11 +67,11 @@ export default function PeopleList() {
       </Box>
 
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        {<ListItemPeople name={peopleData.classOwner.name} email={peopleData.classOwner.email} note={"Class Owner"}/>}
+        {<ListItemPeople name={peopleData.classOwner.name} email={peopleData.classOwner.email} note={"Class Owner"} noSetting={true}/>}
 
         {peopleData.teachers.map((teacher) => (
           teacher.email !== peopleData.classOwner.email && (
-            <ListItemPeople key={teacher.email} name={teacher.name} email={teacher.email} />
+            <ListItemPeople key={teacher.email} name={teacher.name} email={teacher.email} noSetting={true}/>
           )
         ))}
       </List>
