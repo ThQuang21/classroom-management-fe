@@ -21,6 +21,10 @@ const getClassByClassCode = async ({ classCode }) => {
   return await http.get(API_URL + "classes/" + classCode);
 };
 
+const getClassByInvitationCode = async ({ invitationCode }) => {
+  return await http.get(API_URL + "classes/invite/" + invitationCode);
+};
+
 const joinClassByLink = async ({ classCode, invitationCode, userId }) => {
   return await http.post(API_URL + "classes/join-class", {
     classCode, invitationCode, userId
@@ -43,15 +47,27 @@ const inviteByEmail = async ({ name, email, classCode, teacherName, isTeacher })
   });
 };
 
+const updateGradeCompositionByClassCode = async ({ gradeCompositions, classCode }) => {
+  return await http.put(API_URL + "classes/" + classCode + "/gradeCompositions", {
+    gradeCompositions
+  });
+};
+const getGradeCompositionByClassCode = async ({ classCode }) => {
+  return await http.get(API_URL + "classes/" + classCode + "/gradeCompositions");
+};
+
 const ClassService = {
   createClass,
   listClassesByTeacherId,
   listClassesByStudentId,
   getClassByClassCode,
+  getClassByInvitationCode,
   joinClassByLink,
   joinClassByCode,
   listPeopleByClassCode,
-  inviteByEmail
+  inviteByEmail,
+  updateGradeCompositionByClassCode,
+  getGradeCompositionByClassCode
 }
 
 export default ClassService;

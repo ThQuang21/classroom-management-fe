@@ -38,6 +38,18 @@ const resetPwd = async ({ email , userToken, password }) => {
   });
 };
 
+const updateStudentId = async ({ email , studentId }) => {
+  return await http.patch(API_URL + "auth/student-id", {
+    email , studentId
+  });
+};
+
+const updateName = async ({ name, email }) => {
+  return await http.post(API_URL + "auth/profile", {
+    name, email
+  });
+};
+
 const googleLogin = async () => {
   try {
     window.open(API_URL + "auth/google", "_self");
@@ -45,12 +57,6 @@ const googleLogin = async () => {
     console.error('Error during Google authentication:', error);
   }
 }
-
-const updateName = async ({ name, email }) => {
-  return await http.post(API_URL + "auth/profile", {
-    name, email
-  });
-};
 
 const AuthService = {
   register,
@@ -60,7 +66,8 @@ const AuthService = {
   forgotPwd,
   resetPwd,
   googleLogin,
-  updateName
+  updateStudentId,
+  updateName,
 }
 
 export default AuthService;

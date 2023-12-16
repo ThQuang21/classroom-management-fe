@@ -16,7 +16,6 @@ import {useNavigate} from "react-router-dom";
 import {useUserStore} from "../../context/UserStoreProvider";
 import {Divider, ListItemIcon} from "@mui/material";
 import Stack from '@mui/material/Stack';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddIcon from '@mui/icons-material/Add';
 import CreateClass from "../dialog/CreateClass";
 import {AssignmentInd, Logout} from "@mui/icons-material";
@@ -208,20 +207,6 @@ function ResponsiveAppBar() {
                   sx={{ p: 0 }}
                 >
                   <AddIcon sx={{
-                    width: 36,
-                    height: 36
-                  }} />
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-haspopup="true"
-                  onClick={handleOpenUserMenu}
-                  color="inherit"
-                  sx={{ p: 0 }}
-                >
-                  <NotificationsIcon sx={{
                     width: 36,
                     height: 36
                   }} />

@@ -15,6 +15,7 @@ import Alert from "@mui/material/Alert";
 import PeopleList from "./PeopleList";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import GradePanel from "../Grades/GradePanel";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -90,6 +91,7 @@ export default function ClassDetail() {
           .then((data) => {
             console.log(data.data.data);
             setClassData(data.data.data)
+            localStorage.setItem('className', data.data.data.className)
             setLoading(false);
           }, (error) => {
             console.log(error)
@@ -100,10 +102,15 @@ export default function ClassDetail() {
     };
 
     const msgDialog = localStorage.getItem('msgDialog');
-    console.log(msgDialog)
+    const msgDialogSuccess = localStorage.getItem('msgDialogSuccess');
+
     if (msgDialog) {
       showAlert(msgDialog, 'error');
       localStorage.removeItem('msgDialog')
+    }
+    if (msgDialogSuccess) {
+      showAlert(msgDialogSuccess, 'success');
+      localStorage.removeItem('msgDialogSuccess')
     }
     fetchData();
     // eslint-disable-next-line
@@ -195,7 +202,7 @@ export default function ClassDetail() {
                   {classData.className}
                 </Typography>
                 <Typography variant="h5" color="inherit" paragraph>
-                  Teacher: {classData.teachers[0].name}
+                  Teacher: {classData.classOwner.name}
                 </Typography>
                 <Typography variant="h5" color="inherit">
                   Code to join class: {classData.invitationCode}
@@ -234,7 +241,7 @@ export default function ClassDetail() {
             <PeopleList />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            Grades
+            <GradePanel />
           </CustomTabPanel>
 
         </Box>

@@ -91,10 +91,10 @@ export default function CreateClass({open, setOpen}) {
       room: formData.room,
       teacherId: user.id})
       .then(
-        () => {
+        (data) => {
           showAlert('Create class successful', 'success');
           setTimeout(() => {
-            navigate('/teaching-classes');
+            navigate('/class/' + data.data.classCode);
           }, 800);
           window.location.reload();
         },

@@ -84,7 +84,7 @@ export default function ListTeachingClasses() {
               <Grid item key={card} xs={12} sm={6} md={4}>
                   <ClassCard name = {card.className} teacherName={card.teachers[0].name}
                              classCode={card.classCode} invitationCode={card.invitationCode}
-                             showAlert={showAlert}
+                             showAlert={showAlert} isTeacher={true}
                   />
               </Grid>
             ))}

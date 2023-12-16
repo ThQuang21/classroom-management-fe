@@ -8,6 +8,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
+import {useUserStore} from "../../context/UserStoreProvider";
 
 const cardStyle = {
   maxWidth: 345,
@@ -16,11 +17,14 @@ const cardStyle = {
     transform: 'scale(1.05)',
   },
 };
-export default function ClassCard({name, teacherName, classCode, invitationCode, showAlert}) {
+export default function ClassCard({name, teacherName, classCode, invitationCode,
+                                    showAlert, isTeacher}) {
   const navigate = useNavigate();
+  const { setIsTeacherStatus } = useUserStore();
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCardClick = () => {
+    setIsTeacherStatus(isTeacher)
     navigate('/class/' + classCode);
   };
 
