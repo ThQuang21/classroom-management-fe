@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import GradeStructure from "./GradeStructure/GradeStructure";
+import GradeStructure from "./GradeStructure/GradeStructure/GradeStructure";
 import Grid from '@mui/material/Grid';
 import GradeManagementTeacherView from "./GradeManagement/GradeManagementTeacherView";
 

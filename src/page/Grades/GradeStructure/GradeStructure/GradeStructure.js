@@ -9,12 +9,12 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import GradeStructureEdit from "./GradeStructureEdit";
 import LoadingButton from "@mui/lab/LoadingButton";
-import ClassService from "../../../services/class.service";
+import ClassService from "../../../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
-import {useUserStore} from "../../../context/UserStoreProvider";
+import {useUserStore} from "../../../../context/UserStoreProvider";
 import GradeStructureView from "./GradeStructureView";
 
 export default function GradeStructure() {
@@ -105,32 +105,34 @@ export default function GradeStructure() {
     }
   };
 
+  const fetchData = async () => {
+    if (classCode) {
+      await ClassService.getGradeCompositionByClassCode({ classCode: classCode})
+        .then((data) => {
+          setLoading(false);
+
+          // console.log(data.data.data)
+          const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
+            name: grade.name,
+            gradeScale: grade.gradeScale,
+            position: grade.position,
+            id: grade.position,
+            code: grade.id,
+            finalized: grade.finalized
+          }));
+          setGradeComposition(newGrades)
+          // console.log(newGrades)
+
+          setLoadingGrade(false);
+        }, (error) => {
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+        })
+      ;
+    }
+  };
+
   useEffect(() => {
     setLoadingGrade(true);
-    const fetchData = async () => {
-      if (classCode) {
-        await ClassService.getGradeCompositionByClassCode({ classCode: classCode})
-          .then((data) => {
-            setLoading(false);
-
-            const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
-              name: grade.name,
-              gradeScale: grade.gradeScale,
-              position: grade.position,
-              id: grade.position,
-              code: grade.id
-            }));
-            setGradeComposition(newGrades)
-            console.log(newGrades)
-
-            setLoadingGrade(false);
-          }, (error) => {
-            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-          })
-        ;
-      }
-    };
-
     fetchData();
     // eslint-disable-next-line
   }, []);
@@ -203,7 +205,9 @@ export default function GradeStructure() {
             view ? (
               <>
                 {gradeComposition.map((grade, index) => (
-                  <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale} data={grade}/>
+                  <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale} data={grade}
+                                      dataFinal={grade.finalized} reloadData={fetchData}
+                  />
                 ))}
               </>
               ) :
@@ -247,7 +251,8 @@ export default function GradeStructure() {
           ) : (
             <>
               {gradeComposition.map((grade, index) => (
-                <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale}/>
+                <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale} dataFinal={grade.finalized}
+                />
               ))}
             </>
           )}

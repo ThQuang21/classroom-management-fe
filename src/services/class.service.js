@@ -56,6 +56,12 @@ const getGradeCompositionByClassCode = async ({ classCode }) => {
   return await http.get(API_URL + "classes/" + classCode + "/gradeCompositions");
 };
 
+const updateFinalizeInGradeComposition = async ({ gradeCompositionId, classCode }) => {
+  return await http.put(API_URL + "classes/updateFinalized/" + classCode , {
+    gradeCompositionId
+  });
+};
+
 const ClassService = {
   createClass,
   listClassesByTeacherId,
@@ -67,7 +73,8 @@ const ClassService = {
   listPeopleByClassCode,
   inviteByEmail,
   updateGradeCompositionByClassCode,
-  getGradeCompositionByClassCode
+  getGradeCompositionByClassCode,
+  updateFinalizeInGradeComposition
 }
 
 export default ClassService;

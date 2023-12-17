@@ -15,14 +15,18 @@ import {LinearProgress} from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import {useEffect, useState} from "react";
-import GradeService from "../../../services/grade.service";
+import GradeService from "../../../../services/grade.service";
 import PreUploadGradeTable from "./PreUploadGradeTable";
+import FinalizeComfirmDialog from "./FinalizeComfirmDialog";
+import Stack from "@mui/material/Stack";
+import ClassService from "../../../../services/class.service";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function GradeCompositionDetail({grade}) {
+export default function GradeCompositionDetail({grade, reloadData}) {
+  const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [open, setOpen] = React.useState(false);
   const [studentIdList, setStudentIdList] = React.useState([]);
   const [datas, setDatas] = useState([]);
@@ -95,6 +99,27 @@ export default function GradeCompositionDetail({grade}) {
     }
   };
 
+  const handleFinalizeGrade = async () => {
+    setLoading(true);
+    if (grade) {
+      console.log(grade.code)
+
+      await ClassService.updateFinalizeInGradeComposition({gradeCompositionId: grade.code, classCode})
+        .then((data) => {
+          console.log(data.data.data);
+          showAlert('Finalize this grade success', 'success');
+          setLoading(false)
+          reloadData();
+          handleClose();
+        }, (error) => {
+          console.log(error)
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+        })
+      ;
+    }
+
+  }
+
   useEffect(() => {
     const fetchData = async () => {
 
@@ -160,6 +185,7 @@ export default function GradeCompositionDetail({grade}) {
 
     )
   }
+
   return (
     <React.Fragment>
       {console.log(grade)}
@@ -227,23 +253,51 @@ export default function GradeCompositionDetail({grade}) {
           <label htmlFor="btn-upload">
 
             <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}
-                    style={{paddingTop : "8px", fontSize: "72"}}
+                    style={{paddingTop : "8px", paddingBottom : "8px", fontSize: "72"}}
             >
               <input type="file" name="file" className="custom-file-input" id="inputGroupFile" required onChange={importFile}
                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
             </Button>
           </label>
+
+
+
+          <Box style={{ display: 'flex', alignItems: 'center', marginTop: "15px" }}>
+            <Typography gutterBottom>
+              Review the newly imported data from the file:&nbsp;&nbsp;&nbsp;&nbsp;
+            </Typography>
+
+            <Stack spacing={2} direction="row"
+                   justifyContent="center"
+                   alignItems="center"
+            >
+              <Button variant="outlined">
+                View
+              </Button>
+              <Button variant="outlined">
+                Save
+              </Button>
+            </Stack>
+          </Box>
         </Box>
 
-        <Typography style={{
+        <Box style={{
           padding: "24px 18px",
           margin: "5px 18px",
-        }}
-                    variant="h5"
-                    gutterBottom
-        >
-          View your student list:
-        </Typography>
+        }}>
+          <Typography
+            variant="h5"
+            gutterBottom
+          >
+            View your student list:
+          </Typography>
+
+          <Box style={{ display: 'flex', justifyContent: 'right', alignItems: 'right' }}>
+            <FinalizeComfirmDialog clickAgree={handleFinalizeGrade}/>
+          </Box>
+        </Box>
+
+
         <Box elevation={2}
              style={{
                border: '1px dashed ',
