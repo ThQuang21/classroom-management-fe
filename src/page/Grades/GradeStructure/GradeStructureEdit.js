@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {Tooltip} from "@mui/material";
 
 
-export default function GradeComposition({dataName, dataScale, dataId, viewData,
+export default function GradeStructureEdit({dataName, dataScale, dataId, viewData,
                                            onDataChange, onDeleteData}) {
   const [textValue, setTextValue] = React.useState(dataName);
   const [numberValue, setNumberValue] = React.useState(dataScale);

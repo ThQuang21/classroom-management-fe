@@ -7,7 +7,7 @@ import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {useEffect, useState} from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import GradeComposition from "./GradeComposition";
+import GradeStructureEdit from "./GradeStructureEdit";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ClassService from "../../../services/class.service";
 import Snackbar from "@mui/material/Snackbar";
@@ -15,7 +15,7 @@ import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
 import {useUserStore} from "../../../context/UserStoreProvider";
-import GradeStructureStudentView from "./GradeStructureStudentView";
+import GradeStructureView from "./GradeStructureView";
 
 export default function GradeStructure() {
   const { isTeacher } = useUserStore();
@@ -121,6 +121,8 @@ export default function GradeStructure() {
               code: grade.id
             }));
             setGradeComposition(newGrades)
+            console.log(newGrades)
+
             setLoadingGrade(false);
           }, (error) => {
             showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
@@ -196,7 +198,16 @@ export default function GradeStructure() {
         </Grid>
 
         <Grid style={{paddingTop: '15px'}}>
-          {isTeacher ? (
+          {isTeacher
+            ?
+            view ? (
+              <>
+                {gradeComposition.map((grade, index) => (
+                  <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale} data={grade}/>
+                ))}
+              </>
+              ) :
+            (
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="tasks">
                 {(provided) => (
@@ -216,11 +227,11 @@ export default function GradeStructure() {
                             <Paper elevation={2} style={{width:'100%' , marginTop: '10px', borderLeft: '10px solid' +
                                 ' teal'}}>
                               <Box style={{display: 'flex',flexDirection:'column', alignItems:'flex-start', marginLeft: '20px', marginRight: '20px', paddingTop: '20px', paddingBottom: '10px'}}>
-                                <GradeComposition dataName={grade.name} dataScale={grade.gradeScale}
-                                                  dataId={grade.id}
-                                                  viewData={view}
-                                                  onDataChange={handleDataChange}
-                                                  onDeleteData={handleDeleteDataByGradeId}
+                                <GradeStructureEdit dataName={grade.name} dataScale={grade.gradeScale}
+                                                    dataId={grade.id}
+                                                    viewData={view}
+                                                    onDataChange={handleDataChange}
+                                                    onDeleteData={handleDeleteDataByGradeId}
                                 />
                               </Box>
                             </Paper>
@@ -236,7 +247,7 @@ export default function GradeStructure() {
           ) : (
             <>
               {gradeComposition.map((grade, index) => (
-                <GradeStructureStudentView dataName={grade.name} dataScale={grade.gradeScale}/>
+                <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale}/>
               ))}
             </>
           )}
