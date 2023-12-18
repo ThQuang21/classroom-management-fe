@@ -3,6 +3,10 @@ import Paper from '@mui/material/Paper';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {
+  SortingState,
+  IntegratedSorting,
+} from '@devexpress/dx-react-grid';
+import {
   Grid,
   VirtualTable,
   TableHeaderRow,
@@ -120,7 +124,7 @@ export default function GradeManagementTeacherView() {
           ];
           var tableColumnExtension = [
             { columnName: 'fullName', width: 180 }, //fullName
-            { columnName: 'studentId', width: 100 }, //studentId
+            { columnName: 'studentId', width: 120 }, //studentId
 
             // { columnName: 'amount', align: 'right', width: 140 }, //total
           ];
@@ -241,10 +245,15 @@ export default function GradeManagementTeacherView() {
             onAddedRowsChange={changeAddedRows}
             onCommitChanges={commitChanges}
           />
+          <SortingState
+            defaultSorting={[{ columnName: 'studentId', direction: 'asc' }]}
+          />
+          <IntegratedSorting />
+
           <VirtualTable
             columnExtensions={tableColumnExtensions}
           />
-          <TableHeaderRow />
+          <TableHeaderRow showSortingControls/>
           <TableEditRow />
           <TableEditColumn
             showAddCommand={!addedRows.length}
