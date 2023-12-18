@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import GradeStructure from "./GradeStructure/GradeStructure/GradeStructure";
 import Grid from '@mui/material/Grid';
 import GradeManagementTeacherView from "./GradeManagement/GradeManagementTeacherView";
+import GradeReview from "./GradeReview/GradeReview";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -75,7 +76,7 @@ export default function GradePanel() {
           <GradeManagementTeacherView />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Grade Review
+          <GradeReview />
         </TabPanel>
       </Grid>
     </Grid>
