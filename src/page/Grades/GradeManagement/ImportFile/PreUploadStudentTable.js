@@ -33,6 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function PreUploadStudentTable({data}) {
   return (
     <TableContainer component={Paper}>
+      {console.log(data)}
       <Table sx={{ minWidth: 300 }} aria-label="customized table">
         <TableHead>
           <TableRow>

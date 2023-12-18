@@ -143,6 +143,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
         showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
         return false;
       });
+    handleClose()
   }
 
   const handleFinalizeGrade = async () => {
@@ -262,6 +263,8 @@ export default function GradeCompositionDetail({grade, reloadData}) {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Grade Detail of {grade.name}
             </Typography>
+            <FinalizeComfirmDialog clickAgree={handleFinalizeGrade}/>
+
           </Toolbar>
         </AppBar>
         <Box elevation={2}
@@ -303,6 +306,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
 
             <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}
                     style={{paddingTop : "8px", paddingBottom : "8px", fontSize: "72"}}
+                    disabled={studentIdList.length === 0}
             >
               <input type="file" name="file" className="custom-file-input" id="inputGroupFile" required onChange={importFile}
                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
@@ -318,7 +322,9 @@ export default function GradeCompositionDetail({grade, reloadData}) {
                    justifyContent="center"
                    alignItems="center"
             >
-              <Button variant="outlined" onClick={handleImportGrade}>
+              <Button variant="outlined" onClick={handleImportGrade}
+                      disabled={studentIdList.length === 0}
+              >
                 Save
               </Button>
             </Stack>
@@ -335,10 +341,6 @@ export default function GradeCompositionDetail({grade, reloadData}) {
           >
             View your student list:
           </Typography>
-
-          <Box style={{ display: 'flex', justifyContent: 'right', alignItems: 'right' }}>
-            <FinalizeComfirmDialog clickAgree={handleFinalizeGrade}/>
-          </Box>
         </Box>
 
 

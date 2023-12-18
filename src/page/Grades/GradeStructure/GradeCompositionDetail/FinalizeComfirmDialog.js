@@ -28,7 +28,7 @@ export default function FinalizeComfirmDialog({clickAgree}) {
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen} style={{ borderColor: 'red', color: 'red' }}>
+      <Button variant="contained" onClick={handleClickOpen} style={{ backgroundColor: 'green', color: 'white' }}>
         Finalize
       </Button>
       <Dialog

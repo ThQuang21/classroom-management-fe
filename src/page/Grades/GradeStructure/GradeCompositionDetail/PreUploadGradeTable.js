@@ -53,7 +53,7 @@ export default function PreUploadGradeTable({grade}) {
                   <StyledTableCell>{row.grades[0].grade}</StyledTableCell>
                 </StyledTableRow>
               ))
-              : <Typography>No student found.</Typography>
+              : <Typography>No student found. Please import the student list first.</Typography>
           }
         </TableBody>
       </Table>

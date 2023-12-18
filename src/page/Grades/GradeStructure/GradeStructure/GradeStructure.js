@@ -121,7 +121,7 @@ export default function GradeStructure() {
             finalized: grade.finalized
           }));
           setGradeComposition(newGrades)
-          // console.log(newGrades)
+          console.log(newGrades)
 
           setLoadingGrade(false);
         }, (error) => {
@@ -160,6 +160,17 @@ export default function GradeStructure() {
         .then((data) => {
           showAlert('Save grade structure successful', 'success');
           setView(true);
+          console.log(data.data.data)
+          const newGrades = data.data.data.class.gradeCompositions.map((grade, index) => ({
+            name: grade.name,
+            gradeScale: grade.gradeScale,
+            position: grade.position,
+            id: grade.position,
+            code: grade.id,
+            finalized: grade.finalized
+          }));
+          setGradeComposition(newGrades)
+
         }, (error) => {
           showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
         }).finally(setLoading(false))
