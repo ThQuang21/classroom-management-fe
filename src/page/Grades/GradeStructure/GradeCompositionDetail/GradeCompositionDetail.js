@@ -69,10 +69,12 @@ export default function GradeCompositionDetail({grade, reloadData}) {
       'Grade'
     ]];
     console.log(studentIdList)
+    const data = studentIdList.map((studentId, index) => ({ studentId }));
+
     const wb = utils.book_new();
     const ws = utils.json_to_sheet([]);
     utils.sheet_add_aoa(ws, headings);
-    utils.sheet_add_json(ws, studentIdList, { origin: 'A2', skipHeader: true });
+    utils.sheet_add_json(ws, data, { origin: 'A2', skipHeader: true });
     utils.book_append_sheet(wb, ws, 'Report');
     writeFile(wb, 'Grade Template.xlsx');
   }
@@ -90,14 +92,58 @@ export default function GradeCompositionDetail({grade, reloadData}) {
 
         if (sheets.length) {
           const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
-          setDatas(rows)
-          console.log(rows)
+          // setDatas(rows)
+          // console.log(rows)
 
+          var rowData = [];
+          rows.forEach((row, index) => {
+          rowData.push({
+            student: {
+              studentId: row.StudentId
+            },
+            grades: [ {
+              grade :    row.Grade
+            }
+            ]
+            });
+          });
+
+          // console.log(rowData)
+          setRows(rowData)
         }
       }
       reader.readAsArrayBuffer(file);
     }
   };
+
+  const handleImportGrade = async () => {
+    var rowData = []
+    const name = grade.name;
+    console.log(name)
+    rows.map((row, index) => {
+      console.log(row)
+      var obj = {
+        studentId: row.student.studentId
+      }
+      obj[grade.name] = row.grades[0].grade
+
+      rowData.push(obj)
+    })
+    console.log(rowData)
+
+    await GradeService.updateGradesByClassCodeAndStudentId({
+      classCode: classCode, gradesToUpdate: rowData
+    })
+      .then((data) => {
+        console.log(data);
+        showAlert('Updated successful', 'success');
+        // setLoading(false)
+      }, (error) => {
+        console.log(error)
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+        return false;
+      });
+  }
 
   const handleFinalizeGrade = async () => {
     setLoading(true);
@@ -138,6 +184,9 @@ export default function GradeCompositionDetail({grade, reloadData}) {
               })
               studentIds.push(row.student.studentId);
             })
+            console.log(rowData)
+            console.log(studentIds)
+
             setRows(rowData)
             setStudentIdList(studentIds)
 
@@ -225,7 +274,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
              }}
         >
           <Typography gutterBottom>
-            Want to import grade list?
+            Want to import grade list? Download the lastest list of student here
           </Typography>
           <Button size="small"
                   onClick={downloadTemplate}
@@ -260,8 +309,6 @@ export default function GradeCompositionDetail({grade, reloadData}) {
             </Button>
           </label>
 
-
-
           <Box style={{ display: 'flex', alignItems: 'center', marginTop: "15px" }}>
             <Typography gutterBottom>
               Review the newly imported data from the file:&nbsp;&nbsp;&nbsp;&nbsp;
@@ -271,10 +318,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
                    justifyContent="center"
                    alignItems="center"
             >
-              <Button variant="outlined">
-                View
-              </Button>
-              <Button variant="outlined">
+              <Button variant="outlined" onClick={handleImportGrade}>
                 Save
               </Button>
             </Stack>

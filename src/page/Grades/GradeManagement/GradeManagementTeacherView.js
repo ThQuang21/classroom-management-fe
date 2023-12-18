@@ -16,17 +16,8 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import GradeService from "../../../services/grade.service";
 import Container from "@mui/material/Container";
-import {IconButton, LinearProgress} from "@mui/material";
+import {LinearProgress} from "@mui/material";
 import ClassService from "../../../services/class.service";
-import TextField from '@mui/material/TextField';
-import FormGroup from '@mui/material/FormGroup';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import MuiGrid from '@mui/material/Grid';
-import Toolbar from "@mui/material/Toolbar";
-import AppBar from "@mui/material/AppBar";
-import CloseIcon from "@mui/icons-material/Close";
 
 const getRowId = row => row.id;
 
