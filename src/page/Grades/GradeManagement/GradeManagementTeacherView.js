@@ -6,11 +6,9 @@ import {
   Grid,
   VirtualTable,
   TableHeaderRow,
+  TableEditRow,
   TableEditColumn,
 } from '@devexpress/dx-react-grid-material-ui';
-import {
-  Plugin, Template, TemplateConnector, TemplatePlaceholder,
-} from '@devexpress/dx-react-core'
 import { EditingState } from '@devexpress/dx-react-grid';
 import {useEffect, useState} from "react";
 import HandleImportExportStudent from "./ImportFile/HandleImportExportStudent";
@@ -31,168 +29,13 @@ import AppBar from "@mui/material/AppBar";
 import CloseIcon from "@mui/icons-material/Close";
 
 const getRowId = row => row.id;
-const Popup = ({
-                 row,
-                 onChange,
-                 onApplyChanges,
-                 onCancelChanges,
-                 open,
-               }) => {
-
-  return (
-    <Dialog open={open} onClose={onCancelChanges} aria-labelledby="form-dialog-title">
-      <AppBar sx={{position: 'relative'}}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={onCancelChanges}
-            aria-label="close"
-          >
-            <CloseIcon/>
-          </IconButton>
-          <Typography sx={{ml: 2, flex: 1}} variant="h6" component="div">
-            Student Details
-          </Typography>
-          <Button autoFocus color="inherit" onClick={onApplyChanges}>
-            save
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <DialogContent>
-        <MuiGrid container spacing={3}>
-          <MuiGrid item xs={6}>
-            <FormGroup>
-              <TextField
-                margin="normal"
-                name="fullName"
-                label="Full Name"
-                value={row.fullName || ''}
-                onChange={onChange}
-              />
-            </FormGroup>
-          </MuiGrid>
-          <MuiGrid item xs={6}>
-            <FormGroup>
-              <TextField
-                margin="normal"
-                name="studentId"
-                label="Student ID"
-                value={row.studentId || ''}
-                onChange={onChange}
-              />
-            </FormGroup>
-          </MuiGrid>
-
-          <MuiGrid item xs={12}>
-
-            <Typography>Grade Details</Typography>
-            <FormGroup>
-              {Object.keys(row).map((key, index) => (
-                (key !== 'fullName' && key !== 'studentId' && key !== 'id') && (
-                  <TextField
-                    key={index}
-                    margin="normal"
-                    name={key}
-                    label={key}
-                    type="number"
-                    value={row[key] || 0}
-                    onChange={onChange}
-                  />
-                )
-              ))}
-            </FormGroup>
-          </MuiGrid>
-        </MuiGrid>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-const PopupEditing = React.memo(({ popupComponent: Popup }) => (
-  <Plugin>
-    <Template name="popupEditing">
-      <TemplateConnector>
-        {(
-          {
-            rows,
-            getRowId,
-            addedRows,
-            editingRowIds,
-            createRowChange,
-            rowChanges,
-          },
-          {
-            changeRow, changeAddedRow, commitChangedRows, commitAddedRows,
-            stopEditRows, cancelAddedRows, cancelChangedRows,
-          },
-        ) => {
-          const isNew = addedRows.length > 0;
-          let editedRow;
-          let rowId;
-          if (isNew) {
-            rowId = 0;
-            editedRow = addedRows[rowId];
-          } else {
-            [rowId] = editingRowIds;
-            const targetRow = rows.filter(row => getRowId(row) === rowId)[0];
-            editedRow = { ...targetRow, ...rowChanges[rowId] };
-          }
-
-          const processValueChange = ({ target: { name, value } }) => {
-            const changeArgs = {
-              rowId,
-              change: createRowChange(editedRow, value, name),
-            };
-            if (isNew) {
-              changeAddedRow(changeArgs);
-            } else {
-              changeRow(changeArgs);
-            }
-          };
-          const rowIds = isNew ? [0] : editingRowIds;
-          const applyChanges = () => {
-            if (isNew) {
-              commitAddedRows({ rowIds });
-            } else {
-              stopEditRows({ rowIds });
-              commitChangedRows({ rowIds });
-            }
-          };
-          const cancelChanges = () => {
-            if (isNew) {
-              cancelAddedRows({ rowIds });
-            } else {
-              stopEditRows({ rowIds });
-              cancelChangedRows({ rowIds });
-            }
-          };
-
-          const open = editingRowIds.length > 0 || isNew;
-          return (
-            <Popup
-              open={open}
-              row={editedRow}
-              onChange={processValueChange}
-              onApplyChanges={applyChanges}
-              onCancelChanges={cancelChanges}
-            />
-          );
-        }}
-      </TemplateConnector>
-    </Template>
-    <Template name="root">
-      <TemplatePlaceholder />
-      <TemplatePlaceholder name="popupEditing" />
-    </Template>
-  </Plugin>
-));
-
-
 
 export default function GradeManagementTeacherView() {
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [rows, setRows] = React.useState([]);
+  const [editingRowIds, setEditingRowIds] = useState([]);
+  const [addedRows, setAddedRows] = useState([]);
+  const [rowChanges, setRowChanges] = useState({});
   const [loading, setLoading] = React.useState(true);
 
   const [alertProps, setAlertProps] = useState({
@@ -216,7 +59,12 @@ export default function GradeManagementTeacherView() {
       handleAlertClose();
     }, 6000);
   };
-  const commitChanges = ({ added, changed }) => {
+
+  const changeAddedRows = (value) => {
+    const initialized = value.map(row => (Object.keys(row).length ? row : { city: 'Tokio' }));
+    setAddedRows(initialized);
+  };
+  const commitChanges = ({ added, changed, deleted }) => {
     let changedRows;
     if (added) {
       const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
@@ -229,10 +77,19 @@ export default function GradeManagementTeacherView() {
       ];
     }
     if (changed) {
+      console.log('********', editingRowIds)
       changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+      console.log('********', changedRows)
+
+    }
+    if (deleted) {
+      const deletedSet = new Set(deleted);
+      changedRows = rows.filter(row => !deletedSet.has(row.id));
     }
     setRows(changedRows);
+    handleSaveRow(changedRows);
   };
+
   const [columns, setColumns] = useState([]);
   const [tableColumnExtensions, setTableColumnExtensions] = useState([]);
 
@@ -326,6 +183,24 @@ export default function GradeManagementTeacherView() {
     ;
   };
 
+  const handleSaveRow = async (changedRows) => {
+    // setLoading(true);
+    await GradeService.updateGradesByClassCodeAndStudentId({
+      classCode: classCode, gradesToUpdate: changedRows
+    })
+      .then((data) => {
+        console.log(data);
+        showAlert('Updated successful', 'success');
+
+        // setLoading(false)
+      }, (error) => {
+        console.log(error)
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+      })
+    ;
+  };
+
+
   if (loading) {
     return (
       <>
@@ -365,17 +240,24 @@ export default function GradeManagementTeacherView() {
           getRowId={getRowId}
         >
           <EditingState
+            editingRowIds={editingRowIds}
+            onEditingRowIdsChange={setEditingRowIds}
+            rowChanges={rowChanges}
+            onRowChangesChange={setRowChanges}
+            addedRows={addedRows}
+            onAddedRowsChange={changeAddedRows}
             onCommitChanges={commitChanges}
           />
           <VirtualTable
             columnExtensions={tableColumnExtensions}
           />
           <TableHeaderRow />
+          <TableEditRow />
           <TableEditColumn
-            showAddCommand
+            showAddCommand={!addedRows.length}
             showEditCommand
+            showDeleteCommand
           />
-          <PopupEditing popupComponent={Popup} />
         </Grid>
 
         <Snackbar

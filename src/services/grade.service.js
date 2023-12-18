@@ -17,10 +17,17 @@ const getGradesByGradeComposition = async ({ gradeComposition }) => {
   return await http.get(API_URL + "grades/grade-composition/" + gradeComposition);
 };
 
+const updateGradesByClassCodeAndStudentId = async ({ classCode, gradesToUpdate }) => {
+  return await http.put(API_URL + "grades/updateGrades/" + classCode, {
+    gradesToUpdate
+  });
+};
+
 const GradeService = {
   createGrade,
   getGradesByClassCode,
-  getGradesByGradeComposition
+  getGradesByGradeComposition,
+  updateGradesByClassCodeAndStudentId
 }
 
 export default GradeService;
