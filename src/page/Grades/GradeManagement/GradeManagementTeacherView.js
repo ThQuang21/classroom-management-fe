@@ -61,7 +61,8 @@ export default function GradeManagementTeacherView() {
   };
 
   const changeAddedRows = (value) => {
-    const initialized = value.map(row => (Object.keys(row).length ? row : { city: 'Tokio' }));
+    const initialized = value.map(row => (Object.keys(row).length ? row : { studentId: '' }));
+    console.log(initialized)
     setAddedRows(initialized);
   };
   const commitChanges = ({ added, changed, deleted }) => {
@@ -77,82 +78,83 @@ export default function GradeManagementTeacherView() {
       ];
     }
     if (changed) {
-      console.log('********', editingRowIds)
+      // console.log('********', editingRowIds)
       changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-      console.log('********', changedRows)
 
     }
     if (deleted) {
       const deletedSet = new Set(deleted);
       changedRows = rows.filter(row => !deletedSet.has(row.id));
     }
-    setRows(changedRows);
-    handleSaveRow(changedRows);
+    if (handleSaveRow(changedRows)) {
+      setRows(changedRows);
+    }
   };
 
   const [columns, setColumns] = useState([]);
   const [tableColumnExtensions, setTableColumnExtensions] = useState([]);
 
+  const fetchData = async () => {
+
+    if (classCode) {
+      await GradeService.getGradesByClassCode({ classCode: classCode})
+        .then((data) => {
+          console.log(data.data.data);
+          var rowData = []
+          data.data.data.forEach((row, index) => {
+            rowData.push({
+              ...row,
+              id : index + 1
+            })
+          })
+          setRows(rowData)
+
+        }, (error) => {
+          console.log(error)
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+        })
+      ;
+
+      await ClassService.getGradeCompositionByClassCode({ classCode: classCode})
+        .then((data) => {
+          setLoading(false);
+
+          const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
+            name: grade.name
+          }));
+
+          var column = [
+            { name: 'fullName', title: 'Fulll Name' },
+            { name: 'studentId', title: 'Student ID' },
+          ];
+          var tableColumnExtension = [
+            { columnName: 'fullName', width: 180 }, //fullName
+            { columnName: 'studentId', width: 100 }, //studentId
+
+            // { columnName: 'amount', align: 'right', width: 140 }, //total
+          ];
+          newGrades.forEach((gradeComposition) => {
+            column.push({
+              name: gradeComposition.name,
+              studentId: gradeComposition.studentId,
+            })
+            tableColumnExtension.push({
+              columnName: gradeComposition.name,
+              align: 'center'
+            })
+          })
+          setColumns(column)
+          setTableColumnExtensions(tableColumnExtension)
+
+          setLoading(false);
+        }, (error) => {
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+        })
+      ;
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-
-      if (classCode) {
-        await GradeService.getGradesByClassCode({ classCode: classCode})
-          .then((data) => {
-            console.log(data.data.data);
-            var rowData = []
-            data.data.data.forEach((row, index) => {
-              rowData.push({
-                ...row,
-                id : index + 1
-              })
-            })
-            setRows(rowData)
-
-          }, (error) => {
-            console.log(error)
-            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-          })
-        ;
-
-        await ClassService.getGradeCompositionByClassCode({ classCode: classCode})
-          .then((data) => {
-            setLoading(false);
-
-            const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
-              name: grade.name
-            }));
-
-            var column = [
-              { name: 'fullName', title: 'Fulll Name' },
-              { name: 'studentId', title: 'Student ID' },
-            ];
-            var tableColumnExtension = [
-              { columnName: 'fullName', width: 180 }, //fullName
-              { columnName: 'studentId', width: 100 }, //studentId
-
-              // { columnName: 'amount', align: 'right', width: 140 }, //total
-            ];
-            newGrades.forEach((gradeComposition) => {
-              column.push({
-                name: gradeComposition.name,
-                studentId: gradeComposition.studentId,
-              })
-              tableColumnExtension.push({
-                columnName: gradeComposition.name,
-                align: 'center'
-              })
-            })
-            setColumns(column)
-            setTableColumnExtensions(tableColumnExtension)
-
-            setLoading(false);
-          }, (error) => {
-            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-          })
-        ;
-      }
-    };
 
     const msgDialog = localStorage.getItem('msgDialog');
     const msgDialogSuccess = localStorage.getItem('msgDialogSuccess');
@@ -191,13 +193,13 @@ export default function GradeManagementTeacherView() {
       .then((data) => {
         console.log(data);
         showAlert('Updated successful', 'success');
-
         // setLoading(false)
       }, (error) => {
         console.log(error)
         showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-      })
-    ;
+        return false;
+      });
+    fetchData();
   };
 
 
@@ -256,7 +258,6 @@ export default function GradeManagementTeacherView() {
           <TableEditColumn
             showAddCommand={!addedRows.length}
             showEditCommand
-            showDeleteCommand
           />
         </Grid>
 
