@@ -63,6 +63,13 @@ function App() {
                  </AuthRoute>
                }
         />
+        <Route exact path="/profile"
+               element={
+                 <AuthRoute>
+                   <Profile />
+                 </AuthRoute>
+               }
+        />
 
       </Routes>
 
