@@ -25,6 +25,7 @@ const LoginCallback = () => {
             email: parsedUserData.email,
             id: parsedUserData.id,
             name: parsedUserData.name,
+            studentId: parsedUserData.studentId,
             token: parsedUserData.accessToken,
             socialLogins: parsedUserData.socialLogins
           });

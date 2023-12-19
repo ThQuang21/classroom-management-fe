@@ -27,6 +27,17 @@ export const UserStoreProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
+  const updateProfile = (userData) => {
+      const newUser = {
+        ...user,
+        name: userData.name,
+        studentId: userData.studentId,
+      };
+      console.log(newUser)
+      setUser(newUser); //update name, studentId
+      localStorage.setItem('user', JSON.stringify(newUser));
+  };
+
   const logoutUser = () => {
     setUser(null);
     setIsTeacher(false);
@@ -44,7 +55,7 @@ export const UserStoreProvider = ({ children }) => {
   };
 
   return (
-    <UserStoreContext.Provider value={{ user, loginUser, logoutUser, isAuthenticated,
+    <UserStoreContext.Provider value={{ user, loginUser, logoutUser, isAuthenticated, updateProfile,
       loadingUser, isTeacher, setIsTeacherStatus
     }}>
       {children}

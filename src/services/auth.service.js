@@ -44,9 +44,9 @@ const updateStudentId = async ({ email , studentId }) => {
   });
 };
 
-const updateName = async ({ name, email }) => {
-  return await http.post(API_URL + "auth/profile", {
-    name, email
+const updateProfile = async ({ email, studentId, name }) => {
+  return await http.patch(API_URL + "auth/profile", {
+    email, studentId, name
   });
 };
 
@@ -67,7 +67,7 @@ const AuthService = {
   resetPwd,
   googleLogin,
   updateStudentId,
-  updateName,
+  updateProfile,
 }
 
 export default AuthService;

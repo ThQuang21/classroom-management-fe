@@ -113,7 +113,9 @@ export default function LogIn() {
           email: user.email,
           id: user.id,
           name: user.name,
+          studentId: user.studentId,
           token: user.accessToken,
+          socialLogins: user.socialLogins
         });
 
         setTimeout(() => {
