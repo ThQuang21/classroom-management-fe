@@ -9,9 +9,11 @@ import Container from "@mui/material/Container";
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import InviteStudent from "../../components/dialog/InviteStudent";
 import InviteTeacher from "../../components/dialog/InviteTeacher";
+import {useUserStore} from "../../context/UserStoreProvider";
 
 
 export default function PeopleList() {
+  const { isTeacher } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [peopleData, setPeopleData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -59,9 +61,11 @@ export default function PeopleList() {
       <Box sx={{ mt: 2 }}>
         <Typography variant="h4" gutterBottom color="primary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <strong>Teachers</strong>
-          <IconButton color="primary" aria-label="add people" onClick={handleOpenInviteTeacher}>
-            <PersonAddAltIcon sx={{ fontSize: '2rem' }}/>
-          </IconButton>
+          {isTeacher && (
+            <IconButton color="primary" aria-label="add people" onClick={handleOpenInviteTeacher}>
+              <PersonAddAltIcon sx={{ fontSize: '2rem' }}/>
+            </IconButton>
+          )}
         </Typography>
         <Divider sx={{ borderStyle: 'dashed' }} />
       </Box>
@@ -77,11 +81,15 @@ export default function PeopleList() {
       </List>
 
       <Box sx={{ mt: 6 }}>
+
         <Typography variant="h4" gutterBottom color="primary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <strong>Students</strong>
-          <IconButton color="primary" aria-label="add people" onClick={handleOpenInviteStudent}>
-            <PersonAddAltIcon sx={{ fontSize: '2rem' }}/>
-          </IconButton>
+          {isTeacher && (
+            <IconButton color="primary" aria-label="add people" onClick={handleOpenInviteStudent}>
+              <PersonAddAltIcon sx={{ fontSize: '2rem' }}/>
+            </IconButton>
+          )}
+
         </Typography>
         <Divider sx={{ borderStyle: 'dashed' }} />
       </Box>

@@ -37,7 +37,6 @@ function App() {
         <Route exact path="/login" element={<LogIn/>} />
 
         <Route exact path="/handleUserData" element={<LoginCallback/>} />
-        <Route exact path="/profile" element={<Profile/>} />
 
         <Route exact path="/forgot-password" element={<ForgotPwd/>} />
         <Route exact path="/reset-password" element={<ResetPwd/>} />

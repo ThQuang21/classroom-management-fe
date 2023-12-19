@@ -29,7 +29,6 @@ export default function GradeCompositionDetail({grade, reloadData}) {
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [open, setOpen] = React.useState(false);
   const [studentIdList, setStudentIdList] = React.useState([]);
-  const [datas, setDatas] = useState([]);
   const [rows, setRows] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [alertProps, setAlertProps] = useState({

@@ -17,8 +17,11 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import AuthService from "../../services/auth.service";
 import LoadingButton from "@mui/lab/LoadingButton";
+import {useUserStore} from "../../context/UserStoreProvider";
 
 export default function ListItemPeople(props) {
+  const { isTeacher } = useUserStore();
+
   const {name, email, note, noSetting} = props;
   const [loading, setLoading] = React.useState(false);
   const [studentId, setStudentId] = React.useState(note);
@@ -79,10 +82,12 @@ export default function ListItemPeople(props) {
     <Stack spacing={2} direction="row">
       <ListItem
         secondaryAction={
-          !noSetting && (
-            <IconButton aria-label="comment" onClick={handleClickOpen}>
-              <SettingsIcon />
-            </IconButton>
+          isTeacher && (
+            !noSetting && (
+              <IconButton aria-label="comment" onClick={handleClickOpen}>
+                <SettingsIcon />
+              </IconButton>
+            )
           )
         }
       >

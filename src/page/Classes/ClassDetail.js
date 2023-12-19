@@ -16,6 +16,7 @@ import PeopleList from "./PeopleList";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import GradePanel from "../Grades/GradePanel";
+import {useUserStore} from "../../context/UserStoreProvider";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,6 +52,7 @@ function a11yProps(index) {
 }
 
 export default function ClassDetail() {
+  const { isTeacher } = useUserStore();
   const [loading, setLoading] = React.useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [isCopiedJoinCode, setIsCopiedJoinCode] = useState(false);
@@ -204,30 +206,35 @@ export default function ClassDetail() {
                 <Typography variant="h5" color="inherit" paragraph>
                   Teacher: {classData.classOwner.name}
                 </Typography>
-                <Typography variant="h5" color="inherit">
-                  Code to join class: {classData.invitationCode}
+                {isTeacher && (
+                  <Typography variant="h5" color="inherit">
+                    Code to join class: {classData.invitationCode}
                     <Tooltip title={isCopiedJoinCode ? 'Link is copied!' : 'Copy join code'} arrow onClick={handleCopyJoinCode}>
-                    <IconButton aria-label="copy" color="inherit" sx={{mb : 1}}>
-                      {isCopiedJoinCode ? <ContentPasteIcon /> : <FileCopyIcon />}
-                    </IconButton>
-                  </Tooltip>
-                </Typography>
+                      <IconButton aria-label="copy" color="inherit" sx={{mb : 1}}>
+                        {isCopiedJoinCode ? <ContentPasteIcon /> : <FileCopyIcon />}
+                      </IconButton>
+                    </Tooltip>
+                  </Typography>
+                )}
               </Box>
             </Grid>
           </Grid>
 
-          <Tooltip title={isCopied ? 'Link is copied!' : 'Copy invite link'} arrow onClick={handleCopy}>
-            <IconButton
-              sx={{
-                position: 'absolute',
-                bottom: 5,
-                right: 5,
-              }}
-              color="inherit"
-            >
-              {isCopied ? <ContentPasteIcon /> : <ShareIcon />}
-            </IconButton>
-          </Tooltip>
+          {isTeacher && (
+            <Tooltip title={isCopied ? 'Link is copied!' : 'Copy invite link'} arrow onClick={handleCopy}>
+              <IconButton
+                sx={{
+                  position: 'absolute',
+                  bottom: 5,
+                  right: 5,
+                }}
+                color="inherit"
+              >
+                {isCopied ? <ContentPasteIcon /> : <ShareIcon />}
+              </IconButton>
+            </Tooltip>
+          )}
+
         </Paper>
 
         <Box sx={{ width: '100%' }}>
