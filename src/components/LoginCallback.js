@@ -26,6 +26,7 @@ const LoginCallback = () => {
             id: parsedUserData.id,
             name: parsedUserData.name,
             token: parsedUserData.accessToken,
+            socialLogins: parsedUserData.socialLogins
           });
 
           setTimeout(() => {
