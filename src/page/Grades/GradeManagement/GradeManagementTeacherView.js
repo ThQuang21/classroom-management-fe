@@ -256,7 +256,7 @@ export default function GradeManagementTeacherView() {
           <TableHeaderRow showSortingControls/>
           <TableEditRow />
           <TableEditColumn
-            showAddCommand={!addedRows.length}
+            // showAddCommand={!addedRows.length}
             showEditCommand
           />
         </Grid>

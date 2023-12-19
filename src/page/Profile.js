@@ -74,12 +74,17 @@ const Profile = () => {
       })
   };
 
-  const initialValues = {
+  var initialValues = {
     name : user.name,
     email: user.email,
-    studentId: user.studentId,
-    socialLoginId: user.socialLogins[0].socialId
+    studentId: user.studentId
   };
+
+  if (user.socialLogins.length > 0) {
+    initialValues = {
+      socialLoginId: user.socialLogins[0].socialId
+    };
+  }
 
   return (
     <>
