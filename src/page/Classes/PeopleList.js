@@ -13,7 +13,7 @@ import {useUserStore} from "../../context/UserStoreProvider";
 
 
 export default function PeopleList() {
-  const { isTeacher } = useUserStore();
+  const { user, isTeacher, setIsTeacherStatus } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [peopleData, setPeopleData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -34,7 +34,14 @@ export default function PeopleList() {
         await ClassService.listPeopleByClassCode({ classCode: classCode })
           .then((data) => {
             console.log(data.data.data)
-            setPeopleData(data.data.data)
+            console.log(user)
+
+            const peopleList = data.data.data
+            setPeopleData(peopleList)
+
+            if (peopleList.teachers.includes(user.id)) {
+              setIsTeacherStatus(true)
+            }
             setLoading(false);
           }, (error) => {
           })

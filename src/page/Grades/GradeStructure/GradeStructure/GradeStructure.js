@@ -15,7 +15,8 @@ import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
 import {useUserStore} from "../../../../context/UserStoreProvider";
-import GradeStructureView from "./GradeStructureView";
+import GradeStructureTeacherView from "./GradeStructureTeacherView";
+import GradeStructureStudentView from "./GradeStructureStudentView";
 
 export default function GradeStructure() {
   const { isTeacher } = useUserStore();
@@ -216,8 +217,8 @@ export default function GradeStructure() {
             view ? (
               <>
                 {gradeComposition.map((grade, index) => (
-                  <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale} data={grade}
-                                      dataFinal={grade.finalized} reloadData={fetchData}
+                  <GradeStructureTeacherView dataName={grade.name} dataScale={grade.gradeScale} data={grade}
+                                             dataFinal={grade.finalized} reloadData={fetchData}
                   />
                 ))}
               </>
@@ -262,9 +263,14 @@ export default function GradeStructure() {
           ) : (
             <>
               {gradeComposition.map((grade, index) => (
-                <GradeStructureView dataName={grade.name} dataScale={grade.gradeScale} dataFinal={grade.finalized}
+                <GradeStructureStudentView dataName={grade.name} dataScale={grade.gradeScale} data={grade}
+                                           dataFinal={grade.finalized}
+
                 />
               ))}
+              <Typography variant="h6" style={{ textAlign: 'right', color: 'teal', paddingTop: "15px" }}>
+                <strong>Total: </strong>grade
+              </Typography>
             </>
           )}
         </Grid>

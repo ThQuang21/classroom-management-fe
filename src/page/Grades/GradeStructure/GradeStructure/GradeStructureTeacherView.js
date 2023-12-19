@@ -7,7 +7,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import GradeCompositionDetail from "../GradeCompositionDetail/GradeCompositionDetail";
 
-export default function GradeStructureView({dataName, dataScale, data, dataFinal, reloadData}) {
+export default function GradeStructureTeacherView({dataName, dataScale, data, dataFinal, reloadData}) {
 
   return (
     <Paper elevation={2} style={{width:'100%' , marginTop: '10px', borderLeft: '10px solid' +
