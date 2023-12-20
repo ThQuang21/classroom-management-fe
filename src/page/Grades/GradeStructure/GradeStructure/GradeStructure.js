@@ -27,7 +27,7 @@ export default function GradeStructure() {
   const [loadingGrade, setLoadingGrade] = React.useState(false);
   const [gradeComposition, setGradeComposition] = useState([]);
   const [gradeDetails, setGradeDetails] = useState([]);
-  const [totalGrade, setTotalGrade] = useState('');
+  const [totalGrade, setTotalGrade] = useState(-1);
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -136,10 +136,11 @@ export default function GradeStructure() {
 
     if (!isTeacher) {
       if (user.studentId) {
-        setLoadingGrade(true);
 
         await GradeService.getGradeByClassCodeAndStudentId({ classCode: classCode, studentId : user.studentId})
           .then((data) => {
+            setLoadingGrade(true);
+
             // setLoading(false);
 
             console.log(data.data.data)
@@ -150,28 +151,17 @@ export default function GradeStructure() {
             for (const [gradeName, gradeValue] of Object.entries(listGrades)) {
               newGrades[gradeName] = gradeValue;
               for (const gradeComp of gradeComposition) {
-                if (gradeComp.code === gradeName) {
-                  const numberToRound = gradeValue * gradeComp.gradeScale / 100;
-                  gradeTotal += Math.round(numberToRound * 100)/100;
+                if (gradeComp.code === gradeName && gradeValue !== -1) {
+                  gradeTotal += gradeValue * gradeComp.gradeScale / 100;
                 }
               }
             }
+            const gradeToSet = Number(gradeTotal.toFixed(2))
 
-            setTotalGrade(gradeTotal)
+            setTotalGrade(gradeToSet)
             setGradeDetails(newGrades);
-            console.log(newGrades);
-            // const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
-            //   name: grade.name,
-            //   gradeScale: grade.gradeScale,
-            //   position: grade.position,
-            //   id: grade.position,
-            //   code: grade.id,
-            //   finalized: grade.finalized
-            // }));
-            // // setGradeComposition(newGrades)
-            // console.log(newGrades)
-
             setLoadingGrade(false);
+
           }, (error) => {
             showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
           })
@@ -187,7 +177,7 @@ export default function GradeStructure() {
     setLoadingGrade(true);
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [totalGrade]);
 
   const handleSubmit = async () => {
     let totalScale = 0;
@@ -318,9 +308,12 @@ export default function GradeStructure() {
 
                 />
               ))}
-              <Typography variant="h6" style={{ textAlign: 'right', color: 'teal', paddingTop: "15px" }}>
-                <strong>Total: </strong>{totalGrade}
-              </Typography>
+              {totalGrade !== -1 && (
+                <Typography variant="h6" style={{ textAlign: 'right', color: 'teal', paddingTop: "15px" }}>
+                  <strong>Total: </strong>{totalGrade}
+                </Typography>
+              )}
+
             </>
           )}
         </Grid>

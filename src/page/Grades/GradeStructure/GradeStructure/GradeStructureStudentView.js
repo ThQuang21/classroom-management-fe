@@ -45,14 +45,17 @@ export default function GradeStructureStudentView({data, gradeData}) {
                 <Typography variant="h6" gutterBottom><strong>Grade name:</strong> {data.name}</Typography>
               } />
             </ListItem>
-          <ListItem
-            key={2}
-            disableGutters
-          >
-            <ListItemText primary={
-              <Typography variant="h6" gutterBottom><strong>Your grade:</strong> {gradeData[data.code]}</Typography>
-            } />
-          </ListItem>
+          {Object.keys(gradeData).length > 0 && (
+            <ListItem
+              key={2}
+              disableGutters
+            >
+              <ListItemText primary={
+                <Typography variant="h6" gutterBottom><strong>Your grade:</strong> {gradeData[data.code]}</Typography>
+              } />
+            </ListItem>
+          )}
+
         </List>
       </Box>
 
