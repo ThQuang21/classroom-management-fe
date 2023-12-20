@@ -8,13 +8,15 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
+import GradeReviewServices from "../../../services/grade.review.services";
+import {useUserStore} from "../../../context/UserStoreProvider";
+import GradeReviewStudentView from "./GradeReviewStudentView";
 
 export default function GradeReview() {
+  const { isTeacher, user } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
-  const [loading, setLoading] = React.useState(false);
-  const [view, setView] = React.useState(true);
   const [loadingGrade, setLoadingGrade] = React.useState(false);
-  const [gradeComposition, setGradeComposition] = useState([]);
+  const [gradeReviews, setGradeReviews] = React.useState([]);
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -37,6 +39,30 @@ export default function GradeReview() {
     }, 6000);
   };
 
+  const fetchData = async () => {
+    if (classCode) {
+      await GradeReviewServices.getGradeReviewsByClassCodeAndStudentId({
+        classCode: classCode,
+        studentId: user.id
+      })
+        .then((data) => {
+          setLoadingGrade(false);
+
+          console.log(data.data.data)
+          setGradeReviews(data.data.data)
+
+        }, (error) => {
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+        })
+      ;
+    }
+  };
+
+  useEffect(() => {
+    setLoadingGrade(true);
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
 
   if (loadingGrade) {
     return (
@@ -72,9 +98,10 @@ export default function GradeReview() {
         </Grid>
 
         <Grid style={{paddingTop: '15px'}}>
-        Hello
+          {gradeReviews.map((grade, index) => (
+            <GradeReviewStudentView gradeReview={grade} />
+          ))}
         </Grid>
-
 
       </Grid>
 
