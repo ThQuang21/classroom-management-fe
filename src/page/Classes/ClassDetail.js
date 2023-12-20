@@ -51,7 +51,7 @@ function a11yProps(index) {
   };
 }
 
-export default function ClassDetail() {
+export default function ClassDetail({socket}) {
   const { isTeacher } = useUserStore();
   const [loading, setLoading] = React.useState(true);
   const [isCopied, setIsCopied] = useState(false);

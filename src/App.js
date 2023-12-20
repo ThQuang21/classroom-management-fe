@@ -7,7 +7,7 @@ import ResetPwd from "./page/ResetPwd";
 import ResponsiveAppBar from "./components/ResponsiveAppBar/ResponsiveAppBar";
 import Home from "./page/Home";
 import Footer from "./components/Footer/Footer";
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import LoginCallback from "./components/LoginCallback";
 import ListTeachingClasses from "./page/Classes/ListTeachingClasses";
 import ClassDetail from "./page/Classes/ClassDetail";
@@ -16,8 +16,21 @@ import ListJoinedClasses from "./page/Classes/ListJoinedClasses";
 import Profile from './page/Profile';
 import {AuthRoute} from "./AuthRoute";
 import HomeComponent from "./page/Grades/GradeManagement/Test";
+import io from 'socket.io-client';
+
+
+
 function App() {
   const location = useLocation();
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const host = "http://localhost:3000";
+    const socket = io.connect(host);
+    // console.log(socket)
+    setSocket(socket);
+    return () => socket.close();
+  }, [setSocket]);
 
   const isListPage = () => {
     const listPages = ["/register", "/login", "/forgot-password", "/reset-password"];
@@ -30,7 +43,7 @@ function App() {
       {isListPage() ? null : <ResponsiveAppBar /> }
 
       <Routes>
-        <Route exact path="/test" element={<HomeComponent/>} />
+        {/*<Route exact path="/test" element={<HomeComponent/>} />*/}
 
         <Route exact path="/" element={<Home/>} />
         <Route exact path="/register" element={<Register/>} />
@@ -52,7 +65,7 @@ function App() {
         <Route exact path="/class/:classId"
                element={
                  <AuthRoute>
-                   <ClassDetail />
+                   <ClassDetail/>
                  </AuthRoute>
                }
         />

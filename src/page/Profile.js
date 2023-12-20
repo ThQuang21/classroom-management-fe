@@ -148,6 +148,7 @@ const Profile = () => {
                       name="studentId"
                       error={Boolean(validationSchema.fields.email && validationSchema.fields.email.errors)}
                       helperText={<ErrorMessage name="studentId" component="div" className="error-message" />}
+                      disabled={initialValues.studentId !== null || initialValues.studentId !== undefined}
                     />
                   </Grid>
                   {user.socialLogins.length > 0 && (
