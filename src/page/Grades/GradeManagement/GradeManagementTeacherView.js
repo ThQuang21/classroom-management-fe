@@ -171,7 +171,16 @@ export default function GradeManagementTeacherView() {
     await GradeService.getGradesByClassCode({ classCode: classCode})
       .then((data) => {
         console.log(data.data.data);
-        setRows(data.data.data)
+
+        var rowData = []
+        data.data.data.forEach((row, index) => {
+          rowData.push({
+            ...row,
+            id : index + 1
+          })
+        })
+        setRows(rowData)
+
         setLoading(false)
       }, (error) => {
         console.log(error)
