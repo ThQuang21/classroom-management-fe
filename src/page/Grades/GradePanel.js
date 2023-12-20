@@ -8,6 +8,7 @@ import GradeStructure from "./GradeStructure/GradeStructure/GradeStructure";
 import Grid from '@mui/material/Grid';
 import GradeManagementTeacherView from "./GradeManagement/GradeManagementTeacherView";
 import GradeReview from "./GradeReview/GradeReview";
+import {useUserStore} from "../../context/UserStoreProvider";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -43,6 +44,7 @@ function a11yProps(index) {
 }
 
 export default function GradePanel() {
+  const { isTeacher } = useUserStore();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -53,31 +55,61 @@ export default function GradePanel() {
     <Grid container spacing={2}>
       <Grid item xs={2}>
         <Box sx={{ bgcolor: 'background.paper', height: '100%' }}>
-          <Tabs
-            orientation="vertical"
-            variant="scrollable"
-            value={value}
-            onChange={handleChange}
-            aria-label="Vertical tabs example"
-            sx={{ borderRight: 1, borderColor: 'divider' }}
-          >
-            <Tab label="Structure" {...a11yProps(0)} />
-            <Tab label="Management" {...a11yProps(1)} />
-            <Tab label="Review" {...a11yProps(2)} />
-          </Tabs>
+
+            {isTeacher ? (
+                <Tabs
+                  orientation="vertical"
+                  variant="scrollable"
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="Vertical tabs example"
+                  sx={{ borderRight: 1, borderColor: 'divider' }}
+                >
+                  <Tab label="Structure" {...a11yProps(0)} />
+                  <Tab label="Management" {...a11yProps(1)} />
+                  <Tab label="Review" {...a11yProps(2)} />
+                </Tabs>
+            ) : (
+              <Tabs
+                orientation="vertical"
+                variant="scrollable"
+                value={value}
+                onChange={handleChange}
+                aria-label="Vertical tabs example"
+                sx={{ borderRight: 1, borderColor: 'divider' }}
+              >
+                <Tab label="Structure" {...a11yProps(0)} />
+                <Tab label="Review" {...a11yProps(1)} />
+              </Tabs>
+            ) }
+
         </Box>
       </Grid>
 
       <Grid item xs={12} sm={10}>
-        <TabPanel value={value} index={0}>
-          <GradeStructure />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <GradeManagementTeacherView />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <GradeReview />
-        </TabPanel>
+
+        {isTeacher ? (
+          <>
+            <TabPanel value={value} index={0}>
+              <GradeStructure />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <GradeManagementTeacherView />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <GradeReview />
+            </TabPanel>
+          </>
+        ) : (
+          <>
+            <TabPanel value={value} index={0}>
+              <GradeStructure />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <GradeReview />
+            </TabPanel>
+          </>
+          )}
       </Grid>
     </Grid>
   );

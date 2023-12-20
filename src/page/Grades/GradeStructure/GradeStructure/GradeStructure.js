@@ -17,14 +17,17 @@ import {LinearProgress} from "@mui/material";
 import {useUserStore} from "../../../../context/UserStoreProvider";
 import GradeStructureTeacherView from "./GradeStructureTeacherView";
 import GradeStructureStudentView from "./GradeStructureStudentView";
+import GradeService from "../../../../services/grade.service";
 
 export default function GradeStructure() {
-  const { isTeacher } = useUserStore();
+  const { isTeacher, user } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [loading, setLoading] = React.useState(false);
   const [view, setView] = React.useState(true);
   const [loadingGrade, setLoadingGrade] = React.useState(false);
   const [gradeComposition, setGradeComposition] = useState([]);
+  const [gradeDetails, setGradeDetails] = useState([]);
+  const [totalGrade, setTotalGrade] = useState('');
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -130,6 +133,54 @@ export default function GradeStructure() {
         })
       ;
     }
+
+    if (!isTeacher) {
+      if (user.studentId) {
+        setLoadingGrade(true);
+
+        await GradeService.getGradeByClassCodeAndStudentId({ classCode: classCode, studentId : user.studentId})
+          .then((data) => {
+            // setLoading(false);
+
+            console.log(data.data.data)
+            const newGrades = {};
+            let gradeTotal = 0;
+            const {fullName, studentId, ...listGrades} = data.data.data
+
+            for (const [gradeName, gradeValue] of Object.entries(listGrades)) {
+              newGrades[gradeName] = gradeValue;
+              for (const gradeComp of gradeComposition) {
+                if (gradeComp.code === gradeName) {
+                  const numberToRound = gradeValue * gradeComp.gradeScale / 100;
+                  gradeTotal += Math.round(numberToRound * 100)/100;
+                }
+              }
+            }
+
+            setTotalGrade(gradeTotal)
+            setGradeDetails(newGrades);
+            console.log(newGrades);
+            // const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
+            //   name: grade.name,
+            //   gradeScale: grade.gradeScale,
+            //   position: grade.position,
+            //   id: grade.position,
+            //   code: grade.id,
+            //   finalized: grade.finalized
+            // }));
+            // // setGradeComposition(newGrades)
+            // console.log(newGrades)
+
+            setLoadingGrade(false);
+          }, (error) => {
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          })
+        ;
+      } else {
+        showAlert('Please update your student ID to view your grade', 'error');
+      }
+    }
+
   };
 
   useEffect(() => {
@@ -263,13 +314,12 @@ export default function GradeStructure() {
           ) : (
             <>
               {gradeComposition.map((grade, index) => (
-                <GradeStructureStudentView dataName={grade.name} dataScale={grade.gradeScale} data={grade}
-                                           dataFinal={grade.finalized}
+                <GradeStructureStudentView data={grade} gradeData={gradeDetails}
 
                 />
               ))}
               <Typography variant="h6" style={{ textAlign: 'right', color: 'teal', paddingTop: "15px" }}>
-                <strong>Total: </strong>grade
+                <strong>Total: </strong>{totalGrade}
               </Typography>
             </>
           )}

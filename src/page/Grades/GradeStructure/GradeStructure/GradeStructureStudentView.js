@@ -6,10 +6,20 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import GradeCompositionDetail from "../GradeCompositionDetail/GradeCompositionDetail";
+import ClassService from "../../../../services/class.service";
+import {useEffect, useState} from "react";
+import Container from "@mui/material/Container";
+import {LinearProgress} from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import GradeService from "../../../../services/grade.service";
+import {useUserStore} from "../../../../context/UserStoreProvider";
 
-export default function GradeStructureStudentView({dataName, dataScale, data, dataFinal}) {
+export default function GradeStructureStudentView({data, gradeData}) {
 
   console.log(data)
+  console.log(gradeData)
+
   return (
     <Paper elevation={2} style={{width:'100%' , marginTop: '10px', borderLeft: '10px solid' +
         ' teal'}}
@@ -17,7 +27,7 @@ export default function GradeStructureStudentView({dataName, dataScale, data, da
       <Box style={{display: 'flex',flexDirection:'column', alignItems:'flex-start', marginLeft: '20px', marginRight: '20px', paddingTop: '20px', paddingBottom: '10px'}}
       >
         <Box  style={{ display: 'flex', alignItems: 'right',  justifyContent: 'right', width: '100%'}}>
-          {dataFinal && (
+          {data.finalized && (
             <Typography style={{ textAlign: 'right', color: 'teal' }}>This grade is final</Typography>
             )}
 
@@ -28,13 +38,21 @@ export default function GradeStructureStudentView({dataName, dataScale, data, da
               key={1}
               disableGutters
               secondaryAction={
-                <Typography><strong>Grade scale:</strong> {dataScale}%</Typography>
+                <Typography><strong>Grade scale:</strong> {data.gradeScale}%</Typography>
               }
             >
               <ListItemText primary={
-                <Typography variant="h6" gutterBottom><strong>Grade name:</strong> {dataName}</Typography>
+                <Typography variant="h6" gutterBottom><strong>Grade name:</strong> {data.name}</Typography>
               } />
             </ListItem>
+          <ListItem
+            key={2}
+            disableGutters
+          >
+            <ListItemText primary={
+              <Typography variant="h6" gutterBottom><strong>Your grade:</strong> {gradeData[data.code]}</Typography>
+            } />
+          </ListItem>
         </List>
       </Box>
 
