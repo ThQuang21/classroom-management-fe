@@ -5,15 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import GradeCompositionDetail from "../GradeCompositionDetail/GradeCompositionDetail";
-import ClassService from "../../../../services/class.service";
-import {useEffect, useState} from "react";
-import Container from "@mui/material/Container";
-import {LinearProgress} from "@mui/material";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import GradeService from "../../../../services/grade.service";
-import {useUserStore} from "../../../../context/UserStoreProvider";
+import GradeStructureStudentRequest from "./GradeStructureStudentRequest";
 
 export default function GradeStructureStudentView({data, gradeData}) {
 
@@ -49,6 +41,9 @@ export default function GradeStructureStudentView({data, gradeData}) {
             <ListItem
               key={2}
               disableGutters
+              secondaryAction={
+                <GradeStructureStudentRequest grade={data}/>
+              }
             >
               <ListItemText primary={
                 <Typography variant="h6" gutterBottom><strong>Your grade:</strong> {gradeData[data.code]}</Typography>
