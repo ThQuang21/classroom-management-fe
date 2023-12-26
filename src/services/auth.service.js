@@ -58,6 +58,11 @@ const googleLogin = async () => {
   }
 }
 
+const findUserByEmail = async ({ email }) => {
+  const URL = API_URL + "auth/find-by-email/" + email;
+  return await http.get(URL);
+}
+
 const AuthService = {
   register,
   activeUser,
@@ -68,6 +73,7 @@ const AuthService = {
   googleLogin,
   updateStudentId,
   updateProfile,
+  findUserByEmail
 }
 
 export default AuthService;

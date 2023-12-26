@@ -10,8 +10,8 @@ import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
 import GradeReviewServices from "../../../services/grade.review.services";
 import {useUserStore} from "../../../context/UserStoreProvider";
-import GradeReviewStudentView from "./GradeReviewStudentView";
 import GradeReviewTeacherView from "./GradeReviewTeacherView";
+import GradeStudentView from "./GradeStudentView";
 
 export default function GradeReview() {
   const { isTeacher, user } = useUserStore();
@@ -110,7 +110,7 @@ export default function GradeReview() {
           <>
             <Grid style={{paddingTop: '15px'}}>
               {gradeReviews.map((grade, index) => (
-                <GradeReviewStudentView gradeReview={grade} />
+                <GradeStudentView gradeReview={grade} />
               ))}
             </Grid>
           </>
