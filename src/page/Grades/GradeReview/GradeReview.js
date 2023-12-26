@@ -10,15 +10,18 @@ import Container from "@mui/material/Container";
 import {LinearProgress} from "@mui/material";
 import GradeReviewServices from "../../../services/grade.review.services";
 import {useUserStore} from "../../../context/UserStoreProvider";
-import GradeReviewTeacherView from "./GradeReviewTeacherView";
 import GradeStudentView from "./GradeStudentView";
-import GradeTeacherView from "./GradeTeacherView";
+import GradeTeacherView from "./GradeTeacherView/GradeTeacherView";
+import FilterListStudent from "./GradeTeacherView/FilterListStudent";
+import Button from "@mui/material/Button";
+import GradeService from "../../../services/grade.service";
 
 export default function GradeReview() {
   const { isTeacher, user } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [loadingGrade, setLoadingGrade] = React.useState(false);
   const [gradeReviews, setGradeReviews] = React.useState([]);
+  const [studentList, setStudentList] = React.useState([]);
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -49,13 +52,24 @@ export default function GradeReview() {
         })
           .then((data) => {
             setLoadingGrade(false);
-
-            console.log(data.data.data)
+            // console.log(data.data.data)
             setGradeReviews(data.data.data)
           }, (error) => {
             showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
           })
         ;
+
+        await GradeService.getGradesByClassCode({ classCode: classCode})
+          .then((data) => {
+            // console.log(data.data.data);
+            setStudentList(data.data.data);
+          }, (error) => {
+            console.log(error)
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          })
+        ;
+
+
       } else {
         await GradeReviewServices.getGradeReviewsByClassCodeAndStudentId({
           classCode: classCode,
@@ -81,6 +95,28 @@ export default function GradeReview() {
     fetchData();
     // eslint-disable-next-line
   }, []);
+
+  const handleFilterData = async (personName) => {
+    // console.log(personName)
+    setLoadingGrade(true);
+
+    await GradeReviewServices.getGradeReviewsByClassCodeAndStudentIds({
+      classCode: classCode,
+      studentIds: personName
+    })
+      .then((data) => {
+        setLoadingGrade(false);
+
+        console.log(data.data.data)
+        setGradeReviews(data.data.data)
+
+      }, (error) => {
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+      });
+
+
+  };
+
 
   if (loadingGrade) {
     return (
@@ -118,6 +154,12 @@ export default function GradeReview() {
         {isTeacher ? (
           <>
             <Grid style={{paddingTop: '15px'}}>
+              <Paper elevation={2} style={{width:'100%' , marginTop: '10px', borderLeft: '10px solid' +
+                  ' teal', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+              >
+                <FilterListStudent studentList={studentList} handleFilterData={handleFilterData}/>
+
+              </Paper>
               {gradeReviews.map((grade, index) => (
                 <GradeTeacherView gradeReview={grade} />
               ))}

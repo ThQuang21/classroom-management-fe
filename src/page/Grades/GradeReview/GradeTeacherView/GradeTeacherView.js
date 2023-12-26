@@ -13,12 +13,12 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import {Divider, InputAdornment} from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import GradeReviewServices from "../../../services/grade.review.services";
-import {useUserStore} from "../../../context/UserStoreProvider";
+import GradeReviewServices from "../../../../services/grade.review.services";
+import {useUserStore} from "../../../../context/UserStoreProvider";
 import {useState} from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import ListComment from "./ListComment";
+import ListComment from "../ListComment";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -96,7 +96,7 @@ export default function GradeTeacherView({gradeReview}) {
       <Card>
         <CardHeader
           title={<Typography variant="h6" gutterBottom><strong>Grade name:</strong> {gradeReview.gradeCompositionName}</Typography>}
-          subheader={<Typography variant="h6" gutterBottom><strong>Student:</strong> {gradeReview.studentName}</Typography>}
+          subheader={<Typography variant="h6" gutterBottom><strong>Student ID:</strong> {gradeReview.studentName}</Typography>}
         />
         <CardContent>
           <Typography variant="body1" color="text.secondary"><strong>Current grade:</strong> {gradeReview.currentGrade}</Typography>
