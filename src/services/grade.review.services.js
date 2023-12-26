@@ -7,6 +7,7 @@ const createGradeReview = async ({
                                    classCode,
                                    gradeCompositionId,
                                    studentId,
+                                   currentGrade,
                                    expectationGrade,
                                    explanation,
                                  } ) => {
@@ -14,6 +15,7 @@ const createGradeReview = async ({
     classCode,
     gradeCompositionId,
     studentId,
+    currentGrade,
     expectationGrade,
     explanation,
   });

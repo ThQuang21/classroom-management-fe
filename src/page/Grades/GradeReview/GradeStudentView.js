@@ -13,7 +13,6 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import {Divider, InputAdornment} from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import ClassService from "../../../services/class.service";
 import GradeReviewServices from "../../../services/grade.review.services";
 import {useUserStore} from "../../../context/UserStoreProvider";
 import {useState} from "react";
@@ -97,9 +96,12 @@ export default function GradeStudentView({gradeReview}) {
       <Card>
         <CardHeader
           title={<Typography variant="h6" gutterBottom><strong>Grade name:</strong> {gradeReview.gradeCompositionName}</Typography>}
-          subheader={<Typography variant="h6" gutterBottom><strong>Your expectation grade:</strong> {gradeReview.expectationGrade}</Typography>}
+          subheader={<Typography variant="h6" gutterBottom><strong>Your current grade:</strong> {gradeReview.currentGrade}</Typography>}
         />
         <CardContent>
+          <Typography variant="body1" color="text.secondary">
+            <strong>Your expectation grade:</strong> {gradeReview.expectationGrade}
+          </Typography>
           <Typography variant="body1" color="text.secondary">
             <strong>Your explanation:</strong> {gradeReview.explanation}
           </Typography>

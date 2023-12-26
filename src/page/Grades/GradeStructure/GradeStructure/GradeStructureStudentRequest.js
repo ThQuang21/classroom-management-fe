@@ -14,7 +14,7 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import {useUserStore} from "../../../../context/UserStoreProvider";
 
-export default function GradeStructureStudentRequest({grade}) {
+export default function GradeStructureStudentRequest({grade, currentGrade}) {
   const { user } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [open, setOpen] = React.useState(false);
@@ -58,13 +58,14 @@ export default function GradeStructureStudentRequest({grade}) {
       classCode: classCode,
       gradeCompositionId: grade.code,
       studentId: user.id,
+      currentGrade: currentGrade,
       expectationGrade : expectGrade,
       explanation: explanation,
     })
       .then(
         (data) => {
           console.log(data.data.data)
-          showAlert('Request a review successull', 'success');
+          showAlert('Request a review successully', 'success');
 
         },
         (error) => {

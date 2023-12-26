@@ -42,7 +42,7 @@ export default function GradeStructureStudentView({data, gradeData}) {
               key={2}
               disableGutters
               secondaryAction={
-                <GradeStructureStudentRequest grade={data}/>
+                <GradeStructureStudentRequest grade={data} currentGrade={gradeData[data.code]}/>
               }
             >
               <ListItemText primary={

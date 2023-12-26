@@ -4,9 +4,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
 import {useEffect} from "react";
 import AuthService from "../../../services/auth.service";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function ListComment({oneComment}) {
   const [name, setName] = React.useState('');
@@ -36,7 +36,7 @@ export default function ListComment({oneComment}) {
       <ListItem>
         <ListItemAvatar>
           <Avatar>
-            <ImageIcon />
+            <AccountCircleIcon />
           </Avatar>
         </ListItemAvatar>
         <ListItemText primary={<strong>{name}</strong>} secondary={oneComment.comment} />
