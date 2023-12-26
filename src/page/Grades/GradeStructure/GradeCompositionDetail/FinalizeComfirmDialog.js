@@ -42,7 +42,7 @@ export default function FinalizeComfirmDialog({clickAgree}) {
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             Once you have checked the table below, finalize this grade composition.
-            This means you <strong style={{color: 'red'}}>cannot update</strong> the grade of the existing student in this grade composition.
+            This means you <strong style={{color: 'red'}}>cannot update</strong> the grade in this grade composition anymore.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
