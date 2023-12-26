@@ -21,6 +21,12 @@ const createGradeReview = async ({
   });
 };
 
+const getGradeReviewsByClassCode = async ({
+                                                        classCode,
+                                                      } ) => {
+  return await http.get(API_URL + "gradeReviews/get-by-classcode/" + classCode );
+};
+
 const getGradeReviewsByClassCodeAndStudentId = async ({
                                    classCode,
                                    studentId
@@ -39,6 +45,7 @@ const addCommentByClassCodeStudentIdAndGradeCompositionId = async ({
 
 const GradeService = {
   createGradeReview,
+  getGradeReviewsByClassCode,
   getGradeReviewsByClassCodeAndStudentId,
   addCommentByClassCodeStudentIdAndGradeCompositionId
 }

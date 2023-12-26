@@ -12,6 +12,7 @@ import GradeReviewServices from "../../../services/grade.review.services";
 import {useUserStore} from "../../../context/UserStoreProvider";
 import GradeReviewTeacherView from "./GradeReviewTeacherView";
 import GradeStudentView from "./GradeStudentView";
+import GradeTeacherView from "./GradeTeacherView";
 
 export default function GradeReview() {
   const { isTeacher, user } = useUserStore();
@@ -42,20 +43,36 @@ export default function GradeReview() {
 
   const fetchData = async () => {
     if (classCode) {
-      await GradeReviewServices.getGradeReviewsByClassCodeAndStudentId({
-        classCode: classCode,
-        studentId: user.id
-      })
-        .then((data) => {
-          setLoadingGrade(false);
-
-          console.log(data.data.data)
-          setGradeReviews(data.data.data)
-
-        }, (error) => {
-          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+      if (isTeacher) {
+        await GradeReviewServices.getGradeReviewsByClassCode({
+          classCode: classCode
         })
-      ;
+          .then((data) => {
+            setLoadingGrade(false);
+
+            console.log(data.data.data)
+            setGradeReviews(data.data.data)
+          }, (error) => {
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          })
+        ;
+      } else {
+        await GradeReviewServices.getGradeReviewsByClassCodeAndStudentId({
+          classCode: classCode,
+          studentId: user.id
+        })
+          .then((data) => {
+            setLoadingGrade(false);
+
+            console.log(data.data.data)
+            setGradeReviews(data.data.data)
+
+          }, (error) => {
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          })
+        ;
+      }
+
     }
   };
 
@@ -102,7 +119,7 @@ export default function GradeReview() {
           <>
             <Grid style={{paddingTop: '15px'}}>
               {gradeReviews.map((grade, index) => (
-                <GradeReviewTeacherView gradeReview={grade} />
+                <GradeTeacherView gradeReview={grade} />
               ))}
             </Grid>
           </>

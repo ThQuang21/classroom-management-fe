@@ -9,27 +9,7 @@ import AuthService from "../../../services/auth.service";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function ListComment({oneComment}) {
-  const [name, setName] = React.useState('');
   console.log(oneComment)
-
-  useEffect(() => {
-    const fetchData = async () => {
-
-      if (oneComment) {
-        await AuthService.findUserByEmail({ email: oneComment.commenter})
-          .then((data) => {
-            console.log(data.data.data);
-            setName(data.data.data.name)
-          }, (error) => {
-            console.log(error)
-          })
-        ;
-      }
-    };
-
-    fetchData();
-    // eslint-disable-next-line
-  }, [name]);
 
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper'}}>
@@ -39,7 +19,7 @@ export default function ListComment({oneComment}) {
             <AccountCircleIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={<strong>{name}</strong>} secondary={oneComment.comment} />
+        <ListItemText primary={<strong>{oneComment.commenter}</strong>} secondary={oneComment.comment} />
       </ListItem>
     </List>
   );
