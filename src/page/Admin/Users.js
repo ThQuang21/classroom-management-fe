@@ -12,10 +12,11 @@ import {Divider, IconButton} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AuthService from "../../services/auth.service";
 import TableUsers from "./Users/TableUsers";
+import AdminUserDetail from "./Users/AdminUserDetail";
 
 export default function Users() {
   const [loading, setLoading] = React.useState(true);
-  const [classData, setClassData] = React.useState(null);
+  const [userDetail, setUserDetail] = React.useState(null);
   const [userData, setUserData] = React.useState(null);
   const [rowClick, setRowClick] = React.useState(null);
   const [alertProps, setAlertProps] = useState({
@@ -63,6 +64,7 @@ export default function Users() {
   };
 
   const handleRowClick = (row) => {
+    console.log(row)
     setRowClick(null);
 
     setTimeout(() => {
@@ -93,9 +95,10 @@ export default function Users() {
               <CloseIcon sx={{ fontSize: '2rem' }}/>
             </IconButton>
           </Stack>
-          <Divider sx={{ borderStyle: 'dashed' }} />
+          <Divider sx={{ borderStyle: 'dashed', mb: 4 }} />
 
-          <AdminClassDetail classCode={rowClick} clickRow={handleRowClick}/>
+          <AdminUserDetail userDetail={rowClick} clickRow={handleRowClick}/>
+
         </Container>
       )}
 

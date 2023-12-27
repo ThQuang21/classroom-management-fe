@@ -68,6 +68,14 @@ const getAllUsers = async () => {
   return await http.get(URL);
 }
 
+const banUser = async ({ email }) => {
+  return await http.put(API_URL + "auth/banUser/" + email);
+};
+
+const activeUserAdmin = async ({ email }) => {
+  return await http.put(API_URL + "auth/activeUser/" + email);
+};
+
 const AuthService = {
   register,
   activeUser,
@@ -79,7 +87,9 @@ const AuthService = {
   updateStudentId,
   updateProfile,
   findUserByEmail,
-  getAllUsers
+  getAllUsers,
+  banUser,
+  activeUserAdmin
 }
 
 export default AuthService;

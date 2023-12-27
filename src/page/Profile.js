@@ -82,6 +82,9 @@ const Profile = () => {
 
   if (user.socialLogins.length > 0) {
     initialValues = {
+      name : user.name,
+      email: user.email,
+      studentId: user.studentId,
       socialLoginId: user.socialLogins[0].socialId
     };
   }

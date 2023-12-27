@@ -23,7 +23,7 @@ const TableClasses = ({users, clickRow}) => {
   const handleRowClick = (row) => {
     // Handle the row click, for example, log the clicked row's name
     console.log(`Clicked on row: ${row.email}`);
-    clickRow(row.email)
+    clickRow(row)
   };
 
   const ClickableTableRow = ({ row, children }) => {

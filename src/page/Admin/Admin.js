@@ -22,6 +22,7 @@ import ListItemText from "@mui/material/ListItemText";
 import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
 import Classes from "./Classes";
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 
 const drawerWidth = 240;
 
@@ -75,7 +76,7 @@ export default function Admin() {
     setOpen(!open);
   };
 
-  const [activePage, setActivePage] = React.useState('dashboard');
+  const [activePage, setActivePage] = React.useState('users');
 
   const handlePageChange = (page) => {
     setActivePage(page);
@@ -114,15 +115,26 @@ export default function Admin() {
             >
               <MenuIcon />
             </IconButton>
+            <SchoolOutlinedIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             <Typography
-              component="h1"
               variant="h6"
-              color="inherit"
               noWrap
-              sx={{ flexGrow: 1 }}
+              component="a"
+              href="/admin"
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+                flexGrow: 1
+              }}
             >
-              Dashboard
+              ADMIN HAQ CLASSROOM
             </Typography>
+
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
@@ -145,12 +157,6 @@ export default function Admin() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <ListItemButton>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary="Dashboard" />
-            </ListItemButton>
             <Link
               href="#"
               onClick={() => handlePageChange('users')}
