@@ -66,6 +66,20 @@ const getAllClasses = async () => {
   return await http.get(API_URL + "classes/get-all");
 };
 
+const updateClassName = async ({ classCode, className }) => {
+  return await http.put(API_URL + "classes/updateClassName/" + classCode, {
+    className
+  });
+};
+
+const removeTeacher = async ({ classCode, teacherId }) => {
+  return await http.delete(API_URL + "classes/removeTeacher/" + classCode + "/" + teacherId);
+};
+
+const removeStudent = async ({ classCode, studentId }) => {
+  return await http.delete(API_URL + "classes/removeStudent/" + classCode + "/" + studentId);
+};
+
 const ClassService = {
   createClass,
   listClassesByTeacherId,
@@ -79,7 +93,10 @@ const ClassService = {
   updateGradeCompositionByClassCode,
   getGradeCompositionByClassCode,
   updateFinalizeInGradeComposition,
-  getAllClasses
+  getAllClasses,
+  updateClassName,
+  removeTeacher,
+  removeStudent
 }
 
 export default ClassService;

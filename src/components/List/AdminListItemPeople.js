@@ -19,13 +19,15 @@ import AuthService from "../../services/auth.service";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {useUserStore} from "../../context/UserStoreProvider";
 import DeleteIcon from '@mui/icons-material/Delete';
+import ClassService from "../../services/class.service";
 
 export default function AdminListItemPeople(props) {
-  const {name, email, note, noSetting} = props;
+  const {name, email, note, noSetting, classCode, id, clickRow} = props;
   const [loading, setLoading] = React.useState(false);
   const [studentId, setStudentId] = React.useState(note);
 
   const [open, setOpen] = React.useState(false);
+  const [openRemove, setOpenRemove] = React.useState(false);
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',
@@ -47,7 +49,6 @@ export default function AdminListItemPeople(props) {
       handleAlertClose();
     }, 6000);
   };
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,6 +77,38 @@ export default function AdminListItemPeople(props) {
 
   };
 
+  const handleClickOpenRemove = () => {
+    setOpenRemove(true);
+  };
+
+  const handleCloseRemove = async () => {
+    if (noSetting) {
+      await ClassService.removeTeacher({classCode: classCode, teacherId: id})
+        .then((data) => {
+          showAlert('Remove teacher successfully.', 'success');
+          clickRow(classCode);
+        }, (error) => {
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          setOpen(false);
+        })
+    } else {
+      await ClassService.removeStudent({classCode: classCode, studentId: id})
+        .then((data) => {
+          showAlert('Remove student successfully.', 'success');
+          clickRow(classCode);
+        }, (error) => {
+          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          setOpen(false);
+        })
+    }
+    handleRemove();
+
+  };
+
+  const handleRemove = () => {
+    setOpenRemove(false);
+  };
+
   return (
     <Stack spacing={2} direction="row">
       <ListItem
@@ -85,14 +118,14 @@ export default function AdminListItemPeople(props) {
                 <IconButton aria-label="comment" onClick={handleClickOpen}>
                   <SettingsIcon />
                 </IconButton>
-                <IconButton aria-label="comment" onClick={handleClickOpen}>
+                <IconButton aria-label="comment" onClick={handleClickOpenRemove}>
                   <DeleteIcon />
                 </IconButton>
               </>
             ) : (
               !note && (
                 <>
-                  <IconButton aria-label="comment" onClick={handleClickOpen}>
+                  <IconButton aria-label="comment" onClick={handleClickOpenRemove}>
                     <DeleteIcon />
                   </IconButton>
                 </>
@@ -141,6 +174,19 @@ export default function AdminListItemPeople(props) {
           >
             <span>Save</span>
           </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openRemove}
+        keepMounted
+        onClose={handleRemove}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{<Typography>Are you sure to remove <strong>{name}</strong>?</Typography>}</DialogTitle>
+        <DialogActions>
+          <Button onClick={handleRemove}>Disagree</Button>
+          <Button onClick={handleCloseRemove}>Agree</Button>
         </DialogActions>
       </Dialog>
 

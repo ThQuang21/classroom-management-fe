@@ -94,7 +94,7 @@ export default function Classes() {
           </Stack>
           <Divider sx={{ borderStyle: 'dashed' }} />
 
-          <AdminClassDetail classCode={rowClick}/>
+          <AdminClassDetail classCode={rowClick} clickRow={handleRowClick}/>
         </Container>
       )}
 
