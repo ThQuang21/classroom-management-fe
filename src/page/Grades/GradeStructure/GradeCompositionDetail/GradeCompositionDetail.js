@@ -67,7 +67,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
       'StudentId',
       'Grade'
     ]];
-    console.log(studentIdList)
+    // console.log(studentIdList)
     const data = studentIdList.map((studentId, index) => ({ studentId }));
 
     const wb = utils.book_new();
@@ -80,7 +80,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
   const importFile = (event) => {
     const files = event.target.files;
 
-    console.log(files)
+    // console.log(files)
 
     if (files.length) {
       const file = files[0];
@@ -118,9 +118,9 @@ export default function GradeCompositionDetail({grade, reloadData}) {
   const handleImportGrade = async () => {
     var rowData = []
     const name = grade.name;
-    console.log(name)
+    // console.log(name)
     rows.map((row, index) => {
-      console.log(row)
+      // console.log(row)
       var obj = {
         studentId: row.student.studentId
       }
@@ -128,13 +128,13 @@ export default function GradeCompositionDetail({grade, reloadData}) {
 
       rowData.push(obj)
     })
-    console.log(rowData)
+    // console.log(rowData)
 
     await GradeService.updateGradesByClassCodeAndStudentId({
       classCode: classCode, gradesToUpdate: rowData
     })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         showAlert('Updated successful', 'success');
         // setLoading(false)
       }, (error) => {
@@ -148,11 +148,11 @@ export default function GradeCompositionDetail({grade, reloadData}) {
   const handleFinalizeGrade = async () => {
     setLoading(true);
     if (grade) {
-      console.log(grade.code)
+      // console.log(grade.code)
 
       await ClassService.updateFinalizeInGradeComposition({gradeCompositionId: grade.code, classCode})
         .then((data) => {
-          console.log(data.data.data);
+          // console.log(data.data.data);
           showAlert('Finalize this grade success', 'success');
           setLoading(false)
           reloadData();
@@ -172,7 +172,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
       if (grade) {
         await GradeService.getGradesByGradeComposition({ gradeComposition: grade.code})
           .then((data) => {
-            console.log(data.data.data);
+            // console.log(data.data.data);
 
             var rowData = []
             var studentIds = [];
@@ -184,8 +184,8 @@ export default function GradeCompositionDetail({grade, reloadData}) {
               })
               studentIds.push(row.student.studentId);
             })
-            console.log(rowData)
-            console.log(studentIds)
+            // console.log(rowData)
+            // console.log(studentIds)
 
             setRows(rowData)
             setStudentIdList(studentIds)
@@ -237,7 +237,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
 
   return (
     <React.Fragment>
-      {console.log(grade)}
+      {/*{console.log(grade)}*/}
 
       <Button variant="outlined" onClick={handleClickOpen} style={{ borderColor: 'teal', color: 'teal' }}>
         View
@@ -262,7 +262,9 @@ export default function GradeCompositionDetail({grade, reloadData}) {
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               Grade Detail of {grade.name}
             </Typography>
-            <FinalizeComfirmDialog clickAgree={handleFinalizeGrade}/>
+            {!grade.finalized && (
+              <FinalizeComfirmDialog clickAgree={handleFinalizeGrade}/>
+            )}
 
           </Toolbar>
         </AppBar>
@@ -285,6 +287,8 @@ export default function GradeCompositionDetail({grade, reloadData}) {
           </Button>
         </Box>
 
+
+
         <Box elevation={2}
              style={{
                border: '1px dashed ',
@@ -297,37 +301,48 @@ export default function GradeCompositionDetail({grade, reloadData}) {
                margin: "0px 18px",
              }}
         >
-          <Typography gutterBottom>
-            Once you have filled the template out, upload the file here
-          </Typography>
-
-          <label htmlFor="btn-upload">
-
-            <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}
-                    style={{paddingTop : "8px", paddingBottom : "8px", fontSize: "72"}}
-                    disabled={studentIdList.length === 0}
+          {grade.finalized ? (
+            <Typography
+              variant="h5"
+              gutterBottom
             >
-              <input type="file" name="file" className="custom-file-input" id="inputGroupFile" required onChange={importFile}
-                     accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
-            </Button>
-          </label>
-
-          <Box style={{ display: 'flex', alignItems: 'center', marginTop: "15px" }}>
-            <Typography gutterBottom>
-              Review the newly imported data from the file:&nbsp;&nbsp;&nbsp;&nbsp;
+              This grade is final so you can not import data anymore.
             </Typography>
+          ) : (
+            <>
+              <Typography gutterBottom>
+                Once you have filled the template out, upload the file here
+              </Typography>
 
-            <Stack spacing={2} direction="row"
-                   justifyContent="center"
-                   alignItems="center"
-            >
-              <Button variant="outlined" onClick={handleImportGrade}
-                      disabled={studentIdList.length === 0}
-              >
-                Save
-              </Button>
-            </Stack>
-          </Box>
+              <label htmlFor="btn-upload">
+
+                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}
+                        style={{paddingTop : "8px", paddingBottom : "8px", fontSize: "72"}}
+                        disabled={studentIdList.length === 0}
+                >
+                  <input type="file" name="file" className="custom-file-input" id="inputGroupFile" required onChange={importFile}
+                         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                </Button>
+              </label>
+
+              <Box style={{ display: 'flex', alignItems: 'center', marginTop: "15px" }}>
+                <Typography gutterBottom>
+                  Review the newly imported data from the file:&nbsp;&nbsp;&nbsp;&nbsp;
+                </Typography>
+
+                <Stack spacing={2} direction="row"
+                       justifyContent="center"
+                       alignItems="center"
+                >
+                  <Button variant="outlined" onClick={handleImportGrade}
+                          disabled={studentIdList.length === 0}
+                  >
+                    Save
+                  </Button>
+                </Stack>
+              </Box>
+            </>
+          )}
         </Box>
 
         <Box style={{
