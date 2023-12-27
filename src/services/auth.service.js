@@ -1,7 +1,7 @@
 import http from "./http-config";
 
-const API_URL = "https://classroom-management-be.vercel.app/";
-// const API_URL = "http://localhost:3000/";
+// const API_URL = "https://classroom-management-be.vercel.app/";
+const API_URL = "http://localhost:3000/";
 
 const register = async ({ name, email, password }) => {
   return await http.post(API_URL + "auth/register", {
@@ -63,6 +63,11 @@ const findUserByEmail = async ({ email }) => {
   return await http.get(URL);
 }
 
+const getAllUsers = async () => {
+  const URL = API_URL + "auth/getAllUsers";
+  return await http.get(URL);
+}
+
 const AuthService = {
   register,
   activeUser,
@@ -73,7 +78,8 @@ const AuthService = {
   googleLogin,
   updateStudentId,
   updateProfile,
-  findUserByEmail
+  findUserByEmail,
+  getAllUsers
 }
 
 export default AuthService;

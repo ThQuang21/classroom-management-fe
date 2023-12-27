@@ -9,7 +9,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import AdminClassDetail from "./Classes/AdminClassDetail";
 import {Divider, IconButton} from "@mui/material";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import CloseIcon from '@mui/icons-material/Close';
 
 export default function Classes() {
@@ -44,7 +43,6 @@ export default function Classes() {
           .then((data) => {
             console.log(data.data.data);
             setClassData(data.data.data)
-            localStorage.setItem('className', data.data.data.className)
             setLoading(false);
           }, (error) => {
             console.log(error)
