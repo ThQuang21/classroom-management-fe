@@ -1,7 +1,7 @@
 import http from "./http-config";
 
-const API_URL = "https://classroom-management-be.vercel.app/";
-// const API_URL = "http://localhost:3000/";
+// const API_URL = "https://classroom-management-be.vercel.app/";
+const API_URL = "http://localhost:3000/";
 
 const createClass = async ({ className, section, subject, room, teacherId }) => {
   return await http.post(API_URL + "classes", {
@@ -62,6 +62,10 @@ const updateFinalizeInGradeComposition = async ({ gradeCompositionId, classCode 
   });
 };
 
+const getAllClasses = async () => {
+  return await http.get(API_URL + "classes/get-all");
+};
+
 const ClassService = {
   createClass,
   listClassesByTeacherId,
@@ -74,7 +78,8 @@ const ClassService = {
   inviteByEmail,
   updateGradeCompositionByClassCode,
   getGradeCompositionByClassCode,
-  updateFinalizeInGradeComposition
+  updateFinalizeInGradeComposition,
+  getAllClasses
 }
 
 export default ClassService;
