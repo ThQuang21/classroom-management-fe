@@ -33,8 +33,8 @@ export default function PeopleList() {
       if (classCode) {
         await ClassService.listPeopleByClassCode({ classCode: classCode })
           .then((data) => {
-            console.log(data.data.data)
-            console.log(user)
+            // console.log(data.data.data)
+            // console.log(user)
 
             const peopleList = data.data.data
             setPeopleData(peopleList)
@@ -42,6 +42,13 @@ export default function PeopleList() {
             if (peopleList.teachers.includes(user.id)) {
               setIsTeacherStatus(true)
             }
+
+            const studentIds = peopleList.students.map(student => student._id);
+            localStorage.setItem("studentIds", JSON.stringify(studentIds));
+
+            const teacherIds = peopleList.teachers.map(teacher => teacher._id);
+            localStorage.setItem("teacherIds", JSON.stringify(teacherIds));
+
             setLoading(false);
           }, (error) => {
           })

@@ -13,6 +13,7 @@ import {useState} from "react";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import {useUserStore} from "../../../../context/UserStoreProvider";
+import NotificationService from "../../../../services/notification.service";
 
 export default function GradeStructureStudentRequest({grade, currentGrade}) {
   const { user } = useUserStore();
@@ -63,10 +64,32 @@ export default function GradeStructureStudentRequest({grade, currentGrade}) {
       explanation: explanation,
     })
       .then(
-        (data) => {
+        async (data) => {
           console.log(data.data.data)
           showAlert('Request a review successully', 'success');
+          const className = localStorage.getItem("className");
+          const teacherIds = JSON.parse(localStorage.getItem("teacherIds"));
+          const msg = "A grade review of class "+ className + " has been requested by the student " + user.name + ".";
+          await NotificationService.createNotification({
+            senderId: user.id,
+            receiverIds: teacherIds,
+            classCode: classCode,
+            type: "grade_review_request",
+            message: msg
+          })
+            .then(
+              (data) => {
+                console.log(data.data.data)
+                showAlert('Create a notification to your teacher successully', 'success');
 
+              },
+              (error) => {
+                console.log(error)
+                showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+              }
+            ).finally(() => {
+              setLoading(false)
+            });
         },
         (error) => {
           console.log(error)
@@ -75,6 +98,7 @@ export default function GradeStructureStudentRequest({grade, currentGrade}) {
       ).finally(() => {
         setLoading(false)
       });
+
     handleClose();
   };
 

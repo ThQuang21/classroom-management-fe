@@ -1,8 +1,12 @@
 import axios from "axios";
 
 export const getToken = () => {
-  const user = JSON.parse(localStorage.getItem("user"))
-  return user.token;
+  const user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null;
+
+  if (user)
+    return user.token;
 }
 
 export const getAuthorizationHeader = () => `Bearer ${getToken()}`;

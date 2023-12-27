@@ -9,8 +9,8 @@ import GradeStructureStudentRequest from "./GradeStructureStudentRequest";
 
 export default function GradeStructureStudentView({data, gradeData}) {
 
-  console.log(data)
-  console.log(gradeData)
+  // console.log(data)
+  // console.log(gradeData)
 
   return (
     <Paper elevation={2} style={{width:'100%' , marginTop: '10px', borderLeft: '10px solid' +
