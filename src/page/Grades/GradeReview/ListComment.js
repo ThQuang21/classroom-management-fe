@@ -4,8 +4,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import {useEffect} from "react";
-import AuthService from "../../../services/auth.service";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function ListComment({oneComment}) {

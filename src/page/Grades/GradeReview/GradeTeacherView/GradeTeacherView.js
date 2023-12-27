@@ -19,7 +19,6 @@ import {useState} from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import ListComment from "../ListComment";
-import GradeIcon from '@mui/icons-material/Grade';
 import FinalGradeRequest from "./FinalGradeRequest";
 
 const ExpandMore = styled((props) => {

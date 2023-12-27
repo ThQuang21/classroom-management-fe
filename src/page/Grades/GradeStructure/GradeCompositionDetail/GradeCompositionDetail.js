@@ -117,7 +117,6 @@ export default function GradeCompositionDetail({grade, reloadData}) {
 
   const handleImportGrade = async () => {
     var rowData = []
-    const name = grade.name;
     // console.log(name)
     rows.map((row, index) => {
       // console.log(row)
