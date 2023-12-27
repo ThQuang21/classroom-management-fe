@@ -26,6 +26,12 @@ const login = async ({ email, password }) => {
   });
 };
 
+const loginAdmin = async ({ name, password }) => {
+  return await http.post(API_URL + "auth/loginAdmin", {
+    name, password
+  });
+};
+
 const forgotPwd = async ({ email }) => {
   return await http.patch(API_URL + "auth/forgot-password", {
     email
@@ -89,7 +95,8 @@ const AuthService = {
   findUserByEmail,
   getAllUsers,
   banUser,
-  activeUserAdmin
+  activeUserAdmin,
+  loginAdmin
 }
 
 export default AuthService;

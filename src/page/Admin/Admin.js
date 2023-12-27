@@ -23,6 +23,12 @@ import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
 import Classes from "./Classes";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import {AssignmentInd, Logout} from "@mui/icons-material";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+
 
 const drawerWidth = 240;
 
@@ -72,6 +78,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function Admin() {
   const [open, setOpen] = React.useState(true);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -91,6 +99,13 @@ export default function Admin() {
       default:
         return null;
     }
+  };
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
   return (
@@ -135,11 +150,52 @@ export default function Admin() {
               ADMIN HAQ CLASSROOM
             </Typography>
 
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-haspopup="true"
+              onClick={handleOpenUserMenu}
+              color="inherit"
+              sx={{ p: 0 }}
+            >
+              <AdminPanelSettingsIcon sx={{
+                width: 36,
+                height: 36
+              }} />
             </IconButton>
+
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <Divider sx={{ borderStyle: 'dashed' }} />
+              <MenuItem
+                disableRipple
+                disableTouchRipple
+                sx={{ color: 'error.main' }}
+              >
+                <ListItemIcon>
+                  <Logout fontSize="small"
+                          sx={{ color: 'error.main' }}
+                  />
+                </ListItemIcon>
+                Logout
+              </MenuItem>
+            </Menu>
+
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>

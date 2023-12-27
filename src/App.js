@@ -18,6 +18,7 @@ import {AuthRoute} from "./AuthRoute";
 import HomeComponent from "./page/Grades/GradeManagement/Test";
 import io from 'socket.io-client';
 import Admin from "./page/Admin/Admin";
+import SignInAdmin from "./page/Admin/SignInAdmin";
 
 
 
@@ -34,7 +35,7 @@ function App() {
   }, [setSocket]);
 
   const isListPage = () => {
-    const listPages = ["/register", "/login", "/forgot-password", "/reset-password", "/admin"];
+    const listPages = ["/register", "/login", "/forgot-password", "/reset-password", "/admin", "/signin-admin"];
     const currentPath = location.pathname;
     return listPages.includes(currentPath);
   };
@@ -45,6 +46,8 @@ function App() {
 
       <Routes>
         {/*<Route exact path="/test" element={<HomeComponent/>} />*/}
+
+        <Route exact path="/signin-admin" element={<SignInAdmin/>} />
 
         <Route exact path="/admin" element={<Admin/>} />
 
