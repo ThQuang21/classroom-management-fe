@@ -1,8 +1,17 @@
 import axios from "axios";
+
+export const getToken = () => {
+  const user = JSON.parse(localStorage.getItem("user"))
+  return user.token;
+}
+
+export const getAuthorizationHeader = () => `Bearer ${getToken()}`;
+
 // httpInstance
 const httpConfig = axios.create({
   timeout: 10000,
   withCredentials: true,
+  headers: { Authorization: getAuthorizationHeader() },
 });
 
 // http response interceptor
