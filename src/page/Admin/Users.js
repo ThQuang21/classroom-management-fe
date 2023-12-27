@@ -41,20 +41,20 @@ export default function Users() {
     }, 6000);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await AuthService.getAllUsers()
-        .then((data) => {
-          console.log(data.data.data);
-          setUserData(data.data.data)
-          setLoading(false);
-        }, (error) => {
-          console.log(error)
-          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-        })
-      ;
-    };
+  const fetchData = async () => {
+    await AuthService.getAllUsers()
+      .then((data) => {
+        console.log(data.data.data);
+        setUserData(data.data.data)
+        setLoading(false);
+      }, (error) => {
+        console.log(error)
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+      })
+    ;
+  };
 
+  useEffect(() => {
     fetchData();
     // eslint-disable-next-line
   }, []);
@@ -97,7 +97,7 @@ export default function Users() {
           </Stack>
           <Divider sx={{ borderStyle: 'dashed', mb: 4 }} />
 
-          <AdminUserDetail userDetail={rowClick} clickRow={handleRowClick}/>
+          <AdminUserDetail userDetail={rowClick} clickRow={handleRowClick} reloadTable={fetchData}/>
 
         </Container>
       )}

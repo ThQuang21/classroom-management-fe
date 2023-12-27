@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
   email: Yup.string().email('Invalid email address').required('Email is required'),
 });
 
-export default function AdminUserDetail({userDetail, clickRow}) {
+export default function AdminUserDetail({userDetail, clickRow, reloadTable}) {
   const [loading, setLoading] = React.useState(false);
   const [userData, setUserData] = React.useState(null);
   const [alertProps, setAlertProps] = useState({
@@ -62,6 +62,7 @@ export default function AdminUserDetail({userDetail, clickRow}) {
         .then((data) => {
             showAlert('Update profile successful', 'success');
             console.log(data.data.data)
+            reloadTable();
           },
           (error) => {
             showAlert(error.response.data.error.message || 'Error during update profile. Please try again.', 'error');
@@ -84,6 +85,7 @@ export default function AdminUserDetail({userDetail, clickRow}) {
         .then((data) => {
             showAlert('Ban user successful', 'success');
             console.log(data.data.data)
+          reloadTable();
           },
           (error) => {
             showAlert(error.response.data.error.message || 'Error during update profile. Please try again.', 'error');
@@ -102,6 +104,7 @@ export default function AdminUserDetail({userDetail, clickRow}) {
       .then((data) => {
           showAlert('Active user successful', 'success');
           console.log(data.data.data)
+        reloadTable()
         },
         (error) => {
           showAlert(error.response.data.error.message || 'Error during update profile. Please try again.', 'error');

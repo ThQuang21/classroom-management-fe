@@ -22,7 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ClassService from "../../services/class.service";
 
 export default function AdminListItemPeople(props) {
-  const {name, email, note, noSetting, classCode, id, clickRow} = props;
+  const {name, email, note, noSetting, classCode, id, clickRow, reloadTable} = props;
   const [loading, setLoading] = React.useState(false);
   const [studentId, setStudentId] = React.useState(note);
 
@@ -87,6 +87,7 @@ export default function AdminListItemPeople(props) {
         .then((data) => {
           showAlert('Remove teacher successfully.', 'success');
           clickRow(classCode);
+          reloadTable();
         }, (error) => {
           showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
           setOpen(false);
@@ -96,6 +97,7 @@ export default function AdminListItemPeople(props) {
         .then((data) => {
           showAlert('Remove student successfully.', 'success');
           clickRow(classCode);
+          reloadTable();
         }, (error) => {
           showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
           setOpen(false);

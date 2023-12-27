@@ -36,21 +36,20 @@ export default function Classes() {
       handleAlertClose();
     }, 6000);
   };
+  const fetchData = async () => {
+    await ClassService.getAllClasses()
+      .then((data) => {
+        console.log(data.data.data);
+        setClassData(data.data.data)
+        setLoading(false);
+      }, (error) => {
+        console.log(error)
+        showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+      })
+    ;
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-        await ClassService.getAllClasses()
-          .then((data) => {
-            console.log(data.data.data);
-            setClassData(data.data.data)
-            setLoading(false);
-          }, (error) => {
-            console.log(error)
-            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-          })
-        ;
-    };
-
     fetchData();
     // eslint-disable-next-line
   }, []);
@@ -92,7 +91,7 @@ export default function Classes() {
           </Stack>
           <Divider sx={{ borderStyle: 'dashed' }} />
 
-          <AdminClassDetail classCode={rowClick} clickRow={handleRowClick}/>
+          <AdminClassDetail classCode={rowClick} clickRow={handleRowClick} reloadTable={fetchData}/>
         </Container>
       )}
 

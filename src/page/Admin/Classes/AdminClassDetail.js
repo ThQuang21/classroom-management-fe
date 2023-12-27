@@ -17,7 +17,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Dialog from "@mui/material/Dialog";
 import AuthService from "../../../services/auth.service";
 
-export default function AdminClassDetail({classCode, clickRow}) {
+export default function AdminClassDetail({classCode, clickRow, reloadTable}) {
   const [loading, setLoading] = React.useState(true);
   const [classData, setClassData] = React.useState(null);
   const [peopleData, setPeopleData] = React.useState(null);
@@ -67,6 +67,7 @@ export default function AdminClassDetail({classCode, clickRow}) {
             console.log(data.data.data);
             setClassData(data.data.data)
             setClassName(data.data.data.className)
+
           }, (error) => {
             console.log(error)
             showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
@@ -95,7 +96,7 @@ export default function AdminClassDetail({classCode, clickRow}) {
     await ClassService.updateClassName({classCode: classCode, className: className })
       .then((data) => {
         showAlert('Update class name successfully.', 'success');
-
+        reloadTable();
       }, (error) => {
         showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
         setOpen(false);
@@ -172,7 +173,7 @@ export default function AdminClassDetail({classCode, clickRow}) {
 
         {peopleData.teachers.map((teacher) => (
           teacher.email !== peopleData.classOwner.email && (
-            <AdminListItemPeople classCode={classCode} id={teacher._id} key={teacher.email} name={teacher.name} email={teacher.email} noSetting={true} clickRow={clickRow}/>
+            <AdminListItemPeople classCode={classCode} id={teacher._id} key={teacher.email} name={teacher.name} email={teacher.email} noSetting={true} clickRow={clickRow} reloadTable={reloadTable}/>
           )
         ))}
       </List>
@@ -186,7 +187,7 @@ export default function AdminClassDetail({classCode, clickRow}) {
           <Typography variant="body1" >There is no student in this class.</Typography>
         ) : (
           peopleData.students.map((card) => (
-            <AdminListItemPeople classCode={classCode} id={card._id} name={card.name} email={card.email} note={card.studentId} clickRow={clickRow}/>
+            <AdminListItemPeople classCode={classCode} id={card._id} name={card.name} email={card.email} note={card.studentId} clickRow={clickRow} reloadTable={reloadTable}/>
           ))
         )}
       </List>
