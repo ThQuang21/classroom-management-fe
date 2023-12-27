@@ -88,13 +88,13 @@ export default function GradeManagementTeacherView() {
 
   const [columns, setColumns] = useState([]);
   const [tableColumnExtensions, setTableColumnExtensions] = useState([]);
-
+  const [editingStateColumnExtensions, setEditingStateColumnExtensions] = useState([]);
   const fetchData = async () => {
 
     if (classCode) {
       await GradeService.getGradesByClassCode({ classCode: classCode})
         .then((data) => {
-          console.log(data.data.data);
+          // console.log(data.data.data);
           var rowData = []
           data.data.data.forEach((row, index) => {
             rowData.push({
@@ -114,8 +114,11 @@ export default function GradeManagementTeacherView() {
         .then((data) => {
           setLoading(false);
 
+          console.log(data.data.data)
+
           const newGrades = data.data.data.gradeCompositions.map((grade, index) => ({
-            name: grade.name
+            name: grade.name,
+            finalized: grade.finalized
           }));
 
           var column = [
@@ -125,9 +128,9 @@ export default function GradeManagementTeacherView() {
           var tableColumnExtension = [
             { columnName: 'fullName', width: 180 }, //fullName
             { columnName: 'studentId', width: 120 }, //studentId
-
-            // { columnName: 'amount', align: 'right', width: 140 }, //total
           ];
+          var editState = [];
+
           newGrades.forEach((gradeComposition) => {
             column.push({
               name: gradeComposition.name,
@@ -137,9 +140,18 @@ export default function GradeManagementTeacherView() {
               columnName: gradeComposition.name,
               align: 'center'
             })
+
+            if (gradeComposition.finalized) {
+              editState.push({
+                columnName: gradeComposition.name,
+                editingEnabled: false
+              })
+            }
           })
+
           setColumns(column)
           setTableColumnExtensions(tableColumnExtension)
+          setEditingStateColumnExtensions(editState)
 
           setLoading(false);
         }, (error) => {
@@ -253,6 +265,7 @@ export default function GradeManagementTeacherView() {
             addedRows={addedRows}
             onAddedRowsChange={changeAddedRows}
             onCommitChanges={commitChanges}
+            columnExtensions={editingStateColumnExtensions}
           />
           <SortingState
             defaultSorting={[{ columnName: 'studentId', direction: 'asc' }]}
