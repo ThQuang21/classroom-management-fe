@@ -19,6 +19,8 @@ import {useState} from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import ListComment from "../ListComment";
+import GradeIcon from '@mui/icons-material/Grade';
+import FinalGradeRequest from "./FinalGradeRequest";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -32,7 +34,7 @@ const ExpandMore = styled((props) => {
 }));
 
 
-export default function GradeTeacherView({gradeReview}) {
+export default function GradeTeacherView({gradeReview, onReload}) {
   const { user } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [expanded, setExpanded] = React.useState(false);
@@ -95,6 +97,9 @@ export default function GradeTeacherView({gradeReview}) {
     >
       <Card>
         <CardHeader
+          action={
+           <FinalGradeRequest grade={gradeReview} onReload={onReload}/>
+          }
           title={<Typography variant="h6" gutterBottom><strong>Grade name:</strong> {gradeReview.gradeCompositionName}</Typography>}
           subheader={<Typography variant="h6" gutterBottom><strong>Student ID:</strong> {gradeReview.studentName}</Typography>}
         />
@@ -106,6 +111,15 @@ export default function GradeTeacherView({gradeReview}) {
           <Typography variant="body1" color="text.secondary">
             <strong>Explanation:</strong> {gradeReview.explanation}
           </Typography>
+
+          <Typography variant="body1" color="red">
+            {gradeReview.finalDecision.markedBy && (
+              <>
+                <strong>Final grade:</strong> {gradeReview.finalDecision.grade} - <strong>Marked by:</strong> {gradeReview.finalDecision.markedName}
+              </>
+              )}
+          </Typography>
+
         </CardContent>
         <CardActions disableSpacing             onClick={handleExpandClick}
         >

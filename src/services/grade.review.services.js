@@ -51,13 +51,20 @@ const addCommentByClassCodeStudentIdAndGradeCompositionId = async ({
   });
 };
 
+const updateFinalDecision = async ({classCode, gradeCompositionId, studentId, studentName, grade, markedBy        } ) => {
+  return await http.put(API_URL + "gradeReviews/update-final-decision", {
+    classCode, gradeCompositionId, studentId, studentName, grade, markedBy
+  });
+};
+
 
 const GradeService = {
   createGradeReview,
   getGradeReviewsByClassCode,
   getGradeReviewsByClassCodeAndStudentId,
   getGradeReviewsByClassCodeAndStudentIds,
-  addCommentByClassCodeStudentIdAndGradeCompositionId
+  addCommentByClassCodeStudentIdAndGradeCompositionId,
+  updateFinalDecision
 }
 
 export default GradeService;

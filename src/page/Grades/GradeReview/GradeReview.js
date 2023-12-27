@@ -117,6 +117,11 @@ export default function GradeReview() {
 
   };
 
+  const handleReload = async () => {
+    setLoadingGrade(true);
+    fetchData();
+  };
+
 
   if (loadingGrade) {
     return (
@@ -161,7 +166,7 @@ export default function GradeReview() {
 
               </Paper>
               {gradeReviews.map((grade, index) => (
-                <GradeTeacherView gradeReview={grade} />
+                <GradeTeacherView gradeReview={grade} onReload={handleReload} />
               ))}
             </Grid>
           </>
