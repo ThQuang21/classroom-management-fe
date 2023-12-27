@@ -28,6 +28,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import {AssignmentInd, Logout} from "@mui/icons-material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import {useUserStore} from "../../context/UserStoreProvider";
+import {useNavigate} from "react-router-dom";
 
 
 const drawerWidth = 240;
@@ -77,6 +79,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function Admin() {
+  const { logoutUser } = useUserStore();
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -106,6 +110,11 @@ export default function Admin() {
   };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogOut = () => {
+    logoutUser();
+    navigate('/signin-admin')
   };
 
   return (
@@ -185,6 +194,7 @@ export default function Admin() {
               <MenuItem
                 disableRipple
                 disableTouchRipple
+                onClick={handleLogOut}
                 sx={{ color: 'error.main' }}
               >
                 <ListItemIcon>

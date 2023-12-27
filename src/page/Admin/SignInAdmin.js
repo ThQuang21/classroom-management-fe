@@ -13,7 +13,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AuthService from "../../services/auth.service";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useUserStore} from "../../context/UserStoreProvider";
 
 function Copyright(props) {
   return (
@@ -30,6 +31,9 @@ function Copyright(props) {
 
 
 export default function SignInAdmin() {
+  const { setIsAdminStatus, loginUser } = useUserStore();
+  const location = useLocation();
+  const from = location.state?.from || "/admin";
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -47,17 +51,15 @@ export default function SignInAdmin() {
           const user = data.data.data;
           console.log(user)
 
-          // loginUser({
-          //   email: user.email,
-          //   id: user.id,
-          //   name: user.name,
-          //   studentId: user.studentId,
-          //   token: user.accessToken,
-          //   socialLogins: user.socialLogins
-          // });
+          loginUser({
+            id: user.id,
+            name: user.name,
+            role: user.role
+          });
+          setIsAdminStatus(true);
 
           setTimeout(() => {
-            navigate("/admin");
+            navigate(from, { replace: true });
           }, 800);
 
         },

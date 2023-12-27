@@ -6,10 +6,14 @@ export const UserStoreProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [isTeacher, setIsTeacher] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     const storedIsTeacher = localStorage.getItem('isTeacher');
+    const storedIsAdmin = localStorage.getItem('isAdmin');
+
 
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -17,6 +21,10 @@ export const UserStoreProvider = ({ children }) => {
 
     if (storedIsTeacher) {
       setIsTeacher(JSON.parse(storedIsTeacher));
+    }
+
+    if (storedIsAdmin) {
+      setIsAdmin(JSON.parse(storedIsAdmin));
     }
     setLoadingUser(false);
 
@@ -41,8 +49,10 @@ export const UserStoreProvider = ({ children }) => {
   const logoutUser = () => {
     setUser(null);
     setIsTeacher(false);
+    setIsAdmin(false);
     localStorage.removeItem('user');
     localStorage.removeItem('isTeacher');
+    localStorage.removeItem('isAdmin');
   };
 
   const isAuthenticated = () => {
@@ -54,9 +64,14 @@ export const UserStoreProvider = ({ children }) => {
     localStorage.setItem('isTeacher', JSON.stringify(status));
   };
 
+  const setIsAdminStatus = (status) => {
+    setIsAdmin(status)
+    localStorage.setItem('isAdmin', JSON.stringify(status));
+  };
+
   return (
     <UserStoreContext.Provider value={{ user, loginUser, logoutUser, isAuthenticated, updateProfile,
-      loadingUser, isTeacher, setIsTeacherStatus
+      loadingUser, isTeacher, setIsTeacherStatus, isAdmin, setIsAdminStatus
     }}>
       {children}
     </UserStoreContext.Provider>

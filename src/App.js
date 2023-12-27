@@ -19,6 +19,7 @@ import HomeComponent from "./page/Grades/GradeManagement/Test";
 import io from 'socket.io-client';
 import Admin from "./page/Admin/Admin";
 import SignInAdmin from "./page/Admin/SignInAdmin";
+import {AdminRoute} from "./AdminRoute";
 
 
 
@@ -49,7 +50,13 @@ function App() {
 
         <Route exact path="/signin-admin" element={<SignInAdmin/>} />
 
-        <Route exact path="/admin" element={<Admin/>} />
+        <Route exact path="/admin"
+               element={
+                 <AdminRoute>
+                   <Admin />
+                 </AdminRoute>
+               }
+        />
 
 
         <Route exact path="/" element={<Home/>} />
