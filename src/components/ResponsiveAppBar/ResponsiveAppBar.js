@@ -20,6 +20,9 @@ import AddIcon from '@mui/icons-material/Add';
 import CreateClass from "../dialog/CreateClass";
 import {AssignmentInd, Logout} from "@mui/icons-material";
 import JoinClassByCode from "../dialog/JoinClassByCode";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MenuNoti from "./MenuNoti";
+import NotificationService from "../../services/notification.service";
 
 const useStyles = makeStyles(() => ({
   transition: {
@@ -35,8 +38,10 @@ function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [anchorElClass, setAnchorElClass] = React.useState(null);
+  const [anchorElNoti, setAnchorElNoti] = React.useState(null);
   const [openCreateClass, setOpenCreateClass] = React.useState(false);
   const [openJoinClass, setOpenJoinClass] = React.useState(false);
+  const [notiList, setNotiList] = React.useState(null);
 
   const classes = useStyles();
   const navigate = useNavigate();
@@ -50,6 +55,23 @@ function ResponsiveAppBar() {
 
   const handleOpenClassMenu = (event) => {
     setAnchorElClass(event.currentTarget);
+  };
+
+  const handleOpenNotiMenu = async (event) => {
+    setAnchorElNoti(event.currentTarget);
+
+    await NotificationService.getAllNotificationByUserId({
+      userId: user.id
+    })
+      .then(
+        (data) => {
+          console.log(data.data.data)
+          setNotiList(data.data.data)
+        },
+        (error) => {
+          console.log(error)
+        }
+      );
   };
   const handleOpenCreateClass = (event) => {
     setAnchorElClass(null);
@@ -67,6 +89,9 @@ function ResponsiveAppBar() {
   };
   const handleCloseClassMenu = () => {
     setAnchorElClass(null);
+  };
+  const handleCloseNotiMenu = () => {
+    setAnchorElNoti(null);
   };
 
   const navigateProfilePage = () => {
@@ -216,6 +241,20 @@ function ResponsiveAppBar() {
                   edge="end"
                   aria-label="account of current user"
                   aria-haspopup="true"
+                  onClick={handleOpenNotiMenu}
+                  color="inherit"
+                  sx={{ p: 0 }}
+                >
+                  <NotificationsIcon sx={{
+                    width: 36,
+                    height: 36
+                  }} />
+                </IconButton>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-haspopup="true"
                   onClick={handleOpenUserMenu}
                   color="inherit"
                   sx={{ p: 0 }}
@@ -246,6 +285,34 @@ function ResponsiveAppBar() {
               >
                 <MenuItem onClick={handleOpenCreateClass}>Create Class</MenuItem>
                 <MenuItem onClick={handleOpenJoinClass}>Join Class</MenuItem>
+              </Menu>
+
+              {/*Menu noti*/}
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElNoti}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElNoti)}
+                onClose={handleCloseNotiMenu}
+              >
+                <Box sx={{ my: 1.5, px: 2 }}>
+                  <Typography variant="subtitle2" noWrap>
+                    <strong>All Notifications</strong>
+                  </Typography>
+                </Box>
+
+                <Divider sx={{ borderStyle: 'dashed' }} />
+                <MenuNoti notiList={notiList}/>
+
               </Menu>
 
               {/*Menu user*/}
@@ -298,18 +365,18 @@ function ResponsiveAppBar() {
               </Menu>
             </Box>
           ) : (
-              <Box sx={{ flexGrow: 0 }}>
-                <Button href="/login" variant="filled">SIGN IN</Button>
-                <Button href="/register" variant="outlined"
-                  sx={{
-                    ml: 2, borderColor: 'white', color: 'white', '&:hover': {
-                    backgroundColor: 'transparent',
-                    borderColor: 'white',
-                  },
-                  }}
-                >SIGN UP</Button>
-              </Box>
-            )
+            <Box sx={{ flexGrow: 0 }}>
+              <Button href="/login" variant="filled">SIGN IN</Button>
+              <Button href="/register" variant="outlined"
+                      sx={{
+                        ml: 2, borderColor: 'white', color: 'white', '&:hover': {
+                          backgroundColor: 'transparent',
+                          borderColor: 'white',
+                        },
+                      }}
+              >SIGN UP</Button>
+            </Box>
+          )
           }
 
         </Toolbar>

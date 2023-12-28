@@ -94,9 +94,8 @@ export default function CreateClass({open, setOpen}) {
         (data) => {
           showAlert('Create class successful', 'success');
           handleClose();
-          setTimeout(() => {
-            navigate('/class/' + data.data.data.classCode);
-          }, 800);
+          navigate('/class/' + data.data.data.classCode);
+          window.location.reload();
         },
         (error) => {
           console.log(error)

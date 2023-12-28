@@ -9,9 +9,13 @@ const createNotification = async ({ senderId, receiverIds, classCode, type, mess
   });
 };
 
+const getAllNotificationByUserId = async ({ userId }) => {
+  return await http.get(API_URL + "notifications/" + userId);
+};
+
 const NotificationService = {
   createNotification,
-
+  getAllNotificationByUserId
 }
 
 export default NotificationService;
