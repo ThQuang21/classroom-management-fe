@@ -33,7 +33,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
   const [open, setOpen] = React.useState(false);
   const [studentIdList, setStudentIdList] = React.useState([]);
   const [rows, setRows] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const [alertProps, setAlertProps] = useState({
     open: false,
     message: '',

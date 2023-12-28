@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
 });
 
 export default function CreateClass({open, setOpen}) {
-  const { user } = useUserStore();
+  const { user, setIsTeacherStatus } = useUserStore();
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const [nameError, setNameError] = React.useState('');
@@ -94,6 +94,7 @@ export default function CreateClass({open, setOpen}) {
         (data) => {
           showAlert('Create class successful', 'success');
           handleClose();
+          setIsTeacherStatus(true)
           navigate('/class/' + data.data.data.classCode);
           window.location.reload();
         },

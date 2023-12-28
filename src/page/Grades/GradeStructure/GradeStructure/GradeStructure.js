@@ -27,6 +27,7 @@ export default function GradeStructure() {
   const [loadingGrade, setLoadingGrade] = React.useState(false);
   const [gradeComposition, setGradeComposition] = useState([]);
   const [gradeDetails, setGradeDetails] = useState([]);
+  const [gradeArr, setGradeArr] = useState([]);
   const [totalGrade, setTotalGrade] = useState(-1);
   const [alertProps, setAlertProps] = useState({
     open: false,
@@ -150,16 +151,17 @@ export default function GradeStructure() {
 
             for (const [gradeName, gradeValue] of Object.entries(listGrades)) {
               newGrades[gradeName] = gradeValue;
-              for (const gradeComp of gradeComposition) {
-                if (gradeComp.code === gradeName && gradeValue !== -1) {
-                  gradeTotal += gradeValue * gradeComp.gradeScale / 100;
-                }
-              }
+              // for (const gradeComp of gradeComposition) {
+              //   if (gradeComp.code === gradeName && gradeValue !== -1) {
+              //     gradeTotal += gradeValue * gradeComp.gradeScale / 100;
+              //   }
+              // }
             }
-            const gradeToSet = Number(gradeTotal.toFixed(2))
+            // const gradeToSet = Number(gradeTotal.toFixed(2))
 
-            setTotalGrade(gradeToSet)
+            // setTotalGrade(gradeToSet)
             setGradeDetails(newGrades);
+            setGradeArr(data.data.data)
             setLoadingGrade(false);
 
           }, (error) => {
@@ -177,7 +179,30 @@ export default function GradeStructure() {
     setLoadingGrade(true);
     fetchData();
     // eslint-disable-next-line
-  }, [totalGrade]);
+  }, []);
+
+  useEffect(() => {
+    const calculateTotalGrade = () => {
+      if (!isTeacher && user.studentId) {
+        let gradeTotal = 0;
+
+        for (const [gradeName, gradeValue] of Object.entries(gradeArr)) {
+          for (const gradeComp of gradeComposition) {
+            if (gradeComp.code === gradeName && gradeValue !== -1) {
+              gradeTotal += gradeValue * gradeComp.gradeScale / 100;
+            }
+          }
+        }
+
+        const gradeToSet = Number(gradeTotal.toFixed(2));
+        setTotalGrade(gradeToSet);
+        console.log(gradeToSet)
+      }
+    };
+
+    calculateTotalGrade();
+
+  }, [gradeArr]);
 
   const handleSubmit = async () => {
     let totalScale = 0;
