@@ -28,6 +28,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export default function JoinClassByLink() {
   const { classCode } = useParams();
+  const { setIsTeacherStatus } = useUserStore();
   const { user } = useUserStore();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -67,6 +68,10 @@ export default function JoinClassByLink() {
       await ClassService.joinClassByLink({classCode: classCode, invitationCode: invitationCode, userId: user.id})
         .then(() => {
           localStorage.setItem('msgDialogSuccess', 'Join class successful');
+
+          if (classData.isTeacher) {
+            setIsTeacherStatus(true)
+          }
           setTimeout(() => {
             navigate('/class/' + classData.classCode);
           }, 800);
