@@ -20,12 +20,15 @@ import PreUploadGradeTable from "./PreUploadGradeTable";
 import FinalizeComfirmDialog from "./FinalizeComfirmDialog";
 import Stack from "@mui/material/Stack";
 import ClassService from "../../../../services/class.service";
+import NotificationService from "../../../../services/notification.service";
+import {useUserStore} from "../../../../context/UserStoreProvider";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function GradeCompositionDetail({grade, reloadData}) {
+  const { user } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [open, setOpen] = React.useState(false);
   const [studentIdList, setStudentIdList] = React.useState([]);
@@ -150,10 +153,33 @@ export default function GradeCompositionDetail({grade, reloadData}) {
       // console.log(grade.code)
 
       await ClassService.updateFinalizeInGradeComposition({gradeCompositionId: grade.code, classCode})
-        .then((data) => {
+        .then(async (data) => {
           // console.log(data.data.data);
           showAlert('Finalize this grade success', 'success');
           setLoading(false)
+
+          const className = localStorage.getItem("className");
+          const studentIds = JSON.parse(localStorage.getItem("studentIds"));
+          const msg = "Grade composition has been finalized for class "+ className + " by " + user.name + ".";
+          await NotificationService.createNotification({
+            senderId: user.id,
+            receiverIds: studentIds,
+            classCode: classCode,
+            type: "grade_composition_finalized",
+            message: msg
+          })
+            .then(
+              (data) => {
+                console.log(data.data.data)
+                showAlert('Create a notification to your students successully', 'success');
+
+              },
+              (error) => {
+                console.log(error)
+                showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+              }
+            );
+
           reloadData();
           handleClose();
         }, (error) => {

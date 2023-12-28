@@ -14,6 +14,7 @@ import Snackbar from "@mui/material/Snackbar";
 import {useUserStore} from "../../../../context/UserStoreProvider";
 import GradeIcon from "@mui/icons-material/Grade";
 import IconButton from "@mui/material/IconButton";
+import NotificationService from "../../../../services/notification.service";
 
 export default function FinalGradeRequest({grade, onReload}) {
   const { user } = useUserStore();
@@ -63,9 +64,30 @@ export default function FinalGradeRequest({grade, onReload}) {
         markedBy: user.id
       }
     )
-      .then((data) => {
+      .then(async (data) => {
         console.log(data.data.data);
         showAlert('Finalize grade successfully', 'success');
+
+        const className = localStorage.getItem("className");
+        const msg = "The final decision on your mark review in the class " + className + " has been made by " + user.name + ".";
+        await NotificationService.createNotification({
+          senderId: user.id,
+          receiverIds: grade.studentId,
+          classCode: classCode,
+          type: "mark_review_decision",
+          message: msg
+        })
+          .then(
+            (data) => {
+              console.log(data.data.data)
+              showAlert('Create a notification to your student successully', 'success');
+
+            },
+            (error) => {
+              console.log(error)
+              showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+            }
+          );
 
       }, (error) => {
         console.log(error)

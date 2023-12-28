@@ -20,6 +20,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import ListComment from "../ListComment";
 import FinalGradeRequest from "./FinalGradeRequest";
+import NotificationService from "../../../../services/notification.service";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -73,10 +74,31 @@ export default function GradeTeacherView({gradeReview, onReload}) {
         comment: comment
       }
     )
-      .then((data) => {
+      .then(async (data) => {
         console.log(data.data.data);
         setListComment(data.data.data.comments);
         showAlert('Add comment successfully', 'success');
+
+        const className = localStorage.getItem("className");
+        const msg = "Your grade review in the class " + className + " has been replied by " + user.name + ".";
+        await NotificationService.createNotification({
+          senderId: user.id,
+          receiverIds: gradeReview.studentId,
+          classCode: classCode,
+          type: "grade_review_reply",
+          message: msg
+        })
+          .then(
+            (data) => {
+              console.log(data.data.data)
+              showAlert('Create a notification to your student successully', 'success');
+
+            },
+            (error) => {
+              console.log(error)
+              showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+            }
+          );
 
       }, (error) => {
         console.log(error)
