@@ -146,7 +146,6 @@ export default function GradeStructure() {
 
             console.log(data.data.data)
             const newGrades = {};
-            let gradeTotal = 0;
             const {fullName, studentId, ...listGrades} = data.data.data
 
             for (const [gradeName, gradeValue] of Object.entries(listGrades)) {
@@ -201,7 +200,7 @@ export default function GradeStructure() {
     };
 
     calculateTotalGrade();
-
+    // eslint-disable-next-line
   }, [gradeArr]);
 
   const handleSubmit = async () => {
@@ -329,7 +328,7 @@ export default function GradeStructure() {
           ) : (
             <>
               {gradeComposition.map((grade, index) => (
-                <GradeStructureStudentView data={grade} gradeData={gradeDetails}
+                <GradeStructureStudentView data={grade} gradeData={gradeDetails} showAlert={showAlert}
 
                 />
               ))}

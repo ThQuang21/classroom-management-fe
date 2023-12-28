@@ -9,40 +9,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import LoadingButton from "@mui/lab/LoadingButton";
 import GradeReviewServices from "../../../../services/grade.review.services";
-import {useState} from "react";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 import {useUserStore} from "../../../../context/UserStoreProvider";
 import NotificationService from "../../../../services/notification.service";
 
-export default function GradeStructureStudentRequest({grade, currentGrade}) {
+export default function GradeStructureStudentRequest({grade, currentGrade, showAlert}) {
   const { user } = useUserStore();
   const classCode = window.location.pathname.split('/').pop(); // Extract classCode from the URL
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [expectGrade, setExpectGrade] = React.useState(0);
   const [explanation, setExplanation] = React.useState('');
-  const [alertProps, setAlertProps] = useState({
-    open: false,
-    message: '',
-    severity: 'success', // Default to success
-  });
-  const handleAlertClose = () => {
-    setAlertProps((prev) => ({ ...prev, open: false }));
-  };
-
-  const showAlert = (message, severity = 'success') => {
-    setAlertProps({
-      open: true,
-      message,
-      severity,
-    });
-
-    // Hide the Alert after 4 seconds (4000 milliseconds)
-    setTimeout(() => {
-      handleAlertClose();
-    }, 6000);
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -54,52 +30,79 @@ export default function GradeStructureStudentRequest({grade, currentGrade}) {
 
   const handleSendRequest = async () => {
     setLoading(true);
+    console.log(expectGrade)
+    if (!expectGrade || expectGrade === null) {
+      showAlert('Please enter an expect grade.', 'error');
+      setLoading(false)
+    } else {
+      await GradeReviewServices.createGradeReview({
+        classCode: classCode,
+        gradeCompositionId: grade.code,
+        studentId: user.id,
+        currentGrade: currentGrade,
+        expectationGrade : expectGrade,
+        explanation: explanation,
+      })
+        .then(
+          async (data) => {
+            console.log(data.data.data)
+            showAlert('Request a review successully', 'success');
+            const className = localStorage.getItem("className");
+            const teacherIds = JSON.parse(localStorage.getItem("teacherIds"));
+            const msg = "A grade review of class "+ className + " has been requested by the student " + user.name + ".";
+            await NotificationService.createNotification({
+              senderId: user.id,
+              receiverIds: teacherIds,
+              classCode: classCode,
+              type: "grade_review_request",
+              message: msg
+            })
+              .then(
+                (data) => {
+                  console.log(data.data.data)
+                  showAlert('Create a notification to your teacher successully', 'success');
 
-    await GradeReviewServices.createGradeReview({
-      classCode: classCode,
-      gradeCompositionId: grade.code,
-      studentId: user.id,
-      currentGrade: currentGrade,
-      expectationGrade : expectGrade,
-      explanation: explanation,
-    })
-      .then(
-        async (data) => {
-          console.log(data.data.data)
-          showAlert('Request a review successully', 'success');
-          const className = localStorage.getItem("className");
-          const teacherIds = JSON.parse(localStorage.getItem("teacherIds"));
-          const msg = "A grade review of class "+ className + " has been requested by the student " + user.name + ".";
-          await NotificationService.createNotification({
-            senderId: user.id,
-            receiverIds: teacherIds,
-            classCode: classCode,
-            type: "grade_review_request",
-            message: msg
-          })
-            .then(
-              (data) => {
-                console.log(data.data.data)
-                showAlert('Create a notification to your teacher successully', 'success');
-
-              },
-              (error) => {
-                console.log(error)
-                showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-              }
-            ).finally(() => {
-              setLoading(false)
-            });
-        },
-        (error) => {
-          console.log(error)
-          showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
-        }
-      ).finally(() => {
-        setLoading(false)
-      });
-
+                },
+                (error) => {
+                  console.log(error)
+                  showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+                }
+              ).finally(() => {
+                setLoading(false)
+              });
+          },
+          (error) => {
+            console.log(error)
+            showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
+          }
+        ).finally(() => {
+          setLoading(false)
+        });
+    }
     handleClose();
+
+  };
+
+  const handleExpectGradeChange = (e) => {
+    const inputValue = e.target.value;
+
+    if (inputValue === '' || inputValue === null) {
+      setExpectGrade(null);
+      showAlert('Please enter a number.', 'error');
+    }
+
+    // Check if the input is a valid grade between 0 and 10
+    if (/^\d*\.?\d*$/.test(inputValue) ) {
+      const numericValue = parseFloat(inputValue);
+
+      if (numericValue >= 0 && numericValue <= 10) {
+        setExpectGrade(numericValue.toString());
+      } else {
+          showAlert('Please enter a valid grade between 0 and 10.', 'error');
+      }
+    } else {
+      showAlert('Please enter a valid number.', 'error');
+    }
   };
 
   return (
@@ -126,7 +129,7 @@ export default function GradeStructureStudentRequest({grade, currentGrade}) {
             variant="standard"
             inputProps={{ min: 0, max: 10 }}
             value={expectGrade}
-            onChange={(e) => setExpectGrade(e.target.value)}
+            onChange={handleExpectGradeChange}
           />
           <TextField
             autoFocus
@@ -151,17 +154,6 @@ export default function GradeStructureStudentRequest({grade, currentGrade}) {
           </LoadingButton>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={alertProps.open}
-        autoHideDuration={4000}
-        onClose={handleAlertClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={handleAlertClose} severity={alertProps.severity} sx={{ width: '100%' }}>
-          {alertProps.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

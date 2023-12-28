@@ -121,6 +121,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
   const handleImportGrade = async () => {
     var rowData = []
     // console.log(name)
+    // eslint-disable-next-line
     rows.map((row, index) => {
       // console.log(row)
       var obj = {
@@ -179,9 +180,7 @@ export default function GradeCompositionDetail({grade, reloadData}) {
                 showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
               }
             );
-
           reloadData();
-          handleClose();
         }, (error) => {
           console.log(error)
           showAlert(error.response.data.error.message || 'An unexpected error occurred. Please try again later.', 'error');
