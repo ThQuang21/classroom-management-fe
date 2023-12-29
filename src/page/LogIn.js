@@ -143,6 +143,10 @@ export default function LogIn() {
     await AuthService.googleLogin();
   }
 
+  const handleFacebookSignIn = async () => {
+    await AuthService.facebookLogin();
+  }
+
     return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -166,7 +170,7 @@ export default function LogIn() {
               <GoogleIcon />
             </Button>
 
-            <Button variant="contained" style={facebookStyle}>
+            <Button variant="contained" style={facebookStyle} onClick={handleFacebookSignIn}>
               <FacebookIcon />
             </Button>
 

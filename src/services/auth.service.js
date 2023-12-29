@@ -64,6 +64,14 @@ const googleLogin = async () => {
   }
 }
 
+const facebookLogin = async () => {
+  try {
+    window.open(API_URL + "auth/facebook", "_self");
+  } catch (error) {
+    console.error('Error during Facebook authentication:', error);
+  }
+}
+
 const findUserByEmail = async ({ email }) => {
   const URL = API_URL + "auth/find-by-email/" + email;
   return await http.get(URL);
@@ -90,6 +98,7 @@ const AuthService = {
   forgotPwd,
   resetPwd,
   googleLogin,
+  facebookLogin,
   updateStudentId,
   updateProfile,
   findUserByEmail,
