@@ -94,7 +94,7 @@ export default function GradeManagementTeacherView() {
     if (classCode) {
       await GradeService.getGradesByClassCode({ classCode: classCode})
         .then((data) => {
-          // console.log(data.data.data);
+          console.log(data.data.data);
           var rowData = []
           data.data.data.forEach((row, index) => {
             rowData.push({
@@ -147,6 +147,14 @@ export default function GradeManagementTeacherView() {
                 editingEnabled: false
               })
             }
+          })
+
+          column.push(
+            { name: 'total', title: 'Total' },
+          )
+          editState.push({
+            columnName: "total",
+            editingEnabled: false
           })
 
           setColumns(column)
