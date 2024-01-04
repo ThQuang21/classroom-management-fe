@@ -25,15 +25,15 @@ import {AdminRoute} from "./AdminRoute";
 
 function App() {
   const location = useLocation();
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
 
-  useEffect(() => {
-    const host = "http://localhost:3000";
-    const socket = io.connect(host);
-    // console.log(socket)
-    setSocket(socket);
-    return () => socket.close();
-  }, [setSocket]);
+  // useEffect(() => {
+  //   const host = "http://localhost:3000";
+  //   const socket = io.connect(host);
+  //   // console.log(socket)
+  //   setSocket(socket);
+  //   return () => socket.close();
+  // }, [setSocket]);
 
   const isListPage = () => {
     const listPages = ["/register", "/login", "/forgot-password", "/reset-password", "/admin", "/signin-admin"];
